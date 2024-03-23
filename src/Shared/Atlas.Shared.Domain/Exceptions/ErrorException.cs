@@ -1,4 +1,6 @@
-﻿namespace Atlas.Shared.Domain.Exceptions;
+﻿using Atlas.Shared.Domain.Errors;
+
+namespace Atlas.Shared.Domain.Exceptions;
 
 public class ErrorException : Exception
 {

@@ -1,4 +1,6 @@
-﻿namespace Atlas.Shared.Domain.Results;
+﻿using Atlas.Shared.Domain.Errors;
+
+namespace Atlas.Shared.Domain.Results;
 
 public class Result<TData> : Result
 {

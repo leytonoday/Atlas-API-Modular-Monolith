@@ -1,6 +1,6 @@
-﻿namespace Atlas.Shared.Domain;
+﻿namespace Atlas.Shared.Domain.Errors;
 
-public class Error: IEquatable<Error>
+public class Error : IEquatable<Error>
 {
     public static readonly Error UnknownError = new(nameof(UnknownError), "An unknown error has occured.");
 
