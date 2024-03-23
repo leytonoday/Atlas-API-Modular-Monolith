@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared\Atlas.Shared.Application\Atlas.Shared.Application.csproj" />
+    <ProjectReference Include="..\Atlas.Plans.Domain\Atlas.Plans.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
