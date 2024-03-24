@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Atlas.Infrastructure.Persistance.Interceptors;
 using Atlas.Plans.Domain.Services;
+using Atlas.Users.Application.Abstractions;
 
 namespace Atlas.Plans.Infrastructure;
 

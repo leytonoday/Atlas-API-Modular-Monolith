@@ -1,5 +1,4 @@
 ﻿using Atlas.Infrastructure.Persistance.Interceptors;
-using Atlas.Shared.Infrastructure.Persistance;
 using Atlas.Shared.Infrastructure.Persistance.Options;
 using Atlas.Users.Domain.Entities.UserEntity;
 using Atlas.Users.Infrastructure.Persistance;

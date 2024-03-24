@@ -7,6 +7,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\..\Atlas.Shared\Atlas.Shared.csproj" />
 		<ProjectReference Include="..\Atlas.Shared.Application\Atlas.Shared.Application.csproj" />
 		<ProjectReference Include="..\Atlas.Shared.Domain\Atlas.Shared.Domain.csproj" />
 	</ItemGroup>

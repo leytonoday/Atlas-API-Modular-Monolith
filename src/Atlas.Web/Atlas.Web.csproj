@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -7,8 +7,32 @@
     <InvariantGlobalization>true</InvariantGlobalization>
   </PropertyGroup>
 
+    <ItemGroup>
+        <PackageReference Include="Quartz.Extensions.Hosting" Version="3.8.1" />
+        <PackageReference Include="Quartz" Version="3.8.1" />
+        <PackageReference Include="Scrutor" Version="4.2.2" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    </ItemGroup>
+
   <ItemGroup>
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <ProjectReference Include="..\..\Atlas.Shared\Atlas.Shared.csproj" />
+    <ProjectReference Include="..\Core\Atlas.Core.Application\Atlas.Core.Application.csproj" />
+    <ProjectReference Include="..\Core\Atlas.Core.Domain\Atlas.Core.Domain.csproj" />
+    <ProjectReference Include="..\Core\Atlas.Core.Infrastructure\Atlas.Core.Infrastructure.csproj" />
+    <ProjectReference Include="..\Core\Atlas.Core.Presentation\Atlas.Core.Presentation.csproj" />
+    <ProjectReference Include="..\Plans\Atlas.Plans.Application\Atlas.Plans.Application.csproj" />
+    <ProjectReference Include="..\Plans\Atlas.Plans.Domain\Atlas.Plans.Domain.csproj" />
+    <ProjectReference Include="..\Plans\Atlas.Plans.Infrastructure\Atlas.Plans.Infrastructure.csproj" />
+    <ProjectReference Include="..\Plans\Atlas.Plans.Presentation\Atlas.Plans.Presentation.csproj" />
+    <ProjectReference Include="..\Shared\Atlas.Shared.Application\Atlas.Shared.Application.csproj" />
+    <ProjectReference Include="..\Shared\Atlas.Shared.Domain\Atlas.Shared.Domain.csproj" />
+    <ProjectReference Include="..\Shared\Atlas.Shared.Infrastructure.Razor\Atlas.Shared.Infrastructure.Razor.csproj" />
+    <ProjectReference Include="..\Shared\Atlas.Shared.Infrastructure\Atlas.Shared.Infrastructure.csproj" />
+    <ProjectReference Include="..\Shared\Atlas.Shared.Presentation\Atlas.Shared.Presentation.csproj" />
+    <ProjectReference Include="..\Users\Atlas.Users.Application\Atlas.Users.Application.csproj" />
+    <ProjectReference Include="..\Users\Atlas.Users.Domain\Atlas.Users.Domain.csproj" />
+    <ProjectReference Include="..\Users\Atlas.Users.Infrastructure\Atlas.Users.Infrastructure.csproj" />
+    <ProjectReference Include="..\Users\Atlas.Users.Presentation\Atlas.Users.Presentation.csproj" />
   </ItemGroup>
 
 </Project>
