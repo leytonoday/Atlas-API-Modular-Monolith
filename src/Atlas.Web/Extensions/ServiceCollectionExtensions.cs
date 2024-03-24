@@ -1,11 +1,15 @@
 ﻿using Atlas.Infrastructure.BackgroundJobs;
 using Atlas.Plans.Application;
 using Atlas.Plans.Infrastructure;
+using Atlas.Plans.Presentation;
 using Atlas.Shared.Application.Behaviors;
+using Atlas.Shared.Infrastructure;
 using Atlas.Shared.Infrastructure.BackgroundJobs;
 using Atlas.Shared.Infrastructure.Persistance.Idempotance;
+using Atlas.Shared.Presentation;
 using Atlas.Users.Application;
 using Atlas.Users.Infrastructure;
+using Atlas.Users.Presentation;
 using Atlas.Web.OptonsSetup;
 using FluentValidation;
 using MediatR;
@@ -110,9 +114,39 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    public static IServiceCollection AddConfigurations(this IServiceCollection services)
+    public static IServiceCollection AddApplication(this IServiceCollection services, IConfiguration configuration)
+    {
+        return services;
+    }
+
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         return services
+            .AddPlansInfrastructureDependencyInjection(configuration)
+            .AddUsersInfrastructureDependencyInjection(configuration)
+            .AddSharedInfrastructureDependencyInjection();
+    }
+
+    public static IServiceCollection AddPresentation(this IServiceCollection services)
+    {
+        services.AddControllers(config =>
+        {
+            config.RespectBrowserAcceptHeader = true;
+            config.ReturnHttpNotAcceptable = true;
+        })
+            .AddApplicationPart(typeof(UsersPresentationAssemblyReference).Assembly)
+            .AddApplicationPart(typeof(PlansPresentationAssemblyReference).Assembly);
+
+        return services
+            .AddSharedPresentationDependencyInjection()
+            .AddPlansPresentationDependencyInjection();
+    }
+
+    public static IServiceCollection AddConfigurations(this IServiceCollection services, IConfiguration configuration)
+    {
+        return services
+            .AddInfrastructure(configuration)
+            .AddPresentation()
             .AddBackgroundJobs()
             .AddMediatrAndDecorators()
             .AddValidation()

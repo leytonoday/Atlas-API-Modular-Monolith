@@ -10,6 +10,7 @@
     <ProjectReference Include="..\..\Shared\Atlas.Shared.Presentation\Atlas.Shared.Presentation.csproj" />
     <ProjectReference Include="..\Atlas.Plans.Application\Atlas.Plans.Application.csproj" />
     <ProjectReference Include="..\Atlas.Plans.Domain\Atlas.Plans.Domain.csproj" />
+    <ProjectReference Include="..\Atlas.Plans.Infrastructure\Atlas.Plans.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
