@@ -1,13 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Shared\Atlas.Shared.Domain\Atlas.Shared.Domain.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\Atlas.Shared\Atlas.Shared.csproj" />
+		<ProjectReference Include="..\..\Shared\Atlas.Shared.Domain\Atlas.Shared.Domain.csproj" />
+		<ProjectReference Include="..\..\Users\Atlas.Users.Domain\Atlas.Users.Domain.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Stripe.net" Version="43.18.0" />
+	</ItemGroup>
 
 </Project>

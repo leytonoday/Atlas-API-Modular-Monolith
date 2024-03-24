@@ -1,0 +1,23 @@
+﻿@using Atlas.Shared.Infrastructure.Razor.Views.Emails.ConfirmUserEmail;
+@using Atlas.Shared.Infrastructure.Razor.Views.Shared.Button;
+@model ConfirmUserEmailViewModel;
+
+@{
+    ViewData["EmailTitle"] = "Welcome to Atlas!";
+}
+
+<p>
+    Hi @Model.UserName, excited to have you get started. First, you need to confirm your email. Just press the button below.
+</p>
+
+<br />
+
+@await Html.PartialAsync("~/Views/Shared/Button/EmailButton.cshtml", new EmailButtonViewModel("Confirm Email", Model.Url))
+
+<br />
+
+<p>
+    This email will expire in 30 minutes. If you did not request this email, it is possible that someone else is
+    trying to use your email to sign up for our service. <b>Do not forward this email to anyone.</b>
+</p>
+

@@ -1,0 +1,15 @@
+@using Atlas.Shared.Infrastructure.Razor.Views.Emails.SupportNotificationEmail;
+@model SupportNotificationEmailViewModel;
+
+@{
+    ViewData["EmailTitle"] = "Support Notification";
+}
+
+<p>
+    Hi Support, the following Support Notification was raised:
+</p>
+
+<p>
+    @Model.Message
+</p>
+
