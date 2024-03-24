@@ -22,14 +22,13 @@ public sealed class DomainEventHandlerIdempotenceDecorator<TDomainEvent, Databas
         _dbContext = dbContext;
         _decoratedHandler = decoratedHandler;
     }
-
     /// <summary>
     /// Handles the specified domain event with idempotence, ensuring it is processed only once.
     /// </summary>
-    /// <param name="domainEvent">The domain event to be handled.</param>
+    /// <param name="DomainEvent">The domain event to be handled.</param>
     /// <param name="cancellationToken">Propagates notifications that operations should be cancelled.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    public async Task Handle(TDomainEvent domainEvent, CancellationToken cancellationToken)
+    public async Task Handle(TDomainEvent DomainEvent, CancellationToken cancellationToken)
     {
         string eventHandlerName = _decoratedHandler.GetType().Name;
 
@@ -37,7 +36,7 @@ public sealed class DomainEventHandlerIdempotenceDecorator<TDomainEvent, Databas
         bool alreadyConsumedEvent = await _dbContext
             .Set<OutboxMessageConsumerAcknowledgement>()
             .AsNoTracking()
-            .AnyAsync(x => x.DomainEventId == domainEvent.Id && x.EventHandlerName == eventHandlerName, cancellationToken);
+            .AnyAsync(x => x.DomainEventId == DomainEvent.Id && x.EventHandlerName == eventHandlerName, cancellationToken);
 
         if (alreadyConsumedEvent)
         {
@@ -45,7 +44,7 @@ public sealed class DomainEventHandlerIdempotenceDecorator<TDomainEvent, Databas
         }
 
         // This is the actual event handler
-        await _decoratedHandler.Handle(domainEvent, cancellationToken);
+        await _decoratedHandler.Handle(DomainEvent, cancellationToken);
 
         // If we get to this point, then we can assume an exception hasn't been thrown, and that the
         // event handler has executed successfully.
@@ -54,7 +53,7 @@ public sealed class DomainEventHandlerIdempotenceDecorator<TDomainEvent, Databas
         _dbContext.Set<OutboxMessageConsumerAcknowledgement>()
             .Add(new() 
             {
-                DomainEventId = domainEvent.Id,
+                DomainEventId = DomainEvent.Id,
                 EventHandlerName = eventHandlerName,
             });
 

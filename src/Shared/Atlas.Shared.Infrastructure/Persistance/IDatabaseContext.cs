@@ -7,3 +7,4 @@ public interface IDatabaseContext
 {
     public DbSet<OutboxMessageConsumerAcknowledgement> OutboxMessageConsumerAcknowledgements { get; set; }
 }
+

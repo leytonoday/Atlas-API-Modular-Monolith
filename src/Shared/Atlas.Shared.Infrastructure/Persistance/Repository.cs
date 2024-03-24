@@ -3,7 +3,7 @@ using Atlas.Shared.Domain.Entities;
 using Atlas.Shared.Domain.Persistance;
 using Microsoft.EntityFrameworkCore;
 
-namespace Atlas.Shared.Infrastructure.Persistance;
+namespace Atlas.Infrastructure.Persistance;
 
 /// <inheritdoc cref="IRepository{TEntity}"/>
 public abstract class Repository<TEntity, TDatabaseContext>

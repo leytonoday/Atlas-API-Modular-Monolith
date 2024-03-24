@@ -1,11 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Newtonsoft.Json;
-using Atlas.Shared.Infrastructure.Persistance.Outbox;
-using Atlas.Shared.Domain.Events;
 using Atlas.Shared.Domain.AggregateRoot;
+using Atlas.Shared.Domain.Events;
+using Atlas.Shared.Infrastructure.Persistance.Outbox;
 
-namespace Atlas.Shared.Infrastructure.Persistance.Interceptors;
+namespace Atlas.Infrastructure.Persistance.Interceptors;
 
 /// <summary>
 /// Interceptor for saving all application events as <see cref="OutboxMessage"/> entities within the database.
