@@ -10,7 +10,7 @@ namespace Atlas.Infrastructure.Persistance.Interceptors;
 /// <summary>
 /// Interceptor for saving all application events as <see cref="OutboxMessage"/> entities within the database.
 /// </summary>
-internal sealed class DomainEventToOutboxMessageInterceptor : SaveChangesInterceptor
+public sealed class DomainEventToOutboxMessageInterceptor : SaveChangesInterceptor
 {
     /// <summary>
     /// Intercepts the process of saving changes to the database and converts all <see cref="IDomainEvent"/> instances to <see cref="OutboxMessage"/>s.

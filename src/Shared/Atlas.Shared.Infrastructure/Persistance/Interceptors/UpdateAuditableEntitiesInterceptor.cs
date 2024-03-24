@@ -9,7 +9,7 @@ namespace Atlas.Infrastructure.Persistance.Interceptors;
 /// Interceptor for updating audit-related properties on entities implementing the <see cref="IAuditableEntity"/> interface
 /// before changes are saved to the database.
 /// </summary>
-internal sealed class UpdateAuditableEntitiesInterceptor : SaveChangesInterceptor
+public sealed class UpdateAuditableEntitiesInterceptor : SaveChangesInterceptor
 {
     /// <summary>
     /// Intercepts the process of saving changes to the database and updates audit-related properties on entities.
