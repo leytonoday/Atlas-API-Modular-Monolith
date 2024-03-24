@@ -1,4 +1,5 @@
 ﻿using Atlas.Shared.Application.Abstractions.Services.EmailService;
+using Atlas.Shared.Infrastructure.Builders;
 using Atlas.Shared.Infrastructure.Options;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Options;

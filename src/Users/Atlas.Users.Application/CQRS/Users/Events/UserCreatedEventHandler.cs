@@ -1,8 +1,8 @@
 ﻿using Atlas.Shared.Application.Abstractions.Messaging;
 using Atlas.Shared.Application.Abstractions.Services.EmailService;
+using Atlas.Shared.Application.EmailContent;
 using Atlas.Shared.Domain.Events.UserEvents;
 using Atlas.Shared.Domain.Exceptions;
-using Atlas.Users.Application.EmailContent;
 using Atlas.Users.Domain.Entities.UserEntity;
 using Atlas.Users.Domain.Errors;
 using Microsoft.AspNetCore.Identity;

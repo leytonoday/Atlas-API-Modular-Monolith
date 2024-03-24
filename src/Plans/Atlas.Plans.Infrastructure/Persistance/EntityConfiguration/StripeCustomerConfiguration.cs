@@ -16,7 +16,7 @@ internal sealed class StripeCustomerConfiguration : IEntityTypeConfiguration<Str
     public void Configure(EntityTypeBuilder<StripeCustomer> builder)
     {
         // Set the table name for this entity
-        builder.ToTable(PlansTableNames.StripeCustomers);
+        builder.ToTable(PlansConstants.TableNames.StripeCustomers);
 
         // Set the composite primary key
         builder.HasKey(x => new { x.UserId, x.StripeCustomerId });

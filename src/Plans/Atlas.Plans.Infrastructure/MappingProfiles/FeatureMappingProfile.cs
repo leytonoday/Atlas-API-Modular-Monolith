@@ -1,4 +1,5 @@
-﻿using Atlas.Plans.Domain.Entities.FeatureEntity;
+﻿using Atlas.Plans.Application.CQRS.Features.Shared;
+using Atlas.Plans.Domain.Entities.FeatureEntity;
 using AutoMapper;
 
 namespace Atlas.Plans.Infrastructure.MappingProfiles;

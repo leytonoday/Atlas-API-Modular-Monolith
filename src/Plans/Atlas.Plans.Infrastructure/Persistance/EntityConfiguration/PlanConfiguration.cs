@@ -17,7 +17,7 @@ internal sealed class PlanConfiguration : IEntityTypeConfiguration<Plan>
     public void Configure(EntityTypeBuilder<Plan> builder)
     {
         // Set the table name for this entity
-        builder.ToTable(PlansTableNames.Plans);
+        builder.ToTable(PlansConstants.TableNames.Plans);
 
         // Set the primary key
         builder.HasKey(x => x.Id);

@@ -16,7 +16,7 @@ internal sealed class StripeCardFingerprintConfiguration : IEntityTypeConfigurat
     public void Configure(EntityTypeBuilder<StripeCardFingerprint> builder)
     {
         // Set the table name for this entity
-        builder.ToTable(PlansTableNames.StripeCardFingerprints);
+        builder.ToTable(PlansConstants.TableNames.StripeCardFingerprints);
 
         // Set the primary key
         builder.HasKey(x => x.Fingerprint);

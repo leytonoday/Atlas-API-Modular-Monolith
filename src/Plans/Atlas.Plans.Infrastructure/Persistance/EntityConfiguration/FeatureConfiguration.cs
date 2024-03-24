@@ -16,7 +16,7 @@ internal sealed class FeatureConfiguration : IEntityTypeConfiguration<Feature>
     public void Configure(EntityTypeBuilder<Feature> builder)
     {
         // Set the table name for this entity
-        builder.ToTable(PlansTableNames.Features);
+        builder.ToTable(PlansConstants.TableNames.Features);
 
         // Set the primary key
         builder.HasKey(x => x.Id);

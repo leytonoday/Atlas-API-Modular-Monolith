@@ -16,7 +16,7 @@ public class PlanFeatureConfiguration : IEntityTypeConfiguration<PlanFeature>
     public void Configure(EntityTypeBuilder<PlanFeature> builder)
     {
         // Set the table name for this entity
-        builder.ToTable(PlansTableNames.PlanFeatures);
+        builder.ToTable(PlansConstants.TableNames.PlanFeatures);
 
         // Composite key between feature id and plan id
         builder.HasKey(x => new { x.FeatureId, x.PlanId });
