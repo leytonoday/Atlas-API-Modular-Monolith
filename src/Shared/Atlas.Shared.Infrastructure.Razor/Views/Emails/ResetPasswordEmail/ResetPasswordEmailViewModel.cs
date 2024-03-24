@@ -1,4 +1,4 @@
-﻿namespace Atlas.Shared.Infrastructure.Razor.Views.Emails.ConfirmUserEmail;
+﻿namespace Atlas.Shared.Infrastructure.Razor.Views.Emails.ResetPasswordEmail;
 
 public record ResetPasswordEmailViewModel(string UserName, string Token)
 {
