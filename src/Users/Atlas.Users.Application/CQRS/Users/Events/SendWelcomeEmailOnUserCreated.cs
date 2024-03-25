@@ -3,6 +3,7 @@ using Atlas.Shared.Application.Abstractions.Services.EmailService;
 using Atlas.Shared.Application.EmailContent;
 using Atlas.Shared.Domain.Events.UserEvents;
 using Atlas.Shared.Domain.Exceptions;
+using Atlas.Users.Domain;
 using Atlas.Users.Domain.Entities.UserEntity;
 using Atlas.Users.Domain.Errors;
 using Microsoft.AspNetCore.Identity;
@@ -10,9 +11,9 @@ using System.Web;
 
 namespace Atlas.Users.Application.CQRS.Users.Events;
 
-public sealed class SendWelcomeEmailOnUserCreated(IEmailService emailService, UserManager<User> userManager) : IDomainEventHandler<UserCreatedEvent>
+public sealed class SendWelcomeEmailOnUserCreated(IUsersUnitOfWork usersUnitOfWork, IEmailService emailService, UserManager<User> userManager) : BaseDomainEventHandler<UserCreatedEvent, IUsersUnitOfWork>(usersUnitOfWork)
 {
-    public async Task Handle(UserCreatedEvent notification, CancellationToken cancellationToken)
+    protected override async Task HandleInner(UserCreatedEvent notification, CancellationToken cancellationToken)
     {
         User user = await userManager.FindByEmailAsync(notification.Email.ToString())
             ?? throw new ErrorException(UsersDomainErrors.User.UserNotFound);

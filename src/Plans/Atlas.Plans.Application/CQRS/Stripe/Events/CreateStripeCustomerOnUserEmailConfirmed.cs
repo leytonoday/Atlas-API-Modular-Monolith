@@ -9,9 +9,9 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Atlas.Plans.Application.CQRS.Stripe.Events;
 
-public sealed class CreateStripeCustomerOnUserEmailConfirmed(IStripeService stripeService, IPlansUnitOfWork unitOfWork, UserManager<User> userManager) : IDomainEventHandler<UserEmailConfirmedEvent>
+public sealed class CreateStripeCustomerOnUserEmailConfirmed(IStripeService stripeService, IPlansUnitOfWork unitOfWork, UserManager<User> userManager) : BaseDomainEventHandler<UserEmailConfirmedEvent, IPlansUnitOfWork>(unitOfWork)
 {
-    public async Task Handle(UserEmailConfirmedEvent notification, CancellationToken cancellationToken)
+    protected override async Task HandleInner(UserEmailConfirmedEvent notification, CancellationToken cancellationToken)
     {
         User user = await userManager.FindByIdAsync(notification.UserId.ToString())
             ?? throw new ErrorException(UsersDomainErrors.User.UserNotFound);

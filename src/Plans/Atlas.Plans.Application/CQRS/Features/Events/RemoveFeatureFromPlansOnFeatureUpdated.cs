@@ -6,9 +6,9 @@ using Atlas.Shared.Application.Abstractions.Messaging;
 
 namespace Atlas.Plans.Infrastructure.CQRS.Features.Events;
 
-public sealed class RemoveFeatureFromPlansOnFeatureUpdated(IPlansUnitOfWork unitOfWork) : IDomainEventHandler<FeatureUpdatedEvent>
+public sealed class RemoveFeatureFromPlansOnFeatureUpdated(IPlansUnitOfWork unitOfWork) : BaseDomainEventHandler<FeatureUpdatedEvent, IPlansUnitOfWork>(unitOfWork)
 {
-    public async Task Handle(FeatureUpdatedEvent notification, CancellationToken cancellationToken)
+    protected override async Task HandleInner(FeatureUpdatedEvent notification, CancellationToken cancellationToken)
     {
         // If the "IsInheritable" property of the Feature has been changed, we're doing to remove this feature from all plans.
         // It just makes life easier when managing plan features to remove it entirely whenever this property chanegs.

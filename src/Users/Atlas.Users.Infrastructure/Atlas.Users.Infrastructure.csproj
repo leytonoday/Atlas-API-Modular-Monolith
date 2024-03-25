@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Scrutor" Version="4.2.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\Shared\Atlas.Shared.Infrastructure\Atlas.Shared.Infrastructure.csproj" />
     <ProjectReference Include="..\Atlas.Users.Application\Atlas.Users.Application.csproj" />
     <ProjectReference Include="..\Atlas.Users.Domain\Atlas.Users.Domain.csproj" />

@@ -1,4 +1,5 @@
-﻿using Atlas.Shared.Domain.Events;
+﻿using Atlas.Shared.Domain;
+using Atlas.Shared.Domain.Events;
 using MediatR;
 
 namespace Atlas.Shared.Application.Abstractions.Messaging;

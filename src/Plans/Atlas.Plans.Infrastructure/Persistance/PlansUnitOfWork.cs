@@ -4,7 +4,10 @@ using Atlas.Plans.Domain.Entities.PlanEntity;
 using Atlas.Plans.Domain.Entities.PlanFeatureEntity;
 using Atlas.Plans.Domain.Entities.StripeCardFingerprintEntity;
 using Atlas.Plans.Domain.Entities.StripeCustomerEntity;
+using Atlas.Plans.Infrastructure.Persistance.Entities;
 using Atlas.Plans.Infrastructure.Persistance.Repositories;
+using Microsoft.EntityFrameworkCore;
+using System.Threading;
 
 namespace Atlas.Plans.Infrastructure.Persistance;
 
@@ -39,5 +42,23 @@ internal sealed class PlansUnitOfWork(PlansDatabaseContext plansDatabaseContext)
             //Log Exception Handling message                      
             await dbContextTransaction.RollbackAsync(cancellationToken);
         }
+    }
+
+    public async Task<bool> HasDomainEventBeenHandledAsync(string eventHandlerName, Guid domainEventId, CancellationToken cancellationToken)
+    {
+        return await plansDatabaseContext
+            .Set<PlansOutboxMessageConsumerAcknowledgement>()
+            .AsNoTracking()
+            .AnyAsync(x => x.DomainEventId == domainEventId && x.EventHandlerName == eventHandlerName, cancellationToken);
+    }
+
+    public void MarkDomainEventAsHandled(string eventHandlerName, Guid domainEventId, CancellationToken cancellationToken)
+    {
+        plansDatabaseContext.Set<PlansOutboxMessageConsumerAcknowledgement>()
+            .Add(new PlansOutboxMessageConsumerAcknowledgement()
+            {
+                DomainEventId = domainEventId,
+                EventHandlerName = eventHandlerName
+            });
     }
 }

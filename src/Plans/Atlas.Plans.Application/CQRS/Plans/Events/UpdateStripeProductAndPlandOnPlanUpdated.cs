@@ -5,13 +5,12 @@ using Atlas.Plans.Domain.Errors;
 using Atlas.Plans.Domain.Services;
 using Atlas.Shared.Application.Abstractions.Messaging;
 using Atlas.Shared.Domain.Exceptions;
-using MediatR;
 
 namespace Atlas.Plans.Application.CQRS.Plans.Events;
 
-public sealed class UpdateStripeProductAndPlandOnPlanUpdated(IStripeService stripeService, IPlansUnitOfWork unitOfWork) : IDomainEventHandler<PlanUpdatedEvent>
+public sealed class UpdateStripeProductAndPlandOnPlanUpdated(IStripeService stripeService, IPlansUnitOfWork unitOfWork) : BaseDomainEventHandler<PlanUpdatedEvent, IPlansUnitOfWork>(unitOfWork)
 {
-    public async Task Handle(PlanUpdatedEvent notification, CancellationToken cancellationToken)
+    protected override async Task HandleInner(PlanUpdatedEvent notification, CancellationToken cancellationToken)
     {
         Plan plan = await unitOfWork.PlanRepository.GetByIdAsync(notification.PlanId, true, cancellationToken)
             ?? throw new ErrorException(PlansDomainErrors.Plan.PlanNotFound);

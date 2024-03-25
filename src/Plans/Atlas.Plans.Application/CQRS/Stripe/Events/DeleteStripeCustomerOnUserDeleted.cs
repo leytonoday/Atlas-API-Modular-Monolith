@@ -12,9 +12,9 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Atlas.Plans.Application.CQRS.Stripe.Events;
 
-public sealed class DeleteStripeCustomerOnUserDeleted(IStripeService stripeService, IPlansUnitOfWork unitOfWork, UserManager<User> userManager) : IDomainEventHandler<UserDeletedEvent>
+public sealed class DeleteStripeCustomerOnUserDeleted(IStripeService stripeService, IPlansUnitOfWork unitOfWork, UserManager<User> userManager) : BaseDomainEventHandler<UserDeletedEvent, IPlansUnitOfWork>(unitOfWork)
 {
-    public async Task Handle(UserDeletedEvent notification, CancellationToken cancellationToken)
+    protected override async Task HandleInner(UserDeletedEvent notification, CancellationToken cancellationToken)
     {
         StripeCustomer stripeCustomer = await unitOfWork.StripeCustomerRepository.GetByUserId(notification.UserId, false, cancellationToken)
             ?? throw new ErrorException(PlansDomainErrors.StripeCustomer.StripeCustomerNotFound);

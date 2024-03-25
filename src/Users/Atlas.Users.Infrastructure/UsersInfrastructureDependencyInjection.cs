@@ -1,8 +1,11 @@
 ﻿using Atlas.Infrastructure.Persistance.Interceptors;
+using Atlas.Shared.Application.Behaviors;
 using Atlas.Shared.Infrastructure.Persistance.Options;
+using Atlas.Users.Domain;
 using Atlas.Users.Domain.Entities.UserEntity;
 using Atlas.Users.Infrastructure.Persistance;
 using Atlas.Users.Infrastructure.Persistance.Entities;
+using MediatR.NotificationPublishers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -49,6 +52,8 @@ public static class UsersInfrastructureDependencyInjection
 
     public static IServiceCollection AddUsersInfrastructureDependencyInjection(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddScoped<IUsersUnitOfWork, UsersUnitOfWork>();
+
         services.AddSingleton<DomainEventToOutboxMessageInterceptor<UsersOutboxMessage>>();
 
         services.AddDbContextFactory<UsersDatabaseContext>((provider, options) =>

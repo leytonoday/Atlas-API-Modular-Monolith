@@ -21,6 +21,9 @@ using Atlas.Plans.Infrastructure.Persistance;
 using Atlas.Plans.Infrastructure.Persistance.Entities;
 using Atlas.Users.Infrastructure.Persistance.Entities;
 using Atlas.Users.Infrastructure.Persistance;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Atlas.Users.Application.CQRS.Users.Events;
+using System.Data;
 
 namespace Atlas.Web.Extensions;
 
@@ -104,9 +107,6 @@ public static class ServiceCollectionExtensions
             .AddOpenBehavior(typeof(ValidationPipelineBehavior<,>)) // Register validation pipleline
             .NotificationPublisher = new ForeachAwaitPublisher()
         );
-
-        // Before any notification handler is invoked, run the DomainEventHandlerIdempotenceDecorator beforehand as a proxy
-        //services.Decorate(typeof(IDomainEventHandler<>), typeof(DomainEventHandlerIdempotenceDecorator<,>));
 
         return services;
     }

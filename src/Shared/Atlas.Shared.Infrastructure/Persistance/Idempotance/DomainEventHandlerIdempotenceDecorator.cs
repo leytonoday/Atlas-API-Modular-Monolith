@@ -9,7 +9,7 @@ namespace Atlas.Shared.Infrastructure.Persistance.Idempotance;
 /// Decorator for ensuring idempotence in handling application events by checking and recording their processed status.
 /// </summary>
 /// <typeparam name="TDomainEvent">Type of the domain event to be handled.</typeparam>
-public sealed class DomainEventHandlerIdempotenceDecorator<TDomainEvent, TDatabaseContext, TOutboxMessageConsumerAcknowledgement> : INotificationHandler<TDomainEvent>
+public abstract class DomainEventHandlerIdempotenceDecorator<TDomainEvent, TDatabaseContext, TOutboxMessageConsumerAcknowledgement> : INotificationHandler<TDomainEvent>
     where TDomainEvent : IDomainEvent
     where TOutboxMessageConsumerAcknowledgement : OutboxMessageConsumerAcknowledgement, new()
     where TDatabaseContext : DbContext
