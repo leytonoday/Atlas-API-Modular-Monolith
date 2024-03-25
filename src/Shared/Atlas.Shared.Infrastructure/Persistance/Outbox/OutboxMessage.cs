@@ -1,6 +1,6 @@
 ﻿namespace Atlas.Shared.Infrastructure.Persistance.Outbox;
 
-public sealed class OutboxMessage
+public class OutboxMessage
 {
     /// <summary>
     /// The Id of the message.

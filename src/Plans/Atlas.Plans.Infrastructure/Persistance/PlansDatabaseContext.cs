@@ -3,14 +3,27 @@ using Atlas.Plans.Domain.Entities.PlanEntity;
 using Atlas.Plans.Domain.Entities.PlanFeatureEntity;
 using Atlas.Plans.Domain.Entities.StripeCardFingerprintEntity;
 using Atlas.Plans.Domain.Entities.StripeCustomerEntity;
+using Atlas.Plans.Infrastructure.Persistance.Entities;
+using Atlas.Shared.Infrastructure;
 using Atlas.Shared.Infrastructure.Persistance;
 using Atlas.Shared.Infrastructure.Persistance.Outbox;
 using Microsoft.EntityFrameworkCore;
 
 namespace Atlas.Plans.Infrastructure.Persistance;
 
-internal sealed class PlansDatabaseContext(DbContextOptions options) : DbContext(options), IDatabaseContext
+public sealed class PlansDatabaseContext(DbContextOptions<PlansDatabaseContext> options) : DbContext(options)
 {
+    /// <summary>
+    /// Configures the model for the database context during the model creation process.
+    /// </summary>
+    /// <param name="modelBuilder">The builder used to construct the model for the database context.</param>
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+        
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(PlansDatabaseContext).Assembly);
+    }
+
     /// <summary>
     /// Represents a collection of <see cref="Plan"/> in the context, or that can be queried from the database.
     /// </summary>
@@ -39,10 +52,10 @@ internal sealed class PlansDatabaseContext(DbContextOptions options) : DbContext
     /// <summary>
     /// Represents a collection of <see cref="OutboxMessage"/> in the context, or that can be queried from the database.
     /// </summary>
-    public DbSet<OutboxMessage> OutboxMessages { get; set; }
+    public DbSet<PlansOutboxMessage> OutboxMessages { get; set; }
 
     /// <summary>
     /// Represents a collection of <see cref="OutboxMessageConsumerAcknowledgement"/> in the context, or that can be queried from the database.
     /// </summary>
-    public DbSet<OutboxMessageConsumerAcknowledgement> OutboxMessageConsumerAcknowledgements { get; set; }
+    public DbSet<PlansOutboxMessageConsumerAcknowledgement> OutboxMessageConsumerAcknowledgements { get; set; }
 }

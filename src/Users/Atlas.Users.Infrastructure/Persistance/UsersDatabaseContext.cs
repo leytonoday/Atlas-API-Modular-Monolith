@@ -2,12 +2,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Atlas.Users.Domain.Entities.UserEntity;
-using Atlas.Shared.Infrastructure.Persistance;
-using Atlas.Shared.Infrastructure.Persistance.Outbox;
+using Atlas.Users.Infrastructure.Persistance.Entities;
 
 namespace Atlas.Users.Infrastructure.Persistance;
 
-public sealed class UsersDatabaseContext(DbContextOptions options) : IdentityDbContext<User, IdentityRole<Guid>, Guid>(options), IDatabaseContext
+public sealed class UsersDatabaseContext(DbContextOptions<UsersDatabaseContext> options) : IdentityDbContext<User, IdentityRole<Guid>, Guid>(options)
 {
     /// <summary>
     /// Configures the model for the database context during the model creation process.
@@ -30,12 +29,12 @@ public sealed class UsersDatabaseContext(DbContextOptions options) : IdentityDbC
     public override DbSet<User> Users { get; set; }
 
     /// <summary>
-    /// Represents a collection of <see cref="OutboxMessage"/> in the context, or that can be queried from the database.
+    /// Represents a collection of <see cref="UsersOutboxMessage"/> in the context, or that can be queried from the database.
     /// </summary>
-    public DbSet<OutboxMessage> OutboxMessages { get; set; }
+    public DbSet<UsersOutboxMessage> OutboxMessages { get; set; }
 
     /// <summary>
-    /// Represents a collection of <see cref="OutboxMessageConsumerAcknowledgement"/> in the context, or that can be queried from the database.
+    /// Represents a collection of <see cref="UsersOutboxMessageConsumerAcknowledgement"/> in the context, or that can be queried from the database.
     /// </summary>
-    public DbSet<OutboxMessageConsumerAcknowledgement> OutboxMessageConsumerAcknowledgements { get; set; }
+    public DbSet<UsersOutboxMessageConsumerAcknowledgement> OutboxMessageConsumerAcknowledgements { get; set; }
 }

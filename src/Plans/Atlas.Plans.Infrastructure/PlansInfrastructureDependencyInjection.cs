@@ -7,6 +7,9 @@ using Microsoft.Extensions.Configuration;
 using Atlas.Infrastructure.Persistance.Interceptors;
 using Atlas.Plans.Domain.Services;
 using Atlas.Users.Application.Abstractions;
+using Atlas.Plans.Infrastructure.Services;
+using Atlas.Shared.Infrastructure.Persistance;
+using Atlas.Plans.Infrastructure.Persistance.Entities;
 
 namespace Atlas.Plans.Infrastructure;
 
@@ -15,6 +18,8 @@ public static class PlansInfrastructureDependencyInjection
     public static IServiceCollection AddPlansInfrastructureDependencyInjection(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<IPlansUnitOfWork, PlansUnitOfWork>();
+
+        services.AddSingleton<DomainEventToOutboxMessageInterceptor<PlansOutboxMessage>>();
 
         services.AddDbContextFactory<PlansDatabaseContext>((provider, options) =>
         {
@@ -30,20 +35,21 @@ public static class PlansInfrastructureDependencyInjection
             options.EnableDetailedErrors(databaseOptions.EnableDetailedErrors);
             options.EnableSensitiveDataLogging(databaseOptions.EnableSensitiveDataLogging);
 
-            var applicationDatabaseContext = new PlansDatabaseContext(options.Options);
+            var plansDatabaseContext = new PlansDatabaseContext(options.Options as DbContextOptions<PlansDatabaseContext>);
 
             // Apply any migrations that have yet to be applied
-            IEnumerable<string> migrationsToApply = applicationDatabaseContext.Database.GetPendingMigrations();
+            IEnumerable<string> migrationsToApply = plansDatabaseContext.Database.GetPendingMigrations();
             if (migrationsToApply.Any())
-                applicationDatabaseContext.Database.Migrate();
+                plansDatabaseContext.Database.Migrate();
 
             // Register database interceptors
             options.AddInterceptors(provider.GetRequiredService<UpdateAuditableEntitiesInterceptor>());
-            options.AddInterceptors(provider.GetRequiredService<DomainEventToOutboxMessageInterceptor>());
+            options.AddInterceptors(provider.GetRequiredService<DomainEventToOutboxMessageInterceptor<PlansOutboxMessage>>());
         });
 
 
         services.AddScoped<PlanService>();
+        services.AddScoped<IStripeService, StripeService>();
 
         return services;
     }

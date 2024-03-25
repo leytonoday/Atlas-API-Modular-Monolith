@@ -2,6 +2,7 @@
 using Atlas.Shared.Infrastructure.Persistance.Options;
 using Atlas.Users.Domain.Entities.UserEntity;
 using Atlas.Users.Infrastructure.Persistance;
+using Atlas.Users.Infrastructure.Persistance.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -48,6 +49,8 @@ public static class UsersInfrastructureDependencyInjection
 
     public static IServiceCollection AddUsersInfrastructureDependencyInjection(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddSingleton<DomainEventToOutboxMessageInterceptor<UsersOutboxMessage>>();
+
         services.AddDbContextFactory<UsersDatabaseContext>((provider, options) =>
         {
             var databaseOptions = new DatabaseOptions();
@@ -62,16 +65,16 @@ public static class UsersInfrastructureDependencyInjection
             options.EnableDetailedErrors(databaseOptions.EnableDetailedErrors);
             options.EnableSensitiveDataLogging(databaseOptions.EnableSensitiveDataLogging);
 
-            var applicationDatabaseContext = new UsersDatabaseContext(options.Options);
+            var usersDatabaseContext = new UsersDatabaseContext(options.Options as DbContextOptions<UsersDatabaseContext>);
 
             // Apply any migrations that have yet to be applied
-            IEnumerable<string> migrationsToApply = applicationDatabaseContext.Database.GetPendingMigrations();
+            IEnumerable<string> migrationsToApply = usersDatabaseContext.Database.GetPendingMigrations();
             if (migrationsToApply.Any())
-                applicationDatabaseContext.Database.Migrate();
+                usersDatabaseContext.Database.Migrate();
 
             // Register database interceptors
             options.AddInterceptors(provider.GetRequiredService<UpdateAuditableEntitiesInterceptor>());
-            options.AddInterceptors(provider.GetRequiredService<DomainEventToOutboxMessageInterceptor>());
+            options.AddInterceptors(provider.GetRequiredService<DomainEventToOutboxMessageInterceptor<UsersOutboxMessage>>());
         });
 
         services.AddIdentity();

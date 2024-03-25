@@ -2,6 +2,7 @@
 using Atlas.Plans.Application;
 using Atlas.Plans.Infrastructure;
 using Atlas.Plans.Presentation;
+using Atlas.Shared.Application.Abstractions.Messaging;
 using Atlas.Shared.Application.Behaviors;
 using Atlas.Shared.Infrastructure;
 using Atlas.Shared.Infrastructure.BackgroundJobs;
@@ -16,6 +17,10 @@ using MediatR;
 using MediatR.NotificationPublishers;
 using Quartz;
 using System.Reflection;
+using Atlas.Plans.Infrastructure.Persistance;
+using Atlas.Plans.Infrastructure.Persistance.Entities;
+using Atlas.Users.Infrastructure.Persistance.Entities;
+using Atlas.Users.Infrastructure.Persistance;
 
 namespace Atlas.Web.Extensions;
 
@@ -33,27 +38,39 @@ public static class ServiceCollectionExtensions
         });
     }
 
+    public static void RegisterTrigger(
+        this IServiceCollectionQuartzConfigurator quartzConfigurator,
+        JobKey jobKey,
+        int intervalInSeconds)
+    {
+        quartzConfigurator.AddTrigger(trigger => trigger
+            .ForJob(jobKey)
+            .WithSimpleSchedule(schedule => schedule
+                .WithIntervalInSeconds(intervalInSeconds)
+                .RepeatForever()));
+    }
+
     public static IServiceCollection AddBackgroundJobs(this IServiceCollection services)
     {
         services.AddQuartz(configure =>
         {
             // Process Background Task Queue Job Registration
             var processBackgroundTaskQueueJobKey = new JobKey(nameof(ProcessBackgroundTaskQueueJob));
-            // Add the job with a schedule to run every X seconds, and repeat forever
             configure
                 .AddJob<ProcessBackgroundTaskQueueJob>(processBackgroundTaskQueueJobKey)
-                .AddTrigger(
-                    trigger => trigger.ForJob(processBackgroundTaskQueueJobKey).WithSimpleSchedule(
-                        schedule => schedule.WithIntervalInSeconds(5).RepeatForever()));
+                .RegisterTrigger(processBackgroundTaskQueueJobKey, 5); // Add the job with a schedule to run every X seconds, and repeat forever
 
-            // Process Outbox Messages Job Registration
-            var processOutboxMessagesJobKey = new JobKey(nameof(ProcessOutboxMessagesJob));
-            // Add the job with a schedule to run every X seconds, and repeat forever
+            // Process Plans Outbox Messages Job Registration
+            var processPlansOutboxMessagesJobKey = new JobKey(nameof(ProcessOutboxMessagesJob<PlansDatabaseContext, PlansOutboxMessage>) + "_Plans");
             configure
-                .AddJob<ProcessOutboxMessagesJob>(processOutboxMessagesJobKey)
-                .AddTrigger(
-                    trigger => trigger.ForJob(processOutboxMessagesJobKey).WithSimpleSchedule(
-                        schedule => schedule.WithIntervalInSeconds(5).RepeatForever()));
+                .AddJob<ProcessOutboxMessagesJob<PlansDatabaseContext, PlansOutboxMessage>>(processPlansOutboxMessagesJobKey)
+                .RegisterTrigger(processPlansOutboxMessagesJobKey, 5); // Add the job with a schedule to run every X seconds, and repeat forever
+
+            // Process Users Outbox Messages Job Registration
+            var processUsersOutboxMessagesJobKey = new JobKey(nameof(ProcessOutboxMessagesJob<UsersDatabaseContext, UsersOutboxMessage>) + "_Users");
+            configure
+                .AddJob<ProcessOutboxMessagesJob<UsersDatabaseContext, UsersOutboxMessage>>(processUsersOutboxMessagesJobKey)
+                .RegisterTrigger(processUsersOutboxMessagesJobKey, 5); // Add the job with a schedule to run every X seconds, and repeat forever
         });
 
         services.AddQuartzHostedService(options =>
@@ -89,7 +106,7 @@ public static class ServiceCollectionExtensions
         );
 
         // Before any notification handler is invoked, run the DomainEventHandlerIdempotenceDecorator beforehand as a proxy
-        services.Decorate(typeof(INotificationHandler<>), typeof(DomainEventHandlerIdempotenceDecorator<,>));
+        //services.Decorate(typeof(IDomainEventHandler<>), typeof(DomainEventHandlerIdempotenceDecorator<,>));
 
         return services;
     }
@@ -124,7 +141,7 @@ public static class ServiceCollectionExtensions
         return services
             .AddPlansInfrastructureDependencyInjection(configuration)
             .AddUsersInfrastructureDependencyInjection(configuration)
-            .AddSharedInfrastructureDependencyInjection();
+            .AddSharedInfrastructureDependencyInjection(configuration);
     }
 
     public static IServiceCollection AddPresentation(this IServiceCollection services)

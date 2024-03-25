@@ -1,4 +1,6 @@
-﻿namespace Atlas.Users.Infrastructure;
+﻿using Atlas.Users.Infrastructure.Persistance.Entities;
+
+namespace Atlas.Users.Infrastructure;
 
 internal static class UsersConstants
 {
@@ -30,8 +32,23 @@ internal static class UsersConstants
         internal const string Users = nameof(Users);
 
         /// <summary>
+        /// Represents the table name for <see cref="IdentityRole"/> entities in the database.
+        /// </summary>
+        internal const string Roles = nameof(Roles);
+
+        /// <summary>
         /// Represents the table name for <see cref="IdentityUserRole"/> entities in the database.
         /// </summary>
         internal const string UserRoles = nameof(UserRoles);
+
+        /// <summary>
+        /// Represents the table name for <see cref="UsersOutboxMessage"/> entities in the database.
+        /// </summary>
+        internal const string UsersOutboxMessages = nameof(UsersOutboxMessages);
+
+        /// <summary>
+        /// Represents the table name for <see cref="UsersOutboxMessageConsumerAcknowledgement"/> entities in the database.
+        /// </summary>
+        internal const string UsersOutboxMessageConsumerAcknowledgements = nameof(UsersOutboxMessageConsumerAcknowledgements);
     }
 }

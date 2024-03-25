@@ -7,7 +7,7 @@
 /// There is a unique constraint upon the DomainEventId and EventHandlerName properties, meaning that a consumer (domain event handler) has a record of processing any event, and therefore
 /// it won't be processed again by the same handler. This, in conjunction with the Outbox Pattern enforces an exactly-once delivery guarantee of events.
 /// </remarks>
-public sealed class OutboxMessageConsumerAcknowledgement
+public class OutboxMessageConsumerAcknowledgement
 {
     /// <summary>
     /// The Id of the <see cref="IDomainEvent"/> being that was serialised and stored inside the <see cref="OutboxMessage"/>.

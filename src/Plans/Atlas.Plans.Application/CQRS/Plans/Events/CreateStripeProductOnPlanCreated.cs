@@ -3,12 +3,13 @@ using Atlas.Plans.Domain.Entities.PlanEntity;
 using Atlas.Plans.Domain.Entities.PlanEntity.Events;
 using Atlas.Plans.Domain.Errors;
 using Atlas.Plans.Domain.Services;
+using Atlas.Shared.Application.Abstractions.Messaging;
 using Atlas.Shared.Domain.Exceptions;
 using MediatR;
 
 namespace Atlas.Plans.Application.CQRS.Plans.Events;
 
-internal sealed class PlanCreatedEventHandler(IPlansUnitOfWork unitOfWork, IStripeService stripeService) : INotificationHandler<PlanCreatedEvent>
+public sealed class CreateStripeProductOnPlanCreated(IPlansUnitOfWork unitOfWork, IStripeService stripeService) : IDomainEventHandler<PlanCreatedEvent>
 {
     public async Task Handle(PlanCreatedEvent notification, CancellationToken cancellationToken)
     {

@@ -10,7 +10,7 @@ using System.Web;
 
 namespace Atlas.Users.Application.CQRS.Users.Events;
 
-internal sealed class UserCreatedEventHandler(IEmailService emailService, UserManager<User> userManager) : IDomainEventHandler<UserCreatedEvent>
+public sealed class SendWelcomeEmailOnUserCreated(IEmailService emailService, UserManager<User> userManager) : IDomainEventHandler<UserCreatedEvent>
 {
     public async Task Handle(UserCreatedEvent notification, CancellationToken cancellationToken)
     {

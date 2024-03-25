@@ -31,5 +31,15 @@ internal static class PlansConstants
         /// Represents the table name for <see cref="StripeCardFingerprint"/> entities in the database.
         /// </summary>
         internal const string StripeCardFingerprints = nameof(StripeCardFingerprints);
+
+        /// <summary>
+        /// Represents the table name for <see cref="PlansOutboxMessage"/> entities in the database.
+        /// </summary>
+        internal const string PlansOutboxMessages = nameof(PlansOutboxMessages);
+
+        /// <summary>
+        /// Represents the table name for <see cref="PlansOutboxMessageConsumerAcknowledgement"/> entities in the database.
+        /// </summary>
+        internal const string PlansOutboxMessageConsumerAcknowledgements = nameof(PlansOutboxMessageConsumerAcknowledgements);
     }
 }

@@ -17,7 +17,9 @@ namespace Atlas.Infrastructure.BackgroundJobs;
 /// and attempts to publish them using a provided message publisher.
 /// </summary>
 [DisallowConcurrentExecution]
-public class ProcessOutboxMessagesJob(DbContext dbContext, IPublisher publisher, ILogger<ProcessOutboxMessagesJob> logger, ISupportNotifierService supportNotifierService) : IJob
+public class ProcessOutboxMessagesJob<TDatabaseContext, TOutboxMessage>(TDatabaseContext dbContext, IPublisher publisher, ILogger<ProcessOutboxMessagesJob<TDatabaseContext, TOutboxMessage>> logger, ISupportNotifierService supportNotifierService) : IJob
+    where TDatabaseContext : DbContext
+    where TOutboxMessage : OutboxMessage
 {
     /// <summary>
     /// A retry policy from the Polly library that will attempt to execute something and re-try 3 times if it 
@@ -39,8 +41,8 @@ public class ProcessOutboxMessagesJob(DbContext dbContext, IPublisher publisher,
     public async Task Execute(IJobExecutionContext context)
     {
         // Get the latest 20 unpublished outbox messages
-        List<OutboxMessage> outboxMessages = await dbContext
-            .Set<OutboxMessage>()
+        List<TOutboxMessage> outboxMessages = await dbContext
+            .Set<TOutboxMessage>()
             .Where(x => x.ProcessedOnUtc == null && x.PublishError == null)
             .OrderBy(x => x.OccurredOnUtc)
             .Take(100)
@@ -52,7 +54,7 @@ public class ProcessOutboxMessagesJob(DbContext dbContext, IPublisher publisher,
         }
 
         // Deserialize each one and publish them.
-        foreach (OutboxMessage outboxMessage in outboxMessages)
+        foreach (TOutboxMessage outboxMessage in outboxMessages)
         {
             // Using Newtonsoft.Json because of a lack of support for polymorphic deserialisation within System.Text.Json 
             IDomainEvent? domainEvent = JsonConvert

@@ -55,6 +55,8 @@ public sealed class User : IdentityUser<Guid>, IEntity<Guid>, IAuditableEntity, 
             Email = email,
         };
 
+        user.AddDomainEvent(new UserCreatedEvent(Guid.NewGuid(), email));
+
         IdentityResult result = await userManager.CreateAsync(user, password);
         if (!result.Succeeded)
         {

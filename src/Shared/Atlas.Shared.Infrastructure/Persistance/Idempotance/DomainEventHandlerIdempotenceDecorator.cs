@@ -9,15 +9,15 @@ namespace Atlas.Shared.Infrastructure.Persistance.Idempotance;
 /// Decorator for ensuring idempotence in handling application events by checking and recording their processed status.
 /// </summary>
 /// <typeparam name="TDomainEvent">Type of the domain event to be handled.</typeparam>
-/// <typeparam name="DatabaseContext">Type of database context to be used in the decorator.</typeparam>
-public sealed class DomainEventHandlerIdempotenceDecorator<TDomainEvent, DatabaseContext> : INotificationHandler<TDomainEvent>
+public sealed class DomainEventHandlerIdempotenceDecorator<TDomainEvent, TDatabaseContext, TOutboxMessageConsumerAcknowledgement> : INotificationHandler<TDomainEvent>
     where TDomainEvent : IDomainEvent
-    where DatabaseContext : DbContext, IDatabaseContext
+    where TOutboxMessageConsumerAcknowledgement : OutboxMessageConsumerAcknowledgement, new()
+    where TDatabaseContext : DbContext
 {
     private readonly INotificationHandler<TDomainEvent> _decoratedHandler;
-    private readonly DbContext _dbContext;
+    private readonly TDatabaseContext _dbContext;
 
-    public DomainEventHandlerIdempotenceDecorator(INotificationHandler<TDomainEvent> decoratedHandler, in DbContext dbContext)
+    public DomainEventHandlerIdempotenceDecorator(INotificationHandler<TDomainEvent> decoratedHandler, TDatabaseContext dbContext)
     {
         _dbContext = dbContext;
         _decoratedHandler = decoratedHandler;
@@ -31,10 +31,10 @@ public sealed class DomainEventHandlerIdempotenceDecorator<TDomainEvent, Databas
     public async Task Handle(TDomainEvent DomainEvent, CancellationToken cancellationToken)
     {
         string eventHandlerName = _decoratedHandler.GetType().Name;
-
+        
         // Check if this event has been handled by this event handler previously
         bool alreadyConsumedEvent = await _dbContext
-            .Set<OutboxMessageConsumerAcknowledgement>()
+            .Set<TOutboxMessageConsumerAcknowledgement>()
             .AsNoTracking()
             .AnyAsync(x => x.DomainEventId == DomainEvent.Id && x.EventHandlerName == eventHandlerName, cancellationToken);
 
@@ -50,7 +50,7 @@ public sealed class DomainEventHandlerIdempotenceDecorator<TDomainEvent, Databas
         // event handler has executed successfully.
 
         // Create an entry to indicate that this domain event has been processed by this event handler
-        _dbContext.Set<OutboxMessageConsumerAcknowledgement>()
+        _dbContext.Set<TOutboxMessageConsumerAcknowledgement>()
             .Add(new() 
             {
                 DomainEventId = DomainEvent.Id,

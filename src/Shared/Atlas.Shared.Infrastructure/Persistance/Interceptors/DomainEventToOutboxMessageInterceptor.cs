@@ -8,12 +8,15 @@ using Atlas.Shared.Infrastructure.Persistance.Outbox;
 namespace Atlas.Infrastructure.Persistance.Interceptors;
 
 /// <summary>
-/// Interceptor for saving all application events as <see cref="OutboxMessage"/> entities within the database.
+/// Interceptor for saving all application events as <see cref="TOutboxMessage"/> entities within the database.
 /// </summary>
-public sealed class DomainEventToOutboxMessageInterceptor : SaveChangesInterceptor
+public sealed class DomainEventToOutboxMessageInterceptor<TOutboxMessage> : 
+    SaveChangesInterceptor
+    where TOutboxMessage : OutboxMessage, new()
+
 {
     /// <summary>
-    /// Intercepts the process of saving changes to the database and converts all <see cref="IDomainEvent"/> instances to <see cref="OutboxMessage"/>s.
+    /// Intercepts the process of saving changes to the database and converts all <see cref="IDomainEvent"/> instances to <see cref="TOutboxMessage"/>s.
     /// </summary>
     /// <param name="eventData">The event data for the context of saving changes.</param>
     /// <param name="result">The result of the interception.</param>
@@ -43,8 +46,8 @@ public sealed class DomainEventToOutboxMessageInterceptor : SaveChangesIntercept
             .SelectMany(aggregateRoot => aggregateRoot.DomainEvents);
 
         // Convert application events to outbox messages
-        List<OutboxMessage> outboxMessages = domainEvents
-            .Select(domainEvent => new OutboxMessage()
+        List<TOutboxMessage> outboxMessages = domainEvents
+            .Select(domainEvent => new TOutboxMessage()
             {
                 Id = Guid.NewGuid(),
                 OccurredOnUtc = DateTime.UtcNow,
@@ -60,7 +63,7 @@ public sealed class DomainEventToOutboxMessageInterceptor : SaveChangesIntercept
             .ToList();
 
         // Add all application events at once to the database
-        dbContext.Set<OutboxMessage>().AddRange(outboxMessages);
+        dbContext.Set<TOutboxMessage>().AddRange(outboxMessages);
 
         return base.SavingChangesAsync(
             eventData, 
