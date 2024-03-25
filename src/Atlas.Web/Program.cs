@@ -1,4 +1,5 @@
 using Atlas.Web.Extensions;
+using Atlas.Web.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,15 +13,28 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+// Register the exception handling middleware, which will catch any unhandled exceptions and return a 500 response
+app.ConfigureExceptionHander();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+else
+{
+    // If we're in production, redirect all traffic to HTTPS
+    app.UseHttpsRedirection();
+}
 
-app.UseHttpsRedirection();
+// Register the CORS middleware
+app.UseCors(Atlas.Web.Constants.CorsPolicyName);
 
+app.UseRouting();
+
+// Register the auth middlewares
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

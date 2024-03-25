@@ -2,11 +2,9 @@
 using Atlas.Plans.Application;
 using Atlas.Plans.Infrastructure;
 using Atlas.Plans.Presentation;
-using Atlas.Shared.Application.Abstractions.Messaging;
 using Atlas.Shared.Application.Behaviors;
 using Atlas.Shared.Infrastructure;
 using Atlas.Shared.Infrastructure.BackgroundJobs;
-using Atlas.Shared.Infrastructure.Persistance.Idempotance;
 using Atlas.Shared.Presentation;
 using Atlas.Users.Application;
 using Atlas.Users.Infrastructure;
@@ -21,9 +19,6 @@ using Atlas.Plans.Infrastructure.Persistance;
 using Atlas.Plans.Infrastructure.Persistance.Entities;
 using Atlas.Users.Infrastructure.Persistance.Entities;
 using Atlas.Users.Infrastructure.Persistance;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Atlas.Users.Application.CQRS.Users.Events;
-using System.Data;
 
 namespace Atlas.Web.Extensions;
 
