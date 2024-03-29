@@ -24,7 +24,6 @@ public class UsersModuleStartup : IModuleStartup
         var usersInfrastructureAssembly = typeof(UsersInfrastructureAssemblyReference).Assembly;
 
         var serviceProvider = new ServiceCollection()
-            .AddExecutionContextAccessor()
             .AddCommon(configuration)
             .AddValidation(usersApplicationAssembly)
             .AddAutoMappings(usersInfrastructureAssembly)

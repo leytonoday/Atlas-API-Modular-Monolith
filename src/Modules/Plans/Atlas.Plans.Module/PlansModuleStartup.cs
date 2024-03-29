@@ -24,7 +24,6 @@ public class PlansModuleStartup : IModuleStartup
         var plansInfrastructureAssembly = typeof(PlansInfrastructureAssemblyReference).Assembly;
 
         var serviceProvider = new ServiceCollection()
-            .AddExecutionContextAccessor()
             .AddCommon(configuration)
             .AddValidation(plansApplicationAssembly)
             .AddAutoMappings(plansInfrastructureAssembly)

@@ -16,6 +16,8 @@ builder.Services.AddConfigurations(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddSingleton<IExecutionContextAccessor, ExecutionContextAccessor>();
 builder.Services.AddSingleton<IEventBus, InMemoryEventBus>();
 
 // Register Modules
