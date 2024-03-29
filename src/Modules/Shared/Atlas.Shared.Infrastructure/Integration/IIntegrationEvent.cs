@@ -1,8 +1,8 @@
 ﻿using MediatR;
 
-namespace Atlas.Shared.Domain.Events;
+namespace Atlas.Shared.Infrastructure.Integration;
 
-public interface IDomainEvent : INotification
+public interface IIntegrationEvent : INotification
 {
     public Guid Id { get; init; }
 

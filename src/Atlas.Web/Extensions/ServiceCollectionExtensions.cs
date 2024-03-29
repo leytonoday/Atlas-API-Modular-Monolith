@@ -19,6 +19,8 @@ using Atlas.Plans.Infrastructure.Persistance;
 using Atlas.Plans.Infrastructure.Persistance.Entities;
 using Atlas.Users.Infrastructure.Persistance.Entities;
 using Atlas.Users.Infrastructure.Persistance;
+using Atlas.Shared.Application.Abstractions;
+using Atlas.Web.ExecutionContext;
 
 namespace Atlas.Web.Extensions;
 
@@ -156,6 +158,9 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddConfigurations(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+        services.AddSingleton<IExecutionContextAccessor, ExecutionContextAccessor>();
+
         return services
             .AddInfrastructure(configuration)
             .AddPresentation()
