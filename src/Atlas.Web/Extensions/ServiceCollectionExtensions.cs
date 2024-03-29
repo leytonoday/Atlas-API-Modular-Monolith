@@ -83,11 +83,11 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddValidation(this IServiceCollection services)
     {
-        var plansApplicationAssembly = typeof(PlansApplicationAssemblyReference).Assembly;
-        var usersApplicationAssembly = typeof(UsersApplicationAssemblyReference).Assembly;
+        //var plansApplicationAssembly = typeof(PlansApplicationAssemblyReference).Assembly;
+        //var usersApplicationAssembly = typeof(UsersApplicationAssemblyReference).Assembly;
 
-        services.AddValidatorsFromAssembly(plansApplicationAssembly);
-        services.AddValidatorsFromAssembly(usersApplicationAssembly);
+        //services.AddValidatorsFromAssembly(plansApplicationAssembly);
+        //services.AddValidatorsFromAssembly(usersApplicationAssembly);
 
         return services;
     }
@@ -119,11 +119,11 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddAutoMappings(this IServiceCollection services)
     {
-        var plansInfrastructureAssembly = typeof(PlansInfrastructureAssemblyReference).Assembly;
-        var usersInfrastructureAssembly = typeof(UsersInfrastructureAssemblyReference).Assembly;
+        //var plansInfrastructureAssembly = typeof(PlansInfrastructureAssemblyReference).Assembly;
+        //var usersInfrastructureAssembly = typeof(UsersInfrastructureAssemblyReference).Assembly;
 
-        services.AddAutoMapper(plansInfrastructureAssembly);
-        services.AddAutoMapper(usersInfrastructureAssembly);
+        ////services.AddAutoMapper(plansInfrastructureAssembly);
+        //services.AddAutoMapper(usersInfrastructureAssembly);
 
         return services;
     }
@@ -136,8 +136,8 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         return services
-            .AddPlansInfrastructureDependencyInjection(configuration)
-            .AddUsersInfrastructureDependencyInjection(configuration)
+            //.AddPlansInfrastructureDependencyInjection(configuration)
+            //.AddUsersInfrastructureDependencyInjection(configuration)
             .AddSharedInfrastructureDependencyInjection(configuration);
     }
 

@@ -1,3 +1,8 @@
+using Atlas.Plans.Module;
+using Atlas.Shared.Application.Abstractions;
+using Atlas.Shared.Infrastructure.Integration.Bus;
+using Atlas.Users.Module;
+using Atlas.Web.ExecutionContext;
 using Atlas.Web.Extensions;
 using Atlas.Web.Middleware;
 
@@ -11,7 +16,19 @@ builder.Services.AddConfigurations(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddSingleton<IEventBus, InMemoryEventBus>();
+
+// Register Modules
+builder.Services.AddSingleton<IUsersModule, UsersModule>();
+builder.Services.AddSingleton<IPlansModule, PlansModule>();
+
 var app = builder.Build();
+
+var executionContextAccessor = app.Services.GetService<IExecutionContextAccessor>();
+var eventBus = app.Services.GetRequiredService<IEventBus>();
+
+await UsersModuleStartup.Start(executionContextAccessor, builder.Configuration, eventBus);
+await PlansModuleStartup.Start(executionContextAccessor, builder.Configuration, eventBus);
 
 // Register the exception handling middleware, which will catch any unhandled exceptions and return a 500 response
 app.ConfigureExceptionHander();

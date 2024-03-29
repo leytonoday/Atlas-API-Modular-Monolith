@@ -18,7 +18,7 @@ public interface IModuleStartup
     /// <param name="configuration">The configuration settings.</param>
     /// <param name="eventBus">The event bus for publishing events.</param>
     /// <param name="enableScheduler">Flag indicating whether to enable the scheduler.</param>
-    public static abstract Task Start(IExecutionContextAccessor executionContextAccessor, IConfiguration configuration, IEventBus eventBus, bool enableScheduler = true);
+    public static abstract Task Start(IExecutionContextAccessor? executionContextAccessor, IConfiguration configuration, IEventBus eventBus, bool enableScheduler = true);
 
     /// <summary>
     /// Stops the module.

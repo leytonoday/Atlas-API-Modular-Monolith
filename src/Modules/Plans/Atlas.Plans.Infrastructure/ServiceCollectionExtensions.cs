@@ -8,17 +8,28 @@ using Atlas.Infrastructure.Persistance.Interceptors;
 using Atlas.Plans.Domain.Services;
 using Atlas.Plans.Infrastructure.Services;
 using Atlas.Plans.Infrastructure.Persistance.Entities;
+using Atlas.Plans.Application;
+using FluentValidation;
 
 namespace Atlas.Plans.Infrastructure;
 
-public static class PlansInfrastructureDependencyInjection
+public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddPlansInfrastructureDependencyInjection(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddSingleton<DomainEventToOutboxMessageInterceptor<PlansOutboxMessage>>();
+        services.AddScoped<PlanService>();
+        services.AddScoped<IStripeService, StripeService>();
+
+        // DB Related Services
+        services.AddDatabaseServices(configuration);
+
+        return services;
+    }
+
+    public static IServiceCollection AddDatabaseServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<IPlansUnitOfWork, PlansUnitOfWork>();
-
-        services.AddSingleton<DomainEventToOutboxMessageInterceptor<PlansOutboxMessage>>();
-
         services.AddDbContextFactory<PlansDatabaseContext>((provider, options) =>
         {
             var databaseOptions = new DatabaseOptions();
@@ -26,7 +37,7 @@ public static class PlansInfrastructureDependencyInjection
 
             options.UseSqlServer(configuration.GetConnectionString("Atlas"), optionsBuilder =>
             {
-                optionsBuilder.MigrationsAssembly(typeof(PlansInfrastructureDependencyInjection).Assembly.GetName().Name);
+                optionsBuilder.MigrationsAssembly(typeof(ServiceCollectionExtensions).Assembly.GetName().Name);
                 optionsBuilder.CommandTimeout(databaseOptions.CommandTimeout);
             });
 
@@ -44,11 +55,6 @@ public static class PlansInfrastructureDependencyInjection
             options.AddInterceptors(provider.GetRequiredService<UpdateAuditableEntitiesInterceptor>());
             options.AddInterceptors(provider.GetRequiredService<DomainEventToOutboxMessageInterceptor<PlansOutboxMessage>>());
         });
-
-
-        services.AddScoped<PlanService>();
-        services.AddScoped<IStripeService, StripeService>();
-
         return services;
     }
 }

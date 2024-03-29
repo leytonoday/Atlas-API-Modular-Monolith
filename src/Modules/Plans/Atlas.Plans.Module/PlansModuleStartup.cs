@@ -7,6 +7,9 @@ using Quartz.Impl;
 using Quartz;
 using System.Collections.Specialized;
 using System.Reflection;
+using Atlas.Shared.Infrastructure;
+using Atlas.Plans.Infrastructure;
+using Atlas.Plans.Application;
 
 namespace Atlas.Plans.Module;
 
@@ -15,16 +18,25 @@ public class PlansModuleStartup : IModuleStartup
     private static IScheduler? _scheduler;
 
     /// <inheritdoc />
-    public static async Task Start(IExecutionContextAccessor executionContextAccessor, IConfiguration configuration, IEventBus eventBus, bool enableScheduler = true)
+    public static async Task Start(IExecutionContextAccessor? executionContextAccessor, IConfiguration configuration, IEventBus eventBus, bool enableScheduler = true)
     {
+        var plansApplicationAssembly = typeof(PlansApplicationAssemblyReference).Assembly;
+        var plansInfrastructureAssembly = typeof(PlansInfrastructureAssemblyReference).Assembly;
+
         var serviceProvider = new ServiceCollection()
+            .AddExecutionContextAccessor()
+            .AddCommon(configuration)
+            .AddValidation(plansApplicationAssembly)
+            .AddAutoMappings(plansInfrastructureAssembly)
+            .AddServices(configuration)
+            .AddSingleton(eventBus)
             .BuildServiceProvider();
 
         PlansCompositionRoot.SetProvider(serviceProvider);
 
         if (enableScheduler)
         {
-            await SetupScheduledJobs();
+            _scheduler = await SetupScheduledJobs();
         }
     }
 
