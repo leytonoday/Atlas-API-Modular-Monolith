@@ -2,6 +2,11 @@
 
 internal static class PlansConstants
 {
+    internal static class Database
+    {
+        internal const string SchemaName = "Plans";
+    }
+
     /// <summary>
     /// Provides constants for table names used in the database for the Plans sub-domain.
     /// </summary>

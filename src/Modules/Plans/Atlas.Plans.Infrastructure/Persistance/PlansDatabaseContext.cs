@@ -3,10 +3,9 @@ using Atlas.Plans.Domain.Entities.PlanEntity;
 using Atlas.Plans.Domain.Entities.PlanFeatureEntity;
 using Atlas.Plans.Domain.Entities.StripeCardFingerprintEntity;
 using Atlas.Plans.Domain.Entities.StripeCustomerEntity;
-using Atlas.Plans.Infrastructure.Persistance.Entities;
-using Atlas.Shared.Infrastructure;
-using Atlas.Shared.Infrastructure.Persistance;
-using Atlas.Shared.Infrastructure.Persistance.Outbox;
+using Atlas.Shared.Infrastructure.Integration.Inbox;
+using Atlas.Shared.Infrastructure.Integration.Outbox;
+using Atlas.Shared.Infrastructure.CommandQueue;
 using Microsoft.EntityFrameworkCore;
 
 namespace Atlas.Plans.Infrastructure.Persistance;
@@ -20,8 +19,14 @@ public sealed class PlansDatabaseContext(DbContextOptions<PlansDatabaseContext> 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        
+
+        modelBuilder.HasDefaultSchema(PlansConstants.Database.SchemaName);
+
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(PlansDatabaseContext).Assembly);
+
+        modelBuilder.AddInbox(PlansConstants.Database.SchemaName);
+        modelBuilder.AddOutbox(PlansConstants.Database.SchemaName);
+        modelBuilder.AddCommandMessageQueue(PlansConstants.Database.SchemaName);
     }
 
     /// <summary>
@@ -50,12 +55,12 @@ public sealed class PlansDatabaseContext(DbContextOptions<PlansDatabaseContext> 
     public DbSet<StripeCardFingerprint> StripeCardFingerprints { get; set; }
 
     /// <summary>
-    /// Represents a collection of <see cref="OutboxMessage"/> in the context, or that can be queried from the database.
+    /// Represents a collection of <see cref="InboxMessage"/> in the context, or that can be queried from the database.
     /// </summary>
-    public DbSet<PlansOutboxMessage> OutboxMessages { get; set; }
+    public DbSet<InboxMessage> Inbox { get; set; }
 
     /// <summary>
-    /// Represents a collection of <see cref="OutboxMessageConsumerAcknowledgement"/> in the context, or that can be queried from the database.
+    /// Represents a collection of <see cref="OutboxMessage"/> in the context, or that can be queried from the database.
     /// </summary>
-    public DbSet<PlansOutboxMessageConsumerAcknowledgement> OutboxMessageConsumerAcknowledgements { get; set; }
+    public DbSet<OutboxMessage> Outbox { get; set; }
 }

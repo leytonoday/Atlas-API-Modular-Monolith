@@ -60,17 +60,17 @@ public static class ServiceCollectionExtensions
                 .AddJob<ProcessBackgroundTaskQueueJob>(processBackgroundTaskQueueJobKey)
                 .RegisterTrigger(processBackgroundTaskQueueJobKey, 5); // Add the job with a schedule to run every X seconds, and repeat forever
 
-            // Process Plans Outbox Messages Job Registration
-            var processPlansOutboxMessagesJobKey = new JobKey(nameof(ProcessOutboxMessagesJob<PlansDatabaseContext, PlansOutboxMessage>) + "_Plans");
-            configure
-                .AddJob<ProcessOutboxMessagesJob<PlansDatabaseContext, PlansOutboxMessage>>(processPlansOutboxMessagesJobKey)
-                .RegisterTrigger(processPlansOutboxMessagesJobKey, 5); // Add the job with a schedule to run every X seconds, and repeat forever
+            //// Process Plans Outbox Messages Job Registration
+            //var processPlansOutboxMessagesJobKey = new JobKey(nameof(ProcessOutboxMessagesJob<PlansDatabaseContext, PlansOutboxMessage>) + "_Plans");
+            //configure
+            //    .AddJob<ProcessOutboxMessagesJob<PlansDatabaseContext, PlansOutboxMessage>>(processPlansOutboxMessagesJobKey)
+            //    .RegisterTrigger(processPlansOutboxMessagesJobKey, 5); // Add the job with a schedule to run every X seconds, and repeat forever
 
-            // Process Users Outbox Messages Job Registration
-            var processUsersOutboxMessagesJobKey = new JobKey(nameof(ProcessOutboxMessagesJob<UsersDatabaseContext, UsersOutboxMessage>) + "_Users");
-            configure
-                .AddJob<ProcessOutboxMessagesJob<UsersDatabaseContext, UsersOutboxMessage>>(processUsersOutboxMessagesJobKey)
-                .RegisterTrigger(processUsersOutboxMessagesJobKey, 5); // Add the job with a schedule to run every X seconds, and repeat forever
+            //// Process Users Outbox Messages Job Registration
+            //var processUsersOutboxMessagesJobKey = new JobKey(nameof(ProcessOutboxMessagesJob<UsersDatabaseContext, UsersOutboxMessage>) + "_Users");
+            //configure
+            //    .AddJob<ProcessOutboxMessagesJob<UsersDatabaseContext, UsersOutboxMessage>>(processUsersOutboxMessagesJobKey)
+            //    .RegisterTrigger(processUsersOutboxMessagesJobKey, 5); // Add the job with a schedule to run every X seconds, and repeat forever
         });
 
         services.AddQuartzHostedService(options =>

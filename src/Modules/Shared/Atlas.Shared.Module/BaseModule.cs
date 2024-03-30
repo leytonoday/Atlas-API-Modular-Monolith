@@ -25,12 +25,13 @@ public abstract class BaseModule<TCompositionRoot> : IModule where TCompositionR
     /// <param name="command">The command to send to the module.</param>
     /// <param name="cancellationToken">Propogates notification that operations should be cancelled.</param>
     /// <returns>Data of type <typeparamref name="TResult"/> that was returned from the command.</returns>
-    public async Task SendCommand(IRequest command, CancellationToken cancellationToken = default)
+    public virtual async Task SendCommand(IRequest command, CancellationToken cancellationToken = default)
     {
         using var scope = TCompositionRoot.BeginLifetimeScope();
         IMediator dispatcher = scope.ServiceProvider.GetRequiredService<IMediator>();
         await dispatcher.Send(command, cancellationToken);
     }
+
     /// <summary>
     /// Sends a query to the module and expects a result.
     /// </summary>
@@ -38,19 +39,20 @@ public abstract class BaseModule<TCompositionRoot> : IModule where TCompositionR
     /// <param name="query">The query to be sent to the module.</param>
     /// <param name="cancellationToken">Propogates notification that operations should be cancelled.</param>
     /// <returns>Data of type <typeparamref name="TResult"/> that was returned from the query.</returns>
-    public async Task<TResult> SendCommand<TResult>(IRequest<TResult> command, CancellationToken cancellationToken = default)
+    public virtual async Task<TResult> SendCommand<TResult>(IRequest<TResult> command, CancellationToken cancellationToken = default)
     {
         using var scope = TCompositionRoot.BeginLifetimeScope();
         IMediator dispatcher = scope.ServiceProvider.GetRequiredService<IMediator>();
         return await dispatcher.Send(command, cancellationToken);
     }
+
     /// <summary>
     /// Publishes a notification to the module 
     /// </summary>
     /// <param name="notification">The notification to be published to the module.</param>
     /// <param name="cancellationToken">Propogates notification that operations should be cancelled.</param>
     /// <returns>A <see cref="Task"/> that returns when the operation is complete.</returns>
-    public async Task<TResult> SendQuery<TResult>(IRequest<TResult> query, CancellationToken cancellationToken = default)
+    public virtual async Task<TResult> SendQuery<TResult>(IRequest<TResult> query, CancellationToken cancellationToken = default)
     {
         using var scope = TCompositionRoot.BeginLifetimeScope();
         IMediator dispatcher = scope.ServiceProvider.GetRequiredService<IMediator>();

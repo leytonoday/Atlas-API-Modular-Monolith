@@ -1,9 +1,9 @@
 ﻿using Atlas.Infrastructure.Persistance.Interceptors;
+using Atlas.Shared.Infrastructure.Integration.Outbox;
 using Atlas.Shared.Infrastructure.Persistance.Options;
 using Atlas.Users.Domain;
 using Atlas.Users.Domain.Entities.UserEntity;
 using Atlas.Users.Infrastructure.Persistance;
-using Atlas.Users.Infrastructure.Persistance.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -15,12 +15,8 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddSingleton<DomainEventToOutboxMessageInterceptor<UsersOutboxMessage>>();
-
         services.AddDatabaseServices(configuration);
-
         services.AddIdentity();
-
         return services;
     }
 
@@ -50,7 +46,6 @@ public static class ServiceCollectionExtensions
 
             // Register database interceptors
             options.AddInterceptors(provider.GetRequiredService<UpdateAuditableEntitiesInterceptor>());
-            options.AddInterceptors(provider.GetRequiredService<DomainEventToOutboxMessageInterceptor<UsersOutboxMessage>>());
         });
 
         return services;

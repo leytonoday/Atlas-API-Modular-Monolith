@@ -1,4 +1,4 @@
-﻿using Atlas.Shared.Infrastructure.Persistance.Outbox;
+﻿using Atlas.Shared.Infrastructure.Integration.Outbox;
 
 namespace Atlas.Plans.Infrastructure.Persistance.Entities;
 

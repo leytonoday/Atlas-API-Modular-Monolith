@@ -17,7 +17,6 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddSingleton<DomainEventToOutboxMessageInterceptor<PlansOutboxMessage>>();
         services.AddScoped<PlanService>();
         services.AddScoped<IStripeService, StripeService>();
 
@@ -53,7 +52,6 @@ public static class ServiceCollectionExtensions
 
             // Register database interceptors
             options.AddInterceptors(provider.GetRequiredService<UpdateAuditableEntitiesInterceptor>());
-            options.AddInterceptors(provider.GetRequiredService<DomainEventToOutboxMessageInterceptor<PlansOutboxMessage>>());
         });
         return services;
     }

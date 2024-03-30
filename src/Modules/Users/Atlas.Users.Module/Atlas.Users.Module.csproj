@@ -8,6 +8,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\Atlas.Shared.Module\Atlas.Shared.Module.csproj" />
+    <ProjectReference Include="..\Atlas.Users.Application\Atlas.Users.Application.csproj" />
+    <ProjectReference Include="..\Atlas.Users.Domain\Atlas.Users.Domain.csproj" />
+    <ProjectReference Include="..\Atlas.Users.Infrastructure\Atlas.Users.Infrastructure.csproj" />
+    <ProjectReference Include="..\Atlas.Users.Presentation\Atlas.Users.Presentation.csproj" />
   </ItemGroup>
 
 </Project>

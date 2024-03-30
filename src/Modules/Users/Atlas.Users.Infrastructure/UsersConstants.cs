@@ -1,9 +1,12 @@
-﻿using Atlas.Users.Infrastructure.Persistance.Entities;
-
-namespace Atlas.Users.Infrastructure;
+﻿namespace Atlas.Users.Infrastructure;
 
 internal static class UsersConstants
 {
+    internal static class Database
+    {
+        internal const string SchemaName = "Users";
+    }
+
     internal static class Identity
     {
         internal const string AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
