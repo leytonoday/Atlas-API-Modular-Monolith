@@ -10,6 +10,7 @@ using System.Reflection;
 using Atlas.Shared.Infrastructure;
 using Atlas.Plans.Infrastructure;
 using Atlas.Plans.Application;
+using Microsoft.Extensions.Logging;
 
 namespace Atlas.Plans.Module;
 
@@ -18,7 +19,7 @@ public class PlansModuleStartup : IModuleStartup
     private static IScheduler? _scheduler;
 
     /// <inheritdoc />
-    public static async Task Start(IExecutionContextAccessor? executionContextAccessor, IConfiguration configuration, IEventBus eventBus, bool enableScheduler = true)
+    public static async Task Start(IExecutionContextAccessor? executionContextAccessor, IConfiguration configuration, IEventBus eventBus, ILoggerFactory loggerFactory, bool enableScheduler = true)
     {
         var plansApplicationAssembly = typeof(PlansApplicationAssemblyReference).Assembly;
         var plansInfrastructureAssembly = typeof(PlansInfrastructureAssemblyReference).Assembly;
@@ -29,6 +30,7 @@ public class PlansModuleStartup : IModuleStartup
             .AddAutoMappings(plansInfrastructureAssembly)
             .AddServices(configuration)
             .AddSingleton(eventBus)
+            .AddSingleton(loggerFactory)
             .BuildServiceProvider();
 
         PlansCompositionRoot.SetProvider(serviceProvider);

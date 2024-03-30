@@ -1,6 +1,7 @@
 ﻿using Atlas.Shared.Application.Abstractions;
 using Atlas.Shared.Infrastructure.Integration.Bus;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Quartz;
 
 namespace Atlas.Shared.Module;
@@ -17,8 +18,9 @@ public interface IModuleStartup
     /// <param name="executionContextAccessor">The execution context accessor.</param>
     /// <param name="configuration">The configuration settings.</param>
     /// <param name="eventBus">The event bus for publishing events.</param>
+    /// <param name="loggerFactory">The logger factory used to create concrete instances of <see cref="ILogger"/>.</param>
     /// <param name="enableScheduler">Flag indicating whether to enable the scheduler.</param>
-    public static abstract Task Start(IExecutionContextAccessor? executionContextAccessor, IConfiguration configuration, IEventBus eventBus, bool enableScheduler = true);
+    public static abstract Task Start(IExecutionContextAccessor? executionContextAccessor, IConfiguration configuration, IEventBus eventBus, ILoggerFactory loggerFactory, bool enableScheduler = true);
 
     /// <summary>
     /// Stops the module.
