@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using Atlas.Shared.Application.Abstractions.Messaging;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 
@@ -21,6 +22,12 @@ public class LoggingBehaviour<TRequest, TResponse>(ILogger<TRequest> logger) : I
     /// <returns>The response of type <typeparamref name="TResponse"/>.</returns>
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {
+        // If the request is a recurring command, then don't log. It'll just clog up the logs
+        if (request is IRecurringCommand)
+        {
+            await next();
+        }
+
         var name = typeof(TRequest).FullName!.Split(".").Last();
         var body = JsonSerializer.Serialize(request);
 
