@@ -9,6 +9,8 @@ using Atlas.Users.Infrastructure;
 using Atlas.Shared.Infrastructure;
 using Microsoft.Extensions.Logging;
 using Atlas.Shared.Infrastructure.Module;
+using Atlas.Shared.Infrastructure.BackgroundJobs;
+using Atlas.Shared.Infrastructure.Integration;
 
 namespace Atlas.Users.Module;
 
@@ -47,6 +49,11 @@ public class UsersModuleStartup : IModuleStartup
         });
 
         var scheduler = await factory.GetScheduler();
+
+        await scheduler.AddMessageboxJob<ProcessInboxJob<UsersCompositionRoot>>();
+        await scheduler.AddMessageboxJob<ProcessOutboxJob<UsersCompositionRoot>>();
+        await scheduler.AddMessageboxJob<ProcessQueueJob<UsersCompositionRoot>>();
+
         await scheduler.Start();
 
         return scheduler;

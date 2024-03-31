@@ -5,11 +5,11 @@ using Quartz;
 namespace Atlas.Shared.Infrastructure.BackgroundJobs;
 
 [DisallowConcurrentExecution]
-public class ProcessOutboxJob<TCompositionRoot> : IJob
+public class ProcessInboxJob<TCompositionRoot> : IJob
     where TCompositionRoot : ICompositionRoot
 {
     public async Task Execute(IJobExecutionContext context)
     {
-        await CommandsExecutor<TCompositionRoot>.SendCommand(new ProcessOutboxCommand());
+        await CommandsExecutor<TCompositionRoot>.SendCommand(new ProcessInboxCommand());
     }
 }

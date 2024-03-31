@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Atlas.Shared.Infrastructure.Integration.Outbox;
 
-public class OutboxHandler(OutboxReader outboxReader, IEventBus eventBus, ILogger<OutboxHandler> logger) : ICommandHandler<ProcessOutboxCommand>
+public class ProcessOutboxHandler(OutboxReader outboxReader, IEventBus eventBus, ILogger<ProcessOutboxHandler> logger) : ICommandHandler<ProcessOutboxCommand>
 {
     public async Task Handle(ProcessOutboxCommand command, CancellationToken cancellationToken)
     {

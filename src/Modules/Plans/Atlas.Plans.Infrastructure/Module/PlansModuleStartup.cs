@@ -7,9 +7,10 @@ using System.Collections.Specialized;
 using System.Reflection;
 using Atlas.Shared.Infrastructure;
 using Atlas.Plans.Infrastructure;
-using Atlas.Plans.Application;
 using Microsoft.Extensions.Logging;
 using Atlas.Shared.Infrastructure.Module;
+using Atlas.Shared.Infrastructure.Integration;
+using Atlas.Shared.Infrastructure.BackgroundJobs;
 
 namespace Atlas.Plans.Module;
 
@@ -48,6 +49,11 @@ public class PlansModuleStartup : IModuleStartup
         });
 
         var scheduler = await factory.GetScheduler();
+
+        await scheduler.AddMessageboxJob<ProcessInboxJob<PlansCompositionRoot>>();
+        await scheduler.AddMessageboxJob<ProcessOutboxJob<PlansCompositionRoot>>();
+        await scheduler.AddMessageboxJob<ProcessQueueJob<PlansCompositionRoot>>();
+
         await scheduler.Start();
 
         return scheduler;
