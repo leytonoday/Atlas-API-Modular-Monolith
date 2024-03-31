@@ -8,10 +8,11 @@ using Atlas.Shared.Domain.Exceptions;
 using Atlas.Users.Domain.Errors;
 using Atlas.Plans.Domain.Errors;
 using Atlas.Plans.Domain.Entities.StripeCustomerEntity;
+using Atlas.Shared.Application.Abstractions.Messaging.Command;
 
 namespace Atlas.Plans.Application.CQRS.Stripe.Commands.CancelSubscriptionImmediately;
 
-internal sealed class CancelSubscriptionImmediatelyCommandHandler(IStripeCustomerRepository stripeCustomerRepository, UserManager<User> userManager, IStripeService stripeService) : IRequestHandler<CancelSubscriptionImmediatelyCommand>
+internal sealed class CancelSubscriptionImmediatelyCommandHandler(IStripeCustomerRepository stripeCustomerRepository, UserManager<User> userManager, IStripeService stripeService) : ICommandHandler<CancelSubscriptionImmediatelyCommand>
 {
     public async Task Handle(CancelSubscriptionImmediatelyCommand request, CancellationToken cancellationToken)
     {

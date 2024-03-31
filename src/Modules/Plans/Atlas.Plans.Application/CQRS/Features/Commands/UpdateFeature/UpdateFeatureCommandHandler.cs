@@ -1,10 +1,11 @@
 ﻿using Atlas.Plans.Domain;
 using Atlas.Plans.Domain.Entities.FeatureEntity;
+using Atlas.Shared.Application.Abstractions.Messaging.Command;
 using MediatR;
 
 namespace Atlas.Plans.Application.CQRS.Features.Commands.UpdateFeature;
 
-internal sealed class UpdateFeatureCommandHandler(IFeatureRepository featureRepository) : IRequestHandler<UpdateFeatureCommand, Feature>
+internal sealed class UpdateFeatureCommandHandler(IFeatureRepository featureRepository) : ICommandHandler<UpdateFeatureCommand, Feature>
 {
     public async Task<Feature> Handle(UpdateFeatureCommand request, CancellationToken cancellationToken)
     {

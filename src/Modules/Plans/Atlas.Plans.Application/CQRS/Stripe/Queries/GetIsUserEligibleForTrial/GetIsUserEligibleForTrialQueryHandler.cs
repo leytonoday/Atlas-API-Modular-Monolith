@@ -8,10 +8,11 @@ using Atlas.Shared.Domain.Exceptions;
 using Atlas.Users.Domain.Errors;
 using Atlas.Plans.Domain.Errors;
 using Atlas.Plans.Domain.Entities.StripeCustomerEntity;
+using Atlas.Shared.Application.Abstractions.Messaging.Query;
 
 namespace Atlas.Plans.Application.CQRS.Stripe.Queries.GetIsUserEligibleForTrial;
 
-internal sealed class GetIsUserEligibleForTrialQueryHandler(IStripeCustomerRepository stripeCustomerRepository, IStripeService stripeService, UserManager<User> userManager) : IRequestHandler<GetIsUserEligibleForTrialQuery, bool>
+internal sealed class GetIsUserEligibleForTrialQueryHandler(IStripeCustomerRepository stripeCustomerRepository, IStripeService stripeService, UserManager<User> userManager) : IQueryHandler<GetIsUserEligibleForTrialQuery, bool>
 {
     public async Task<bool> Handle(GetIsUserEligibleForTrialQuery request, CancellationToken cancellationToken)
     {

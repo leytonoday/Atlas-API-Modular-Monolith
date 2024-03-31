@@ -8,10 +8,11 @@ using Atlas.Users.Domain.Errors;
 using Atlas.Shared.Domain.Exceptions;
 using Atlas.Plans.Domain.Entities.StripeCustomerEntity;
 using Atlas.Plans.Domain.Errors;
+using Atlas.Shared.Application.Abstractions.Messaging.Query;
 
 namespace Atlas.Plans.Application.CQRS.Stripe.Queries.GetUserPaymentMethodsQuery;
 
-internal sealed class GetUserPaymentMethodsQueryHandler(IStripeCustomerRepository stripeCustomerRepository, IStripeService stripeService, UserManager<User> userManager) : IRequestHandler<GetUserPaymentMethodsQuery, IEnumerable<PaymentMethod>>
+internal sealed class GetUserPaymentMethodsQueryHandler(IStripeCustomerRepository stripeCustomerRepository, IStripeService stripeService, UserManager<User> userManager) : IQueryHandler<GetUserPaymentMethodsQuery, IEnumerable<PaymentMethod>>
 {
     public async Task<IEnumerable<PaymentMethod>> Handle(GetUserPaymentMethodsQuery request, CancellationToken cancellationToken)
     {

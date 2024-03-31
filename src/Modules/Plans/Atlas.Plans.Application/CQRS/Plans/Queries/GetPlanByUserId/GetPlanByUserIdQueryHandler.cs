@@ -2,6 +2,7 @@
 using Atlas.Plans.Domain;
 using Atlas.Plans.Domain.Entities.PlanEntity;
 using Atlas.Plans.Domain.Errors;
+using Atlas.Shared.Application.Abstractions.Messaging.Query;
 using Atlas.Shared.Domain.Exceptions;
 using Atlas.Users.Domain.Entities.UserEntity;
 using Atlas.Users.Domain.Errors;
@@ -11,7 +12,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Atlas.Plans.Application.CQRS.Plans.Queries.GetPlanByUserId;
 
-internal sealed class GetPlanByUserIdQueryHandler(UserManager<User> userManager, IPlanRepository planRepository, IMapper mapper) : IRequestHandler<GetPlanByUserIdQuery, PlanDto?>
+internal sealed class GetPlanByUserIdQueryHandler(UserManager<User> userManager, IPlanRepository planRepository, IMapper mapper) : IQueryHandler<GetPlanByUserIdQuery, PlanDto?>
 {
     public async Task<PlanDto?> Handle(GetPlanByUserIdQuery request, CancellationToken cancellationToken)
     {

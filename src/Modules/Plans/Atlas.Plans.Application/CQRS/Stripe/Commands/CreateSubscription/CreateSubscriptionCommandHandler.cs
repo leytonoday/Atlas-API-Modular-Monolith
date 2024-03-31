@@ -10,10 +10,11 @@ using Atlas.Plans.Domain.Entities.StripeCustomerEntity;
 using Atlas.Plans.Domain.Errors;
 using Atlas.Users.Domain.Errors;
 using Atlas.Plans.Domain.Entities.PlanEntity;
+using Atlas.Shared.Application.Abstractions.Messaging.Command;
 
 namespace Atlas.Plans.Application.CQRS.Stripe.Commands.CreateSubscription;
 
-internal sealed class CreateSubscriptionCommandHandler(IStripeCustomerRepository stripeCustomerRepository, IPlanRepository planRepository, IUserContext userContext, UserManager<User> userManager, IStripeService stripeService) : IRequestHandler<CreateSubscriptionCommand, Subscription>
+internal sealed class CreateSubscriptionCommandHandler(IStripeCustomerRepository stripeCustomerRepository, IPlanRepository planRepository, IUserContext userContext, UserManager<User> userManager, IStripeService stripeService) : ICommandHandler<CreateSubscriptionCommand, Subscription>
 {
     public async Task<Subscription> Handle(CreateSubscriptionCommand request, CancellationToken cancellationToken)
     {

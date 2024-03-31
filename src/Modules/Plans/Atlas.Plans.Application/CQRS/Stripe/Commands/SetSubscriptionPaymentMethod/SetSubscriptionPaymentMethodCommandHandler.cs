@@ -8,10 +8,11 @@ using Atlas.Shared.Domain.Exceptions;
 using Atlas.Plans.Domain.Entities.StripeCustomerEntity;
 using Atlas.Users.Domain.Errors;
 using Atlas.Plans.Domain.Errors;
+using Atlas.Shared.Application.Abstractions.Messaging.Command;
 
 namespace Atlas.Plans.Application.CQRS.Stripe.Commands.SetSubscriptionPaymentMethod;
 
-internal sealed class SetSubscriptionPaymentMethodCommandHandler(IStripeCustomerRepository stripeCustomerRepository, UserManager<User> userManager, IStripeService stripeService) : IRequestHandler<SetSubscriptionPaymentMethodCommand>
+internal sealed class SetSubscriptionPaymentMethodCommandHandler(IStripeCustomerRepository stripeCustomerRepository, UserManager<User> userManager, IStripeService stripeService) : ICommandHandler<SetSubscriptionPaymentMethodCommand>
 {
     public async Task Handle(SetSubscriptionPaymentMethodCommand request, CancellationToken cancellationToken)
     {

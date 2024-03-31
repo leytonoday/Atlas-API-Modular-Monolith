@@ -7,10 +7,11 @@ using Atlas.Shared.Domain.Exceptions;
 using Atlas.Users.Domain.Errors;
 using Atlas.Plans.Domain.Entities.StripeCustomerEntity;
 using Atlas.Plans.Domain.Errors;
+using Atlas.Shared.Application.Abstractions.Messaging.Query;
 
 namespace Atlas.Plans.Application.CQRS.Stripe.Queries.CancelSubscription;
 
-internal sealed class GetUserSubscriptionQueryHandler(IStripeCustomerRepository stripeCustomerRepository, IStripeService stripeService, UserManager<User> userManager) : IRequestHandler<GetUserSubscriptionQuery, Subscription?>
+internal sealed class GetUserSubscriptionQueryHandler(IStripeCustomerRepository stripeCustomerRepository, IStripeService stripeService, UserManager<User> userManager) : IQueryHandler<GetUserSubscriptionQuery, Subscription?>
 {
     public async Task<Subscription?> Handle(GetUserSubscriptionQuery request, CancellationToken cancellationToken)
     {

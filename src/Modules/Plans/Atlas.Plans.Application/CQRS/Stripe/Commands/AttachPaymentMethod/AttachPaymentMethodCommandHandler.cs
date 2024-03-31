@@ -9,10 +9,11 @@ using Atlas.Plans.Domain.Entities.StripeCustomerEntity;
 using Atlas.Plans.Domain.Errors;
 using Atlas.Plans.Domain.Services;
 using Atlas.Users.Application.Abstractions;
+using Atlas.Shared.Application.Abstractions.Messaging.Command;
 
 namespace Atlas.Plans.Application.CQRS.Stripe.Commands.AttachPaymentMethod;
 
-internal sealed class AttachPaymentMethodCommandHandler(IStripeCustomerRepository stripeCustomerRepository, UserManager<User> userManager, IUserContext userContext, IStripeService stripeService) : IRequestHandler<AttachPaymentMethodCommand>
+internal sealed class AttachPaymentMethodCommandHandler(IStripeCustomerRepository stripeCustomerRepository, UserManager<User> userManager, IUserContext userContext, IStripeService stripeService) : ICommandHandler<AttachPaymentMethodCommand>
 {
     public async Task Handle(AttachPaymentMethodCommand request, CancellationToken cancellationToken)
     {

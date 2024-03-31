@@ -8,10 +8,11 @@ using Atlas.Shared.Domain.Exceptions;
 using Atlas.Plans.Domain.Entities.StripeCustomerEntity;
 using Atlas.Users.Domain.Errors;
 using Atlas.Plans.Domain.Errors;
+using Atlas.Shared.Application.Abstractions.Messaging.Command;
 
 namespace Atlas.Plans.Application.CQRS.Stripe.Commands.ReactivateSubscription;
 
-internal sealed class ReactivateSubscriptionCommandHandler(IStripeCustomerRepository stripeCustomerRepository, UserManager<User> userManager, IStripeService stripeService) : IRequestHandler<ReactivateSubscriptionCommand>
+internal sealed class ReactivateSubscriptionCommandHandler(IStripeCustomerRepository stripeCustomerRepository, UserManager<User> userManager, IStripeService stripeService) : ICommandHandler<ReactivateSubscriptionCommand>
 {
     public async Task Handle(ReactivateSubscriptionCommand request, CancellationToken cancellationToken)
     {

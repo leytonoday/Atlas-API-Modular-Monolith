@@ -10,10 +10,11 @@ using Atlas.Plans.Domain.Entities.StripeCustomerEntity;
 using Atlas.Users.Domain.Errors;
 using Atlas.Plans.Domain.Errors;
 using Atlas.Plans.Domain.Entities.PlanEntity;
+using Atlas.Shared.Application.Abstractions.Messaging.Query;
 
 namespace Atlas.Infrastructure.CQRS.Queries.GetInvoiceHistory;
 
-internal sealed class GetSubscriptionQuoteInvoiceQueryHandler(IStripeCustomerRepository stripeCustomerRepository, IPlanRepository planRepository, IStripeService stripeService, UserManager<User> userManager) : IRequestHandler<GetSubscriptionQuoteInvoiceQuery, Invoice>
+internal sealed class GetSubscriptionQuoteInvoiceQueryHandler(IStripeCustomerRepository stripeCustomerRepository, IPlanRepository planRepository, IStripeService stripeService, UserManager<User> userManager) : IQueryHandler<GetSubscriptionQuoteInvoiceQuery, Invoice>
 {
     public async Task<Invoice> Handle(GetSubscriptionQuoteInvoiceQuery request, CancellationToken cancellationToken)
     {

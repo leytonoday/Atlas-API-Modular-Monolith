@@ -2,13 +2,14 @@
 using Atlas.Plans.Domain;
 using Atlas.Plans.Domain.Entities.PlanEntity;
 using Atlas.Plans.Domain.Errors;
+using Atlas.Shared.Application.Abstractions.Messaging.Query;
 using Atlas.Shared.Domain.Exceptions;
 using AutoMapper;
 using MediatR;
 
 namespace Atlas.Plans.Application.CQRS.Plans.Queries.GetPlanById;
 
-internal sealed class GetPlanByIdQueryHandler(IPlanRepository planRepository, IMapper mapper) : IRequestHandler<GetPlanByIdQuery, PlanDto>
+internal sealed class GetPlanByIdQueryHandler(IPlanRepository planRepository, IMapper mapper) : IQueryHandler<GetPlanByIdQuery, PlanDto>
 {
     public async Task<PlanDto> Handle(GetPlanByIdQuery request, CancellationToken cancellationToken)
     {

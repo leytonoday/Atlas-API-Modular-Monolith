@@ -8,10 +8,11 @@ using Atlas.Shared.Domain.Exceptions;
 using Atlas.Users.Domain.Errors;
 using Atlas.Plans.Domain.Errors;
 using Atlas.Plans.Domain.Entities.StripeCustomerEntity;
+using Atlas.Shared.Application.Abstractions.Messaging.Query;
 
 namespace Atlas.Plans.Application.CQRS.Stripe.Queries.GetUpcomingInvoice;
 
-internal sealed class GetUpcomingInvoiceQueryHandler(IStripeCustomerRepository stripeCustomerRepository, IStripeService stripeService, UserManager<User> userManager) : IRequestHandler<GetUpcomingInvoiceQuery, Invoice>
+internal sealed class GetUpcomingInvoiceQueryHandler(IStripeCustomerRepository stripeCustomerRepository, IStripeService stripeService, UserManager<User> userManager) : IQueryHandler<GetUpcomingInvoiceQuery, Invoice>
 {
     public async Task<Invoice> Handle(GetUpcomingInvoiceQuery request, CancellationToken cancellationToken)
     {
