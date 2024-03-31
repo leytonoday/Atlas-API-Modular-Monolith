@@ -6,6 +6,7 @@ using Atlas.Plans.Application.CQRS.Plans.Queries.GetAllPlans;
 using Atlas.Plans.Application.CQRS.Plans.Queries.GetPlanById;
 using Atlas.Plans.Application.CQRS.Plans.Queries.GetPlanByUserId;
 using Atlas.Plans.Application.CQRS.Plans.Queries.GetPlanFeaturesByPlanId;
+using Atlas.Shared.Application.Abstractions;
 using Atlas.Shared.Domain.Results;
 using Atlas.Shared.Presentation;
 using Atlas.Users.Application.Abstractions;
@@ -16,7 +17,7 @@ namespace Atlas.Plans.Presentation.Controllers;
 
 [Route("/api/{version:apiVersion}/plan")]
 [ApiVersion("1.0")]
-public class PlanController(IUserContext userContext) : ApiController
+public class PlanController(IExecutionContextAccessor executionContext) : ApiController
 {
     [HttpGet("{planId:guid}")]
     public async Task<IActionResult> GetById([FromRoute] Guid planId, CancellationToken cancellationToken)
@@ -29,7 +30,7 @@ public class PlanController(IUserContext userContext) : ApiController
     [HttpGet("my-plan")]
     public async Task<IActionResult> GetMyPlan(CancellationToken cancellationToken)
     {
-        var result = await Sender.Send(new GetPlanByUserIdQuery(userContext.UserId), cancellationToken);
+        var result = await Sender.Send(new GetPlanByUserIdQuery(executionContext.UserId), cancellationToken);
         return Ok(Result.Success(result));
     }
 

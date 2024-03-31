@@ -11,10 +11,11 @@ using Atlas.Plans.Domain.Entities.StripeCustomerEntity;
 using Atlas.Users.Domain.Errors;
 using Atlas.Plans.Domain.Entities.PlanEntity;
 using Atlas.Shared.Application.Abstractions.Messaging.Command;
+using Atlas.Shared.Application.Abstractions;
 
 namespace Atlas.Plans.Application.CQRS.Stripe.Commands.UpdateSubscription;
 
-internal sealed class UpdateSubscriptionCommandHandler(IStripeCustomerRepository stripeCustomerRepository, IPlanRepository planRepository, IUserContext userContext, UserManager<User> userManager, IStripeService stripeService) : ICommandHandler<UpdateSubscriptionCommand, Subscription>
+internal sealed class UpdateSubscriptionCommandHandler(IStripeCustomerRepository stripeCustomerRepository, IPlanRepository planRepository, IExecutionContextAccessor executionContext, UserManager<User> userManager, IStripeService stripeService) : ICommandHandler<UpdateSubscriptionCommand, Subscription>
 {
     public async Task<Subscription> Handle(UpdateSubscriptionCommand request, CancellationToken cancellationToken)
     {
@@ -23,7 +24,7 @@ internal sealed class UpdateSubscriptionCommandHandler(IStripeCustomerRepository
             throw new ErrorException(PlansDomainErrors.Stripe.InvalidSubscriptionInterval);
         }
 
-        User user = await userManager.FindByIdAsync(userContext.UserId.ToString())
+        User user = await userManager.FindByIdAsync(executionContext.UserId.ToString())
             ?? throw new ErrorException(UsersDomainErrors.User.UserNotFound);
 
         var plan = await planRepository.GetByIdAsync(request.PlanId, false, cancellationToken)

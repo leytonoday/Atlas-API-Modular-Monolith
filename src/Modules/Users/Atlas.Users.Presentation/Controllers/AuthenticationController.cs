@@ -8,12 +8,13 @@ using Atlas.Shared.Domain.Results;
 using Atlas.Users.Application.CQRS.Authentication.Commands.SignIn;
 using Atlas.Users.Application.CQRS.Authentication.Commands.SignInWithToken;
 using Atlas.Users.Application.CQRS.Authentication.Commands.SignOut;
+using Atlas.Shared.Application.Abstractions;
 
 namespace Atlas.Users.Presentation.Controllers;
 
 [Route("/api/{version:apiVersion}/authentication")]
 [ApiVersion("1.0")]
-public class AuthenticationController(IUserContext userContext) : ApiController
+public class AuthenticationController(IExecutionContextAccessor executionContext) : ApiController
 {
     [HttpGet("is-authenticated")]
     public IActionResult IsAuthenticated()
@@ -26,7 +27,7 @@ public class AuthenticationController(IUserContext userContext) : ApiController
     [HttpGet("who-am-i")]
     public async Task<IActionResult> WhoAmI(CancellationToken cancellationToken)
     {
-        var result = await Sender.Send(new GetUserByIdQuery(userContext.UserId), cancellationToken);
+        var result = await Sender.Send(new GetUserByIdQuery(executionContext.UserId), cancellationToken);
         return Ok(Result.Success(result));
     }
 

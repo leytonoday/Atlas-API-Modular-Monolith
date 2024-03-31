@@ -14,12 +14,13 @@ using Atlas.Users.Application.CQRS.Users.Commands.RefreshConfirmUserEmail;
 using Atlas.Users.Application.CQRS.Users.Commands.ForgotPassword;
 using Atlas.Users.Application.CQRS.Users.Commands.ResetPassword;
 using Atlas.Users.Application.CQRS.Users.Commands.ChangePassword;
+using Atlas.Shared.Application.Abstractions;
 
 namespace Atlas.Users.Presentation.Controllers;
 
 [Route("/api/{version:apiVersion}/user")]
 [ApiVersion("1.0")]
-public class UserController(IUserContext userContext) : ApiController
+public class UserController(IExecutionContextAccessor executionContext) : ApiController
 {
     [HttpPost]
     public async Task<IActionResult> CreateUser([FromBody] CreateUserCommand command, CancellationToken cancellationToken)
@@ -47,7 +48,7 @@ public class UserController(IUserContext userContext) : ApiController
     [HttpGet("my-roles")]
     public async Task<IActionResult> GetMyRoles(CancellationToken cancellationToken)
     {
-        var result = await Sender.Send(new GetRolesByUserIdQuery(userContext.UserId), cancellationToken);
+        var result = await Sender.Send(new GetRolesByUserIdQuery(executionContext.UserId), cancellationToken);
         return Ok(Result.Success(result));
     }
 

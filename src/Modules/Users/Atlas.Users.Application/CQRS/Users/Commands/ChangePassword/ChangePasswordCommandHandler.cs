@@ -1,4 +1,5 @@
-﻿using Atlas.Shared.Application.Abstractions.Messaging.Command;
+﻿using Atlas.Shared.Application.Abstractions;
+using Atlas.Shared.Application.Abstractions.Messaging.Command;
 using Atlas.Shared.Domain.Exceptions;
 using Atlas.Users.Application.Abstractions;
 using Atlas.Users.Domain.Entities.UserEntity;
@@ -9,11 +10,11 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Atlas.Users.Application.CQRS.Users.Commands.ChangePassword;
 
-internal sealed class ChangePasswordCommandHandler(UserManager<User> userManager, IUserContext userContext, SignInManager<User> signInManager) : ICommandHandler<ChangePasswordCommand>
+internal sealed class ChangePasswordCommandHandler(UserManager<User> userManager, IExecutionContextAccessor executionContext, SignInManager<User> signInManager) : ICommandHandler<ChangePasswordCommand>
 {
     public async Task Handle(ChangePasswordCommand request, CancellationToken cancellationToken)
     {
-        User user = await userManager.FindByIdAsync(userContext.UserId.ToString())
+        User user = await userManager.FindByIdAsync(executionContext.UserId.ToString())
             ?? throw new ErrorException(UsersDomainErrors.User.UserNotFound);
 
         IdentityResult result = await userManager.ChangePasswordAsync(user, request.OldPassword, request.NewPassword);

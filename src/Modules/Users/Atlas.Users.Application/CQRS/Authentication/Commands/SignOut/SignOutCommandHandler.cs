@@ -1,4 +1,5 @@
-﻿using Atlas.Shared.Application.Abstractions.Messaging.Command;
+﻿using Atlas.Shared.Application.Abstractions;
+using Atlas.Shared.Application.Abstractions.Messaging.Command;
 using Atlas.Shared.Domain.Exceptions;
 using Atlas.Users.Application.Abstractions;
 using Atlas.Users.Domain.Entities.UserEntity;
@@ -8,11 +9,11 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Atlas.Users.Application.CQRS.Authentication.Commands.SignOut;
 
-internal sealed class SignOutCommandHandler(SignInManager<User> signInManager, IUserContext userContext) : ICommandHandler<SignOutCommand>
+internal sealed class SignOutCommandHandler(SignInManager<User> signInManager, IExecutionContextAccessor executionContext) : ICommandHandler<SignOutCommand>
 {
     public async Task Handle(SignOutCommand signOutCommand, CancellationToken cancellationToken)
     {
-        if (!userContext.IsAuthenticated)
+        if (!executionContext.IsUserAuthenticated)
         {
             throw new ErrorException(UsersDomainErrors.Authentication.NotAuthenticated);
         }
