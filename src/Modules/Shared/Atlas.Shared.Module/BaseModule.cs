@@ -1,4 +1,6 @@
-﻿using MediatR;
+﻿using Atlas.Shared.Application.Abstractions.Messaging.Command;
+using Atlas.Shared.Application.Abstractions.Messaging.Query;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Atlas.Shared.Module;
@@ -11,7 +13,7 @@ public abstract class BaseModule<TCompositionRoot> : IModule where TCompositionR
     /// <param name="command">The command to be send to the module.</param>
     /// <param name="cancellationToken">Propogates notification that operations should be cancelled.</param>
     /// <returns>A <see cref="Task"/> that returns when the operation is complete.</returns>
-    public async Task PublishNotification(INotification notification, CancellationToken cancellationToken = default)
+    public virtual async Task PublishNotification(INotification notification, CancellationToken cancellationToken = default)
     {
         using var scope = TCompositionRoot.BeginLifetimeScope();
         IMediator dispatcher = scope.ServiceProvider.GetRequiredService<IMediator>();
@@ -25,7 +27,7 @@ public abstract class BaseModule<TCompositionRoot> : IModule where TCompositionR
     /// <param name="command">The command to send to the module.</param>
     /// <param name="cancellationToken">Propogates notification that operations should be cancelled.</param>
     /// <returns>Data of type <typeparamref name="TResult"/> that was returned from the command.</returns>
-    public virtual async Task SendCommand(IRequest command, CancellationToken cancellationToken = default)
+    public virtual async Task SendCommand(ICommand command, CancellationToken cancellationToken = default)
     {
         using var scope = TCompositionRoot.BeginLifetimeScope();
         IMediator dispatcher = scope.ServiceProvider.GetRequiredService<IMediator>();
@@ -39,7 +41,7 @@ public abstract class BaseModule<TCompositionRoot> : IModule where TCompositionR
     /// <param name="query">The query to be sent to the module.</param>
     /// <param name="cancellationToken">Propogates notification that operations should be cancelled.</param>
     /// <returns>Data of type <typeparamref name="TResult"/> that was returned from the query.</returns>
-    public virtual async Task<TResult> SendCommand<TResult>(IRequest<TResult> command, CancellationToken cancellationToken = default)
+    public virtual async Task<TResult> SendCommand<TResult>(ICommand<TResult> command, CancellationToken cancellationToken = default)
     {
         using var scope = TCompositionRoot.BeginLifetimeScope();
         IMediator dispatcher = scope.ServiceProvider.GetRequiredService<IMediator>();
@@ -52,7 +54,7 @@ public abstract class BaseModule<TCompositionRoot> : IModule where TCompositionR
     /// <param name="notification">The notification to be published to the module.</param>
     /// <param name="cancellationToken">Propogates notification that operations should be cancelled.</param>
     /// <returns>A <see cref="Task"/> that returns when the operation is complete.</returns>
-    public virtual async Task<TResult> SendQuery<TResult>(IRequest<TResult> query, CancellationToken cancellationToken = default)
+    public virtual async Task<TResult> SendQuery<TResult>(IQuery<TResult> query, CancellationToken cancellationToken = default)
     {
         using var scope = TCompositionRoot.BeginLifetimeScope();
         IMediator dispatcher = scope.ServiceProvider.GetRequiredService<IMediator>();

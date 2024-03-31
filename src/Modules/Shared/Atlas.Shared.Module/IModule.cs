@@ -1,4 +1,6 @@
-﻿using MediatR;
+﻿using Atlas.Shared.Application.Abstractions.Messaging.Command;
+using Atlas.Shared.Application.Abstractions.Messaging.Query;
+using MediatR;
 
 namespace Atlas.Shared.Module;
 
@@ -13,7 +15,7 @@ public interface IModule
     /// <param name="command">The command to be send to the module.</param>
     /// <param name="cancellationToken">Propogates notification that operations should be cancelled.</param>
     /// <returns>A <see cref="Task"/> that returns when the operation is complete.</returns>
-    public abstract Task SendCommand(IRequest command, CancellationToken cancellationToken = default);
+    public abstract Task SendCommand(ICommand command, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Sends a command to the module and expects a result.
@@ -22,7 +24,7 @@ public interface IModule
     /// <param name="command">The command to send to the module.</param>
     /// <param name="cancellationToken">Propogates notification that operations should be cancelled.</param>
     /// <returns>Data of type <typeparamref name="TResult"/> that was returned from the command.</returns>
-    public abstract Task<TResult> SendCommand<TResult>(IRequest<TResult> command, CancellationToken cancellationToken = default);
+    public abstract Task<TResult> SendCommand<TResult>(ICommand<TResult> command, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Sends a query to the module and expects a result.
@@ -31,7 +33,7 @@ public interface IModule
     /// <param name="query">The query to be sent to the module.</param>
     /// <param name="cancellationToken">Propogates notification that operations should be cancelled.</param>
     /// <returns>Data of type <typeparamref name="TResult"/> that was returned from the query.</returns>
-    public abstract Task<TResult> SendQuery<TResult>(IRequest<TResult> query, CancellationToken cancellationToken = default);
+    public abstract Task<TResult> SendQuery<TResult>(IQuery<TResult> query, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Publishes a notification to the module 

@@ -9,7 +9,7 @@ public class UnitOfWorkBehavior<TRequest, TResponse>(IUnitOfWork unitOfWork) : I
 {
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {
-        // If the request is a query or if it's called a query (maybe the programmer has directly implemented IRequest rather than IQuery<TResult>), then continue
+        // If the request is a query or if it's called a query (sanity check. Maybe the programmer has directly implemented IRequest rather than IQuery<TResult>), then continue
         if (IsQueryRequest(request) || HasQueryInName())
         {
             return await next();
