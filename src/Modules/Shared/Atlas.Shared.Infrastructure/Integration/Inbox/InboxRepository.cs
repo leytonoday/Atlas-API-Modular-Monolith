@@ -8,7 +8,7 @@ public class InboxRepository(DbContext databaseContext) :
     private DbSet<InboxMessage> GetDbSet() => databaseContext.Set<InboxMessage>();
 
 
-    public Task CreateAsync(IIntegrationEvent integrationEvent, CancellationToken cancellationToken)
+    public Task AddAsync(IIntegrationEvent integrationEvent, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         var set = GetDbSet();

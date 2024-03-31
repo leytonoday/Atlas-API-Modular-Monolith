@@ -1,27 +1,25 @@
-﻿using Atlas.Shared.Application.Abstractions.Messaging;
+﻿using Atlas.Shared.Application.Abstractions.Messaging.QueuedCommand;
 using Atlas.Shared.Application.Abstractions.Services.EmailService;
 using Atlas.Shared.Application.EmailContent;
-using Atlas.Shared.Domain.Events.UserEvents;
 using Atlas.Shared.Domain.Exceptions;
-using Atlas.Users.Domain;
 using Atlas.Users.Domain.Entities.UserEntity;
 using Atlas.Users.Domain.Errors;
 using Microsoft.AspNetCore.Identity;
 using System.Web;
 
-namespace Atlas.Users.Application.CQRS.Users.Events;
+namespace Atlas.Users.Application.CQRS.Users.QueuedCommands.SendWelcomeEmail;
 
-public sealed class SendWelcomeEmailOnUserCreated(IEmailService emailService, UserManager<User> userManager) : BaseDomainEventHandler<UserCreatedEvent, IUsersUnitOfWork>(null)
+internal class SendWelcomeEmailQueuedCommandHandler(IEmailService emailService, UserManager<User> userManager) : IQueuedCommandHandler<SendWelcomeEmailQueuedCommand>
 {
-    protected override async Task HandleInner(UserCreatedEvent notification, CancellationToken cancellationToken)
+    public async Task Handle(SendWelcomeEmailQueuedCommand request, CancellationToken cancellationToken)
     {
-        User user = await userManager.FindByEmailAsync(notification.Email.ToString())
+        User user = await userManager.FindByIdAsync(request.UserId.ToString())
             ?? throw new ErrorException(UsersDomainErrors.User.UserNotFound);
 
         // Create a token used to confirm the user's email address
         string confirmEmailToken = await userManager.GenerateEmailConfirmationTokenAsync(user);
         await userManager.SetAuthenticationTokenAsync(user, "Default", "ConfirmUserEmail", confirmEmailToken);
-        
+
         // Send email to user
         await emailService.SendEmailAsync(user.Email!, new ConfirmUserEmailEmailContent(user.UserName!, HttpUtility.UrlEncode(confirmEmailToken)), cancellationToken);
     }

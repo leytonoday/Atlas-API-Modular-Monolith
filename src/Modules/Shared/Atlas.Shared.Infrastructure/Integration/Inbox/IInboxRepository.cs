@@ -5,7 +5,7 @@ namespace Atlas.Shared.Infrastructure.Integration.Inbox;
 
 public interface IInboxRepository
 {
-    public Task CreateAsync(IIntegrationEvent integrationEvent, CancellationToken cancellationToken);
+    public Task AddAsync(IIntegrationEvent integrationEvent, CancellationToken cancellationToken);
 
     public Task MarkProcessedAsync(InboxMessage inboxMessage, CancellationToken cancellationToken);
 

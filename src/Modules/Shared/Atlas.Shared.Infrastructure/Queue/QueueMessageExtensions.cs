@@ -1,12 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Atlas.Shared.Application.Queue;
+using Microsoft.EntityFrameworkCore;
 
 namespace Atlas.Shared.Infrastructure.CommandQueue;
 
-public static class CommandQueueMessageExtensions
+public static class QueueMessageExtensions
 {
     public static void AddCommandMessageQueue(this ModelBuilder modelBuilder, string schema)
     {
-        modelBuilder.Entity<CommandQueueMessage>(entity =>
+        modelBuilder.Entity<QueueMessage>(entity =>
         {
             entity.ToTable(SharedInfrastructureConstants.TableNames.CommandQueueMessages, schema);
         });

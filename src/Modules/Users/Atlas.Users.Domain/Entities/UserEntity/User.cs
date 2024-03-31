@@ -51,11 +51,10 @@ public sealed class User : IdentityUser<Guid>, IEntity<Guid>, IAuditableEntity, 
     {
         var user = new User()
         {
+            Id = Guid.NewGuid(),
             UserName = userName,
             Email = email,
         };
-
-        user.AddDomainEvent(new UserCreatedEvent(Guid.NewGuid(), email));
 
         IdentityResult result = await userManager.CreateAsync(user, password);
         if (!result.Succeeded)

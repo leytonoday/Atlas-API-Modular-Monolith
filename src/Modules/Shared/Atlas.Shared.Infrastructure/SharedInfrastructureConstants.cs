@@ -1,6 +1,7 @@
 ﻿using Atlas.Shared.Infrastructure.CommandQueue;
 using Atlas.Shared.Infrastructure.Integration.Inbox;
 using Atlas.Shared.Infrastructure.Integration.Outbox;
+using Atlas.Shared.Application.Queue;
 
 namespace Atlas.Shared.Infrastructure;
 
@@ -19,8 +20,8 @@ public static class SharedInfrastructureConstants
         public const string InboxMessages = nameof(InboxMessages);
 
         /// <summary>
-        /// Represents the table name for <see cref="CommandQueueMessage"/> entities in the database.
+        /// Represents the table name for <see cref="QueueMessage"/> entities in the database.
         /// </summary>
-        public const string CommandQueueMessages = nameof(CommandQueueMessages);
+        public const string QueueMessages = nameof(QueueMessages);
     }
 }

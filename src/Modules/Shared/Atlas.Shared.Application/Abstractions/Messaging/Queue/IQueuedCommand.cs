@@ -1,5 +1,5 @@
 ﻿using MediatR;
 
-namespace Atlas.Shared.Infrastructure.CommandQueue;
+namespace Atlas.Shared.Application.Queue;
 
 public interface IQueuedCommand : IRequest;

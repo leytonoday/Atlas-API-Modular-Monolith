@@ -3,10 +3,12 @@ using Atlas.Shared.Application.Abstractions;
 using Atlas.Shared.Application.Abstractions.Services;
 using Atlas.Shared.Application.Abstractions.Services.EmailService;
 using Atlas.Shared.Application.Behaviors;
+using Atlas.Shared.Application.Queue;
 using Atlas.Shared.Infrastructure.Builders;
 using Atlas.Shared.Infrastructure.CommandQueue;
 using Atlas.Shared.Infrastructure.Integration.Inbox;
 using Atlas.Shared.Infrastructure.Integration.Outbox;
+using Atlas.Shared.Infrastructure.Queue;
 using Atlas.Shared.Infrastructure.Services;
 using FluentValidation;
 using MediatR;
@@ -40,7 +42,8 @@ public static class ServiceCollectionExtensions
         services.AddDatabaseInterceptors();
 
         // Command queue
-        services.AddScoped<ICommandQueueMessageRepository, CommandQueueMessageRepository>();
+        services.AddScoped<IQueueWriter, QueueWriter>();
+        services.AddScoped<QueueReader>();
 
         // Integration
         services.AddScoped<IInboxRepository, InboxRepository>();

@@ -8,7 +8,7 @@ public class OutboxRepository(DbContext databaseContext) :
     private DbSet<OutboxMessage> GetDbSet() => databaseContext.Set<OutboxMessage>();
 
 
-    public Task CreateAsync(IIntegrationEvent integrationEvent, CancellationToken cancellationToken)
+    public Task AddAsync(IIntegrationEvent integrationEvent, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         var set = GetDbSet();
