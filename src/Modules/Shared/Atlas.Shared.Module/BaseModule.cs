@@ -5,7 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Atlas.Shared.Module;
 
-public abstract class BaseModule<TCompositionRoot> : IModule where TCompositionRoot : ICompositionRoot
+public abstract class BaseModule<TCompositionRoot> : IModule 
+    where TCompositionRoot : ICompositionRoot
 {
     /// <summary>
     /// Sends a command to the module, and doesn't return any data.
@@ -26,12 +27,9 @@ public abstract class BaseModule<TCompositionRoot> : IModule where TCompositionR
     /// <typeparam name="TResult">The type of result expected from the command.</typeparam>
     /// <param name="command">The command to send to the module.</param>
     /// <param name="cancellationToken">Propogates notification that operations should be cancelled.</param>
-    /// <returns>Data of type <typeparamref name="TResult"/> that was returned from the command.</returns>
     public virtual async Task SendCommand(ICommand command, CancellationToken cancellationToken = default)
     {
-        using var scope = TCompositionRoot.BeginLifetimeScope();
-        IMediator dispatcher = scope.ServiceProvider.GetRequiredService<IMediator>();
-        await dispatcher.Send(command, cancellationToken);
+        await CommandsExecutor<TCompositionRoot>.SendCommand(command, cancellationToken);
     }
 
     /// <summary>
@@ -43,9 +41,7 @@ public abstract class BaseModule<TCompositionRoot> : IModule where TCompositionR
     /// <returns>Data of type <typeparamref name="TResult"/> that was returned from the query.</returns>
     public virtual async Task<TResult> SendCommand<TResult>(ICommand<TResult> command, CancellationToken cancellationToken = default)
     {
-        using var scope = TCompositionRoot.BeginLifetimeScope();
-        IMediator dispatcher = scope.ServiceProvider.GetRequiredService<IMediator>();
-        return await dispatcher.Send(command, cancellationToken);
+        return await CommandsExecutor<TCompositionRoot>.SendCommand(command, cancellationToken);
     }
 
     /// <summary>
