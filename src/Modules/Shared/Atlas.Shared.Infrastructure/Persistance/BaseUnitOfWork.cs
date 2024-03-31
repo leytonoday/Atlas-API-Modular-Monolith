@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Atlas.Shared.Infrastructure.Persistance;
 
-public abstract class BaseUnitOfWork<TDatabaseContext, IUnitOfWorkLogger>(TDatabaseContext databaseContext, IUnitOfWorkLogger logger) : IBaseUnitOfWork 
+public abstract class BaseUnitOfWork<TDatabaseContext, IUnitOfWorkLogger>(TDatabaseContext databaseContext, IUnitOfWorkLogger logger) : IUnitOfWork 
     where TDatabaseContext : DbContext
     where IUnitOfWorkLogger : ILogger
 {

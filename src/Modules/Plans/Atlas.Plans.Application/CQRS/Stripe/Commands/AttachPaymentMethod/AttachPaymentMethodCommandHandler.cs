@@ -12,14 +12,14 @@ using Atlas.Users.Application.Abstractions;
 
 namespace Atlas.Plans.Application.CQRS.Stripe.Commands.AttachPaymentMethod;
 
-internal sealed class AttachPaymentMethodCommandHandler(IPlansUnitOfWork unitOfWork, UserManager<User> userManager, IUserContext userContext, IStripeService stripeService) : IRequestHandler<AttachPaymentMethodCommand>
+internal sealed class AttachPaymentMethodCommandHandler(IStripeCustomerRepository stripeCustomerRepository, UserManager<User> userManager, IUserContext userContext, IStripeService stripeService) : IRequestHandler<AttachPaymentMethodCommand>
 {
     public async Task Handle(AttachPaymentMethodCommand request, CancellationToken cancellationToken)
     {
         User user = await userManager.FindByIdAsync(userContext.UserId.ToString())
             ?? throw new ErrorException(UsersDomainErrors.User.UserNotFound);
 
-        StripeCustomer? stripeCustomer = await unitOfWork.StripeCustomerRepository.GetByUserId(user.Id, false, cancellationToken)
+        StripeCustomer? stripeCustomer = await stripeCustomerRepository.GetByUserId(user.Id, false, cancellationToken)
             ?? throw new ErrorException(PlansDomainErrors.StripeCustomer.StripeCustomerNotFound);
 
         var paymentMethodAttachOptions = new PaymentMethodAttachOptions

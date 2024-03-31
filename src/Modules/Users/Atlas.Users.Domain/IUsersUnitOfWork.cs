@@ -2,6 +2,6 @@
 
 namespace Atlas.Users.Domain;
 
-public interface IUsersUnitOfWork : IBaseUnitOfWork
+public interface IUsersUnitOfWork : IUnitOfWork
 {
 }

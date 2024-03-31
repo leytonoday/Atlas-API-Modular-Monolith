@@ -13,7 +13,7 @@ using Atlas.Plans.Domain.Errors;
 
 namespace Atlas.Plans.Application.CQRS.Stripe.Queries.GetInvoiceHistory;
 
-internal sealed class GetInvoiceHistoryQueryHandler(IPlansUnitOfWork unitOfWork, IStripeService stripeService, UserManager<User> userManager, IMapper mapper) : IRequestHandler<GetInvoiceHistoryQuery, IEnumerable<StripeSlimInvoiceDto>>
+internal sealed class GetInvoiceHistoryQueryHandler(IStripeCustomerRepository stripeCustomerRepository, IStripeService stripeService, UserManager<User> userManager, IMapper mapper) : IRequestHandler<GetInvoiceHistoryQuery, IEnumerable<StripeSlimInvoiceDto>>
 {
     public async Task<IEnumerable<StripeSlimInvoiceDto>> Handle(GetInvoiceHistoryQuery request, CancellationToken cancellationToken)
     {
@@ -21,7 +21,7 @@ internal sealed class GetInvoiceHistoryQueryHandler(IPlansUnitOfWork unitOfWork,
         User user = await userManager.FindByIdAsync(request.UserId.ToString())
             ?? throw new ErrorException(UsersDomainErrors.User.UserNotFound);
 
-        StripeCustomer? stripeCustomer = await unitOfWork.StripeCustomerRepository.GetByUserId(user.Id, false, cancellationToken)
+        StripeCustomer? stripeCustomer = await stripeCustomerRepository.GetByUserId(user.Id, false, cancellationToken)
             ?? throw new ErrorException(PlansDomainErrors.StripeCustomer.StripeCustomerNotFound);
 
         var invoiceListOptions = new InvoiceListOptions

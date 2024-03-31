@@ -8,11 +8,11 @@ using MediatR;
 
 namespace Atlas.Plans.Application.CQRS.Plans.Queries.GetPlanById;
 
-internal sealed class GetPlanByIdQueryHandler(IPlansUnitOfWork unitOfWork, IMapper mapper) : IRequestHandler<GetPlanByIdQuery, PlanDto>
+internal sealed class GetPlanByIdQueryHandler(IPlanRepository planRepository, IMapper mapper) : IRequestHandler<GetPlanByIdQuery, PlanDto>
 {
     public async Task<PlanDto> Handle(GetPlanByIdQuery request, CancellationToken cancellationToken)
     {
-        Plan plan = await unitOfWork.PlanRepository.GetByIdAsync(request.Id, false, cancellationToken)
+        Plan plan = await planRepository.GetByIdAsync(request.Id, false, cancellationToken)
             ?? throw new ErrorException(PlansDomainErrors.Plan.PlanNotFound);
 
         return mapper.Map<PlanDto>(plan);

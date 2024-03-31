@@ -1,6 +1,6 @@
 ﻿namespace Atlas.Shared.Domain;
 
-public interface IBaseUnitOfWork
+public interface IUnitOfWork
 {
     /// <summary>
     /// Commits the changes made within the unit of work to the underlying database.

@@ -1,10 +1,11 @@
 ﻿using Atlas.Infrastructure.Persistance.Interceptors;
+using Atlas.Shared.Domain;
+using Atlas.Shared.Infrastructure.Behaviors;
 using Atlas.Shared.Infrastructure.Integration.Outbox;
 using Atlas.Shared.Infrastructure.Persistance.Options;
 using Atlas.Users.Application;
 using Atlas.Users.Domain;
 using Atlas.Users.Domain.Entities.UserEntity;
-using Atlas.Users.Infrastructure.Behaviors;
 using Atlas.Users.Infrastructure.Persistance;
 using FluentValidation;
 using MediatR;
@@ -30,7 +31,7 @@ public static class ServiceCollectionExtensions
         {
             config.RegisterServicesFromAssemblies(applicationAssembly);
         });
-        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UsersUnitOfWorkBehavior<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnitOfWorkBehavior<,>));
 
         // Validation
         services.AddValidatorsFromAssembly(applicationAssembly);
@@ -46,7 +47,7 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddDatabaseServices(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddScoped<IUsersUnitOfWork, UsersUnitOfWork>();
+        services.AddScoped<IUnitOfWork, UsersUnitOfWork>();
         services.AddDbContextFactory<UsersDatabaseContext>((provider, options) =>
         {
             var databaseOptions = new DatabaseOptions();

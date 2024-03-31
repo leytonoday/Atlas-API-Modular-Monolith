@@ -6,16 +6,14 @@ using MediatR;
 
 namespace Atlas.Plans.Application.CQRS.Features.Commands.DeleteFeature;
 
-internal sealed class DeleteFeatureCommandHandler(IPlansUnitOfWork unitOfWork) : IRequestHandler<DeleteFeatureCommand, Feature>
+internal sealed class DeleteFeatureCommandHandler(IFeatureRepository featureRepository) : IRequestHandler<DeleteFeatureCommand, Feature>
 {
     public async Task<Feature> Handle(DeleteFeatureCommand request, CancellationToken cancellationToken)
     {
-        Feature feature = await unitOfWork.FeatureRepository.GetByIdAsync(request.Id, true, cancellationToken)
+        Feature feature = await featureRepository.GetByIdAsync(request.Id, true, cancellationToken)
             ?? throw new ErrorException(PlansDomainErrors.Feature.FeatureNotFound);
 
-        await unitOfWork.FeatureRepository.RemoveAsync(feature, cancellationToken);
-        await unitOfWork.CommitAsync(cancellationToken);
-
+        await featureRepository.RemoveAsync(feature, cancellationToken);
         return feature;
     }
 }

@@ -11,7 +11,7 @@ using Atlas.Plans.Domain.Errors;
 
 namespace Atlas.Plans.Application.CQRS.Stripe.Queries.GetUserPaymentMethodsQuery;
 
-internal sealed class GetUserPaymentMethodsQueryHandler(IPlansUnitOfWork unitOfWork, IStripeService stripeService, UserManager<User> userManager) : IRequestHandler<GetUserPaymentMethodsQuery, IEnumerable<PaymentMethod>>
+internal sealed class GetUserPaymentMethodsQueryHandler(IStripeCustomerRepository stripeCustomerRepository, IStripeService stripeService, UserManager<User> userManager) : IRequestHandler<GetUserPaymentMethodsQuery, IEnumerable<PaymentMethod>>
 {
     public async Task<IEnumerable<PaymentMethod>> Handle(GetUserPaymentMethodsQuery request, CancellationToken cancellationToken)
     {
@@ -19,7 +19,7 @@ internal sealed class GetUserPaymentMethodsQueryHandler(IPlansUnitOfWork unitOfW
         User user = await userManager.FindByIdAsync(request.UserId.ToString())
             ?? throw new ErrorException(UsersDomainErrors.User.UserNotFound);
 
-        StripeCustomer? stripeCustomer = await unitOfWork.StripeCustomerRepository.GetByUserId(user.Id, false, cancellationToken)
+        StripeCustomer? stripeCustomer = await stripeCustomerRepository.GetByUserId(user.Id, false, cancellationToken)
             ?? throw new ErrorException(PlansDomainErrors.StripeCustomer.StripeCustomerNotFound);
 
         var paymentMethodListOptions = new PaymentMethodListOptions

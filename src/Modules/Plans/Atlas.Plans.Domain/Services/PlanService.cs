@@ -4,7 +4,7 @@ using Atlas.Plans.Domain.Entities.PlanFeatureEntity;
 
 namespace Atlas.Plans.Domain.Services;
 
-public sealed class PlanService(IPlansUnitOfWork plansUnitOfWork)
+public sealed class PlanService(IPlanRepository planRepository, IFeatureRepository featureRepository)
 {
     /// <summary>
     /// Determines if a <see cref="Plan"/> with the name of <paramref name="name"/> already exists.
@@ -14,7 +14,7 @@ public sealed class PlanService(IPlansUnitOfWork plansUnitOfWork)
     /// <returns>A <see cref="Task"/> that returns if the plan exists or not.</returns>
     public async Task<bool> IsNameTakenAsync(string name, CancellationToken cancellationToken)
     {
-        return await plansUnitOfWork.PlanRepository.IsNameTakenAsync(name, cancellationToken);
+        return await planRepository.IsNameTakenAsync(name, cancellationToken);
     }
 
     /// <summary>
@@ -42,7 +42,7 @@ public sealed class PlanService(IPlansUnitOfWork plansUnitOfWork)
         if (!currentPlan.InheritsFromId.HasValue)
             return;
 
-        Plan? parentPlan = (await plansUnitOfWork.PlanRepository.GetByIdAsync(currentPlan.InheritsFromId.Value, false, cancellationToken))!;
+        Plan? parentPlan = (await planRepository.GetByIdAsync(currentPlan.InheritsFromId.Value, false, cancellationToken))!;
         if (parentPlan is null)
             return;
 
@@ -74,7 +74,7 @@ public sealed class PlanService(IPlansUnitOfWork plansUnitOfWork)
     /// and get all of it's <see cref="Feature"/>s that are inheritable.</remarks>
     private async Task RecursivelyGetFeaturesAsync(Guid planId, List<Feature> features, CancellationToken cancellationToken)
     {
-        Plan? plan = await plansUnitOfWork.PlanRepository.GetByIdAsync(planId, true, cancellationToken);
+        Plan? plan = await planRepository.GetByIdAsync(planId, true, cancellationToken);
         if (plan is null)
             return;
 
@@ -110,7 +110,7 @@ public sealed class PlanService(IPlansUnitOfWork plansUnitOfWork)
     /// and get all of it's <see cref="PlanFeature"/>s, where the <see cref="Feature"/> is inheritable.</remarks>
     private async Task RecursivelyGetPlanFeaturesAsync(Guid planId, List<PlanFeature> planFeatures, CancellationToken cancellationToken)
     {
-        Plan? plan = await plansUnitOfWork.PlanRepository.GetByIdAsync(planId, true, cancellationToken);
+        Plan? plan = await planRepository.GetByIdAsync(planId, true, cancellationToken);
         if (plan is null)
             return;
 
@@ -122,7 +122,7 @@ public sealed class PlanService(IPlansUnitOfWork plansUnitOfWork)
             foreach (PlanFeature planFeatureToAdd in planFeaturesToAdd)
             {
                 // Only add the plan feature if the feature it links to is marked as inheritable
-                Feature? feature = await plansUnitOfWork.FeatureRepository.GetByIdAsync(planFeatureToAdd.FeatureId, false, cancellationToken);
+                Feature? feature = await featureRepository.GetByIdAsync(planFeatureToAdd.FeatureId, false, cancellationToken);
                 if (feature is not null && feature.IsInheritable)
                 {
                     inheritablePlanFeatures.Add(planFeatureToAdd);

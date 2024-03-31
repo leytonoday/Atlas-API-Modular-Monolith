@@ -9,10 +9,11 @@ using Atlas.Shared.Domain.Exceptions;
 using Atlas.Plans.Domain.Errors;
 using Atlas.Plans.Domain.Entities.StripeCustomerEntity;
 using Atlas.Users.Domain.Errors;
+using Atlas.Plans.Domain.Entities.PlanEntity;
 
 namespace Atlas.Plans.Application.CQRS.Stripe.Commands.UpdateSubscription;
 
-internal sealed class UpdateSubscriptionCommandHandler(IPlansUnitOfWork unitOfWork, IUserContext userContext, UserManager<User> userManager, IStripeService stripeService) : IRequestHandler<UpdateSubscriptionCommand, Subscription>
+internal sealed class UpdateSubscriptionCommandHandler(IStripeCustomerRepository stripeCustomerRepository, IPlanRepository planRepository, IUserContext userContext, UserManager<User> userManager, IStripeService stripeService) : IRequestHandler<UpdateSubscriptionCommand, Subscription>
 {
     public async Task<Subscription> Handle(UpdateSubscriptionCommand request, CancellationToken cancellationToken)
     {
@@ -24,7 +25,7 @@ internal sealed class UpdateSubscriptionCommandHandler(IPlansUnitOfWork unitOfWo
         User user = await userManager.FindByIdAsync(userContext.UserId.ToString())
             ?? throw new ErrorException(UsersDomainErrors.User.UserNotFound);
 
-        var plan = await unitOfWork.PlanRepository.GetByIdAsync(request.PlanId, false, cancellationToken)
+        var plan = await planRepository.GetByIdAsync(request.PlanId, false, cancellationToken)
             ?? throw new ErrorException(UsersDomainErrors.User.UserNotFound);
 
         // Get the promotion code, if one was specified, and ensure it is valid
@@ -38,7 +39,7 @@ internal sealed class UpdateSubscriptionCommandHandler(IPlansUnitOfWork unitOfWo
             }
         }
 
-        StripeCustomer? stripeCustomer = await unitOfWork.StripeCustomerRepository.GetByUserId(user.Id, false, cancellationToken)
+        StripeCustomer? stripeCustomer = await stripeCustomerRepository.GetByUserId(user.Id, false, cancellationToken)
             ?? throw new ErrorException(PlansDomainErrors.StripeCustomer.StripeCustomerNotFound);
 
         // Cancel any existing incomplete or incomplete_expired subscriptions. These can occur if the user fails or abandons 3D Secure authentication

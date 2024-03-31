@@ -9,10 +9,11 @@ using Atlas.Shared.Domain.Exceptions;
 using Atlas.Plans.Domain.Entities.StripeCustomerEntity;
 using Atlas.Plans.Domain.Errors;
 using Atlas.Users.Domain.Errors;
+using Atlas.Plans.Domain.Entities.PlanEntity;
 
 namespace Atlas.Plans.Application.CQRS.Stripe.Commands.CreateSubscription;
 
-internal sealed class CreateSubscriptionCommandHandler(IPlansUnitOfWork unitOfWork, IUserContext userContext, UserManager<User> userManager, IStripeService stripeService) : IRequestHandler<CreateSubscriptionCommand, Subscription>
+internal sealed class CreateSubscriptionCommandHandler(IStripeCustomerRepository stripeCustomerRepository, IPlanRepository planRepository, IUserContext userContext, UserManager<User> userManager, IStripeService stripeService) : IRequestHandler<CreateSubscriptionCommand, Subscription>
 {
     public async Task<Subscription> Handle(CreateSubscriptionCommand request, CancellationToken cancellationToken)
     {
@@ -24,7 +25,7 @@ internal sealed class CreateSubscriptionCommandHandler(IPlansUnitOfWork unitOfWo
         User user = await userManager.FindByIdAsync(userContext.UserId.ToString())
             ?? throw new ErrorException(UsersDomainErrors.User.UserNotFound);
 
-        StripeCustomer? stripeCustomer = await unitOfWork.StripeCustomerRepository.GetByUserId(user.Id, false, cancellationToken)
+        StripeCustomer? stripeCustomer = await stripeCustomerRepository.GetByUserId(user.Id, false, cancellationToken)
             ?? throw new ErrorException(PlansDomainErrors.StripeCustomer.StripeCustomerNotFound);
 
         // Ensure user is not already subscribed to a plan. We get the subscription, rather than checking the PlanId column because when the 
@@ -35,7 +36,7 @@ internal sealed class CreateSubscriptionCommandHandler(IPlansUnitOfWork unitOfWo
             throw new ErrorException(PlansDomainErrors.Stripe.UserAlreadySubscribedToPlan);
         }
 
-        var plan = await unitOfWork.PlanRepository.GetByIdAsync(request.PlanId, false, cancellationToken)
+        var plan = await planRepository.GetByIdAsync(request.PlanId, false, cancellationToken)
             ?? throw new ErrorException(UsersDomainErrors.User.UserNotFound);
 
         // Get the promotion code, if one was specified, and ensure it is valid

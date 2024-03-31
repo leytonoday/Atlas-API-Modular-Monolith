@@ -7,10 +7,11 @@ using Atlas.Shared.Domain.Exceptions;
 using Atlas.Users.Domain.Entities.UserEntity;
 using Atlas.Users.Domain.Errors;
 using Microsoft.AspNetCore.Identity;
+using Atlas.Shared.Domain;
 
 namespace Atlas.Plans.Application.CQRS.Stripe.Events;
 
-public sealed class UpdateStripeCustomerOnUserUpdated(IStripeService stripeService, UserManager<User> userManager, IPlansUnitOfWork unitOfWork) : BaseDomainEventHandler<UserUpdatedEvent, IPlansUnitOfWork>(unitOfWork)
+public sealed class UpdateStripeCustomerOnUserUpdated(IStripeService stripeService, UserManager<User> userManager) : BaseDomainEventHandler<UserUpdatedEvent, IUnitOfWork>(null)
 {
     protected override async Task HandleInner(UserUpdatedEvent notification, CancellationToken cancellationToken)
     {

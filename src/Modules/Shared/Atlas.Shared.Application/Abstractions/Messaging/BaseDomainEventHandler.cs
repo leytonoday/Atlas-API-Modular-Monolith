@@ -8,11 +8,9 @@ namespace Atlas.Shared.Application.Abstractions.Messaging;
 /// A wrapper around the <see cref="INotificationHandler{TNotification}"/> from MediatR that ensures idempotence of notification handling for <see cref="IDomainEvent"/>s.
 /// Any notification handler that must be idempotent should inherit from <see cref="BaseDomainEventHandler{TEvent, TIUnitOfWork}"/> rather than <see cref="IDomainEventHandler{TEvent}"/>.
 /// </summary>
-/// <typeparam name="TEvent">The <see cref="IDomainEvent"/> to handle.</typeparam>
-/// <typeparam name="TIUnitOfWork">The implementation of the <see cref="IBaseUnitOfWork"/>. These are different because each unit of work has different entities tracking outbox messages and acknowledgements.</typeparam>
 public abstract class BaseDomainEventHandler<TEvent, TIUnitOfWork> : IDomainEventHandler<TEvent>
     where TEvent : IDomainEvent
-    where TIUnitOfWork : IBaseUnitOfWork
+    where TIUnitOfWork : IUnitOfWork
 {
     private readonly TIUnitOfWork _unitOfWork;
 

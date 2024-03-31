@@ -11,7 +11,7 @@ using Atlas.Plans.Domain.Errors;
 
 namespace Atlas.Plans.Application.CQRS.Stripe.Commands.CancelSubscription;
 
-internal sealed class CancelSubscriptionCommandHandler(IPlansUnitOfWork unitOfWork, UserManager<User> userManager, IStripeService stripeService) : IRequestHandler<CancelSubscriptionCommand>
+internal sealed class CancelSubscriptionCommandHandler(IStripeCustomerRepository stripeCustomerRepository, UserManager<User> userManager, IStripeService stripeService) : IRequestHandler<CancelSubscriptionCommand>
 {
     public async Task Handle(CancelSubscriptionCommand request, CancellationToken cancellationToken)
     {
@@ -19,7 +19,7 @@ internal sealed class CancelSubscriptionCommandHandler(IPlansUnitOfWork unitOfWo
         User user = await userManager.FindByIdAsync(request.UserId.ToString())
             ?? throw new ErrorException(UsersDomainErrors.User.UserNotFound);
 
-        StripeCustomer? stripeCustomer = await unitOfWork.StripeCustomerRepository.GetByUserId(user.Id, false, cancellationToken)
+        StripeCustomer? stripeCustomer = await stripeCustomerRepository.GetByUserId(user.Id, false, cancellationToken)
             ?? throw new ErrorException(PlansDomainErrors.StripeCustomer.StripeCustomerNotFound);
 
         Subscription subscription = await stripeService.GetStripeCustomerSubscriptionAsync(stripeCustomer.StripeCustomerId, cancellationToken)

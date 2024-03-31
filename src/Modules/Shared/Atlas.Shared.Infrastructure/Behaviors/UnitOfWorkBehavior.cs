@@ -4,9 +4,8 @@ using MediatR;
 
 namespace Atlas.Shared.Infrastructure.Behaviors;
 
-public class BaseUnitOfWorkBehavior<TRequest, TResponse, TUnitOfWork>(TUnitOfWork unitOfWork) : IPipelineBehavior<TRequest, TResponse> 
+public class UnitOfWorkBehavior<TRequest, TResponse>(IUnitOfWork unitOfWork) : IPipelineBehavior<TRequest, TResponse> 
     where TRequest : notnull
-    where TUnitOfWork : IBaseUnitOfWork
 {
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {

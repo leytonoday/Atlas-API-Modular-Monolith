@@ -9,6 +9,7 @@ using Atlas.Users.Domain.Entities.UserEntity;
 using Atlas.Plans.Domain.Errors;
 using Atlas.Plans.Domain.Services;
 using Atlas.Plans.Infrastructure.Options;
+using Atlas.Plans.Infrastructure.Persistance.Repositories;
 
 namespace Atlas.Plans.Infrastructure.Services;
 
@@ -30,16 +31,18 @@ public sealed class StripeService : IStripeService
     public PaymentIntentService PaymentIntentService { get; } = new PaymentIntentService();
     public ChargeService ChargeService {  get; } = new ChargeService();
 
-    private readonly IPlansUnitOfWork _plansUnitOfWork;
+    private readonly IStripeCardFingerprintRepository _stripeCardFingerprintRepository;
+    private readonly IStripeCustomerRepository _stripeCustomerRepository;
     private readonly string? _testClockId;
     private readonly string _publishableKey;
 
-    public StripeService(IOptions<StripeOptions> stripeOptions, IPlansUnitOfWork unitOfWork)
+    public StripeService(IOptions<StripeOptions> stripeOptions, IStripeCardFingerprintRepository stripeCardFingerprintRepository, IStripeCustomerRepository stripeCustomerRepository)
     {
         StripeConfiguration.ApiKey = stripeOptions.Value.SecretKey;
         _testClockId = stripeOptions.Value.TestClockId;
-        _plansUnitOfWork = unitOfWork;
+        _stripeCardFingerprintRepository = stripeCardFingerprintRepository;
         _publishableKey = stripeOptions.Value.PublishableKey;
+        _stripeCustomerRepository = stripeCustomerRepository;
     }
 
     public string GetPublishableKey()
@@ -69,7 +72,7 @@ public sealed class StripeService : IStripeService
 
     public async Task UpdateCustomerAsync(User user, CancellationToken cancellationToken)
     {
-        StripeCustomer stripeCustomer = await _plansUnitOfWork.StripeCustomerRepository.GetByUserId(user.Id, false, cancellationToken)
+        StripeCustomer stripeCustomer = await _stripeCustomerRepository.GetByUserId(user.Id, false, cancellationToken)
             ?? throw new ErrorException(PlansDomainErrors.StripeCustomer.StripeCustomerNotFound);
 
         var customerUpdateOptions = new CustomerUpdateOptions()
@@ -195,7 +198,7 @@ public sealed class StripeService : IStripeService
     public async Task<bool> HasCardPaymentMethodBeenUsedBeforeAsync(string paymentMethodId, CancellationToken cancellationToken)
     {
         PaymentMethod paymentMethod = await PaymentMethodService.GetAsync(paymentMethodId, cancellationToken: cancellationToken);
-        StripeCardFingerprint? cardFingerprint = await _plansUnitOfWork.StripeCardFingerprintRepository.GetByFingerprintAsync(paymentMethod.Card.Fingerprint, false, cancellationToken);
+        StripeCardFingerprint? cardFingerprint = await _stripeCardFingerprintRepository.GetByFingerprintAsync(paymentMethod.Card.Fingerprint, false, cancellationToken);
         return cardFingerprint is not null;
     }
 

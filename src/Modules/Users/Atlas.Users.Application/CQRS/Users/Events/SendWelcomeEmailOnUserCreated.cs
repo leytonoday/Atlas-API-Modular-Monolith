@@ -11,7 +11,7 @@ using System.Web;
 
 namespace Atlas.Users.Application.CQRS.Users.Events;
 
-public sealed class SendWelcomeEmailOnUserCreated(IUsersUnitOfWork usersUnitOfWork, IEmailService emailService, UserManager<User> userManager) : BaseDomainEventHandler<UserCreatedEvent, IUsersUnitOfWork>(usersUnitOfWork)
+public sealed class SendWelcomeEmailOnUserCreated(IEmailService emailService, UserManager<User> userManager) : BaseDomainEventHandler<UserCreatedEvent, IUsersUnitOfWork>(null)
 {
     protected override async Task HandleInner(UserCreatedEvent notification, CancellationToken cancellationToken)
     {

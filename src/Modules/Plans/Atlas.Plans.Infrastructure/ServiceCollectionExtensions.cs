@@ -10,8 +10,15 @@ using Atlas.Plans.Infrastructure.Services;
 using Atlas.Plans.Application;
 using FluentValidation;
 using MediatR;
-using Atlas.Plans.Infrastructure.Behaviors;
+using Atlas.Shared.Infrastructure.Behaviors;
 using Atlas.Users.Domain;
+using Atlas.Plans.Domain.Entities.PlanEntity;
+using Atlas.Plans.Infrastructure.Persistance.Repositories;
+using Atlas.Plans.Domain.Entities.FeatureEntity;
+using Atlas.Plans.Domain.Entities.PlanFeatureEntity;
+using Atlas.Plans.Domain.Entities.StripeCustomerEntity;
+using Atlas.Plans.Domain.Entities.StripeCardFingerprintEntity;
+using Atlas.Shared.Domain;
 
 namespace Atlas.Plans.Infrastructure;
 
@@ -22,9 +29,6 @@ public static class ServiceCollectionExtensions
         var applicationAssembly = typeof(PlansApplicationAssemblyReference).Assembly;
         var infrastructureAssembly = typeof(PlansInfrastructureAssemblyReference).Assembly;
 
-        services.AddScoped<PlanService>();
-        services.AddScoped<IStripeService, StripeService>();
-
         // Database related services
         services.AddDatabaseServices(configuration);
 
@@ -33,7 +37,7 @@ public static class ServiceCollectionExtensions
         {
             config.RegisterServicesFromAssemblies(applicationAssembly);
         });
-        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PlansUnitOfWorkBehavior<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnitOfWorkBehavior<,>));
 
         // Validation
         services.AddValidatorsFromAssembly(applicationAssembly);
@@ -41,12 +45,24 @@ public static class ServiceCollectionExtensions
         // Auto-mapper
         services.AddAutoMapper(infrastructureAssembly);
 
+        // Services
+        services.AddScoped<PlanService>();
+        services.AddScoped<IStripeService, StripeService>();
+
         return services;
     }
 
     public static IServiceCollection AddDatabaseServices(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddScoped<IPlansUnitOfWork, PlansUnitOfWork>();
+        services.AddScoped<IUnitOfWork, PlansUnitOfWork>();
+
+        services.AddScoped<IPlanRepository, PlanRepository>();
+        services.AddScoped<IFeatureRepository, FeatureRepository>();
+        services.AddScoped<IPlanFeatureRepository, PlanFeatureRepository>();
+        services.AddScoped<IStripeCustomerRepository, StripeCustomerRepository>();
+        services.AddScoped<IStripeCardFingerprintRepository, StripeCardFingerprintRepository>();
+
+
         services.AddDbContextFactory<PlansDatabaseContext>((provider, options) =>
         {
             var databaseOptions = new DatabaseOptions();

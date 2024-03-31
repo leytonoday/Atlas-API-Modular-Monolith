@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Atlas.Plans.Application.CQRS.Features.Commands.UpdateFeature;
 
-internal sealed class UpdateFeatureCommandHandler(IPlansUnitOfWork unitOfWork) : IRequestHandler<UpdateFeatureCommand, Feature>
+internal sealed class UpdateFeatureCommandHandler(IFeatureRepository featureRepository) : IRequestHandler<UpdateFeatureCommand, Feature>
 {
     public async Task<Feature> Handle(UpdateFeatureCommand request, CancellationToken cancellationToken)
     {
@@ -14,11 +14,10 @@ internal sealed class UpdateFeatureCommandHandler(IPlansUnitOfWork unitOfWork) :
             request.Description, 
             request.IsInheritable, 
             request.IsHidden,
-            unitOfWork.FeatureRepository, 
+            featureRepository, 
             cancellationToken);
 
-        await unitOfWork.FeatureRepository.UpdateAsync(feature, cancellationToken);
-        await unitOfWork.CommitAsync(cancellationToken);
+        await featureRepository.UpdateAsync(feature, cancellationToken);
 
         return feature;
     }

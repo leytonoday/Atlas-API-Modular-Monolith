@@ -10,11 +10,11 @@ using Atlas.Shared.Application.Abstractions.Messaging.Query;
 
 namespace Atlas.Plans.Application.CQRS.Plans.Queries.GetAllPlans;
 
-internal sealed class GetAllPlansQueryHandler(IPlansUnitOfWork unitOfWork, PlanService planService, IMapper mapper) : IQueryHandler<GetAllPlansQuery, IEnumerable<PlanDto>>
+internal sealed class GetAllPlansQueryHandler(IPlanRepository planRepository, PlanService planService, IMapper mapper) : IQueryHandler<GetAllPlansQuery, IEnumerable<PlanDto>>
 {
     public async Task<IEnumerable<PlanDto>> Handle(GetAllPlansQuery request, CancellationToken cancellationToken)
     {
-        IEnumerable<Plan> plans = await unitOfWork.PlanRepository.GetAllAsync(false, cancellationToken);
+        IEnumerable<Plan> plans = await planRepository.GetAllAsync(false, cancellationToken);
 
         plans = plans.Where(x => request.IncludeInactive || x.Active).OrderBy(x => x.MonthlyPrice).ToList();
 

@@ -1,6 +1,8 @@
 ﻿using Atlas.Plans.Domain;
+using Atlas.Plans.Domain.Entities.StripeCustomerEntity;
 using Atlas.Plans.Domain.Services;
 using Atlas.Shared.Application.Abstractions.Messaging;
+using Atlas.Shared.Domain;
 using Atlas.Shared.Domain.Events.UserEvents;
 using Atlas.Shared.Domain.Exceptions;
 using Atlas.Users.Domain.Entities.UserEntity;
@@ -9,7 +11,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Atlas.Plans.Application.CQRS.Stripe.Events;
 
-public sealed class CreateStripeCustomerOnUserEmailConfirmed(IStripeService stripeService, IPlansUnitOfWork unitOfWork, UserManager<User> userManager) : BaseDomainEventHandler<UserEmailConfirmedEvent, IPlansUnitOfWork>(unitOfWork)
+public sealed class CreateStripeCustomerOnUserEmailConfirmed(IStripeService stripeService, IStripeCustomerRepository stripeCustomerRepository, UserManager<User> userManager) : BaseDomainEventHandler<UserEmailConfirmedEvent, IUnitOfWork>(null)
 {
     protected override async Task HandleInner(UserEmailConfirmedEvent notification, CancellationToken cancellationToken)
     {
@@ -17,8 +19,6 @@ public sealed class CreateStripeCustomerOnUserEmailConfirmed(IStripeService stri
             ?? throw new ErrorException(UsersDomainErrors.User.UserNotFound);
 
         var stripeCustomer = await stripeService.CreateCustomerAsync(user, cancellationToken);
-        await unitOfWork.StripeCustomerRepository.AddAsync(stripeCustomer, cancellationToken);
-
-        await unitOfWork.CommitAsync(cancellationToken);
+        await stripeCustomerRepository.AddAsync(stripeCustomer, cancellationToken);
     }
 }

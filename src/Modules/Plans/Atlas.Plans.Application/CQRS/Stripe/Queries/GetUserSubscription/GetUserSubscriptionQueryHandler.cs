@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Stripe;
 using Microsoft.AspNetCore.Identity;
-using Atlas.Plans.Domain;
 using Atlas.Plans.Domain.Services;
 using Atlas.Users.Domain.Entities.UserEntity;
 using Atlas.Shared.Domain.Exceptions;
@@ -11,7 +10,7 @@ using Atlas.Plans.Domain.Errors;
 
 namespace Atlas.Plans.Application.CQRS.Stripe.Queries.CancelSubscription;
 
-internal sealed class GetUserSubscriptionQueryHandler(IPlansUnitOfWork unitOfWork, IStripeService stripeService, UserManager<User> userManager) : IRequestHandler<GetUserSubscriptionQuery, Subscription?>
+internal sealed class GetUserSubscriptionQueryHandler(IStripeCustomerRepository stripeCustomerRepository, IStripeService stripeService, UserManager<User> userManager) : IRequestHandler<GetUserSubscriptionQuery, Subscription?>
 {
     public async Task<Subscription?> Handle(GetUserSubscriptionQuery request, CancellationToken cancellationToken)
     {
@@ -19,7 +18,7 @@ internal sealed class GetUserSubscriptionQueryHandler(IPlansUnitOfWork unitOfWor
         User user = await userManager.FindByIdAsync(request.UserId.ToString())
             ?? throw new ErrorException(UsersDomainErrors.User.UserNotFound);
 
-        StripeCustomer? stripeCustomer = await unitOfWork.StripeCustomerRepository.GetByUserId(user.Id, false, cancellationToken)
+        StripeCustomer? stripeCustomer = await stripeCustomerRepository.GetByUserId(user.Id, false, cancellationToken)
             ?? throw new ErrorException(PlansDomainErrors.StripeCustomer.StripeCustomerNotFound);
 
         Subscription? subscription = await stripeService.GetStripeCustomerSubscriptionAsync(stripeCustomer.StripeCustomerId, cancellationToken);

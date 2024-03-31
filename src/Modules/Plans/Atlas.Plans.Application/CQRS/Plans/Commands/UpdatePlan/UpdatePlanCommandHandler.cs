@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Atlas.Plans.Application.CQRS.Plans.Commands.CreatePlan;
 
-internal sealed class UpdatePlanCommandHandler(PlanService planService, IPlansUnitOfWork unitOfWork, IStripeService stripeService) : ICommandHandler<UpdatePlanCommand>
+internal sealed class UpdatePlanCommandHandler(PlanService planService, IPlanRepository planRepository, IStripeService stripeService) : ICommandHandler<UpdatePlanCommand>
 {
     public async Task Handle(UpdatePlanCommand request, CancellationToken cancellationToken)
     {
@@ -27,11 +27,10 @@ internal sealed class UpdatePlanCommandHandler(PlanService planService, IPlansUn
             inheritsFromId: request.InheritsFromId,
             planService,
             stripeService,
-            unitOfWork.PlanRepository,
+            planRepository,
             cancellationToken
         );
 
-        await unitOfWork.PlanRepository.UpdateAsync(plan, cancellationToken);
-        await unitOfWork.CommitAsync(cancellationToken);
+        await planRepository.UpdateAsync(plan, cancellationToken);
     }
 }
