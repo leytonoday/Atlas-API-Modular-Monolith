@@ -31,4 +31,6 @@ public interface IModuleStartup
     /// </summary>
     /// <returns>The scheduler instance.</returns>
     protected static abstract Task<IScheduler> SetupScheduledJobs();
+
+    protected static abstract void SetupCompositionRoot(IConfiguration configuration, IEventBus eventBus, ILoggerFactory loggerFactory);
 }

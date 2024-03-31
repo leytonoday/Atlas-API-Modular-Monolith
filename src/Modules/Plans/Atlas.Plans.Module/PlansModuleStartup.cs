@@ -21,14 +21,7 @@ public class PlansModuleStartup : IModuleStartup
     /// <inheritdoc />
     public static async Task Start(IConfiguration configuration, IEventBus eventBus, ILoggerFactory loggerFactory, bool enableScheduler = true)
     {
-        var serviceProvider = new ServiceCollection()
-            .AddCommon(configuration)
-            .AddServices(configuration)
-            .AddSingleton(eventBus)
-            .AddSingleton(loggerFactory)
-            .BuildServiceProvider();
-
-        PlansCompositionRoot.SetProvider(serviceProvider);
+        SetupCompositionRoot(configuration, eventBus, loggerFactory);
 
         PlansEventBusStartup.Initialize(loggerFactory.CreateLogger<PlansEventBusStartup>(), eventBus);
 
@@ -59,5 +52,17 @@ public class PlansModuleStartup : IModuleStartup
         await scheduler.Start();
 
         return scheduler;
+    }
+
+    public static void SetupCompositionRoot(IConfiguration configuration, IEventBus eventBus, ILoggerFactory loggerFactory)
+    {
+        var serviceProvider = new ServiceCollection()
+            .AddCommon(configuration)
+            .AddServices(configuration)
+            .AddSingleton(eventBus)
+            .AddSingleton(loggerFactory)
+            .BuildServiceProvider();
+
+        PlansCompositionRoot.SetProvider(serviceProvider);
     }
 }
