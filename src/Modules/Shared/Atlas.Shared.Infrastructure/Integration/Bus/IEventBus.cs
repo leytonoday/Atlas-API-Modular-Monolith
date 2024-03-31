@@ -1,4 +1,7 @@
-﻿namespace Atlas.Shared.Infrastructure.Integration.Bus;
+﻿using Atlas.Shared.IntegrationEvents;
+using MediatR;
+
+namespace Atlas.Shared.Infrastructure.Integration.Bus;
 
 /// <summary>
 /// Represents an event bus for facilitating communication between sub-domains within a Domain Driven Design (DDD) monolith or services within a microservices architecture.

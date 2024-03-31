@@ -4,7 +4,7 @@ using Atlas.Users.Domain.Entities.UserEntity;
 using Atlas.Users.Domain.Errors;
 using Microsoft.AspNetCore.Identity;
 
-namespace Atlas.Infrastructure.CQRS.Users.Queries.GetRolesByUserId;
+namespace Atlas.Users.Application.CQRS.Users.Queries.GetRolesByUserId;
 
 internal sealed class GetRolesByUserIdQueryHandler(UserManager<User> userManager) : IQueryHandler<GetRolesByUserIdQuery, IEnumerable<string>>
 {

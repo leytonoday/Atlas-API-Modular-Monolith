@@ -1,5 +1,7 @@
 ﻿using Atlas.Infrastructure.Persistance.Interceptors;
 using Atlas.Shared.Application.Abstractions;
+using Atlas.Shared.Application.Abstractions.Integration.Inbox;
+using Atlas.Shared.Application.Abstractions.Integration.Outbox;
 using Atlas.Shared.Application.Abstractions.Services;
 using Atlas.Shared.Application.Abstractions.Services.EmailService;
 using Atlas.Shared.Application.Behaviors;
@@ -45,9 +47,13 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IQueueWriter, QueueWriter>();
         services.AddScoped<QueueReader>();
 
-        // Integration
-        services.AddScoped<IInboxRepository, InboxRepository>();
-        services.AddScoped<IOutboxRepository, OutboxRepository>();
+        // Inbox
+        services.AddScoped<IInboxWriter, IInboxWriter>();
+        services.AddScoped<InboxReader>();
+
+        // Outbox
+        services.AddScoped<IOutboxWriter, OutboxWriter>();
+        services.AddScoped<OutboxReader>();
 
 
         return services;

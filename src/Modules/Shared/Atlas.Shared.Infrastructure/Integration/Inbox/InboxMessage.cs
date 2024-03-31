@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Atlas.Shared.IntegrationEvents;
+using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Atlas.Shared.Infrastructure.Integration.Inbox;

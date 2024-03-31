@@ -28,6 +28,8 @@ public class UsersModuleStartup : IModuleStartup
 
         UsersCompositionRoot.SetProvider(serviceProvider);
 
+        UsersEventBusStartup.Initialize(loggerFactory.CreateLogger<UsersEventBusStartup>(), eventBus);
+
         if (enableScheduler)
         {
             _scheduler = await SetupScheduledJobs();

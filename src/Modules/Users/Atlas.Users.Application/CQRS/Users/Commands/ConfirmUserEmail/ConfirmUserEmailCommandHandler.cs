@@ -1,4 +1,6 @@
-﻿using Atlas.Shared.Application.Abstractions.Messaging.Command;
+﻿using Atlas.Shared.Application.Abstractions.Integration.Outbox;
+using Atlas.Shared.Application.Abstractions.Messaging.Command;
+using Atlas.Shared.Application.Queue;
 using Atlas.Shared.Domain.Events.UserEvents;
 using Atlas.Shared.Domain.Exceptions;
 using Atlas.Users.Domain.Entities.UserEntity;
@@ -7,10 +9,11 @@ using Atlas.Users.Domain.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using System.Web;
+using Atlas.Users.IntegrationEvents;
 
 namespace Atlas.Users.Application.CQRS.Users.Commands.ConfirmUserEmail;
 
-internal sealed class ConfirmUserEmailCommandHandler(UserManager<User> userManager) : ICommandHandler<ConfirmUserEmailCommand, string>
+internal sealed class ConfirmUserEmailCommandHandler(UserManager<User> userManager, IOutboxWriter outboxWriter) : ICommandHandler<ConfirmUserEmailCommand, string>
 {
     public async Task<string> Handle(ConfirmUserEmailCommand request, CancellationToken cancellationToken)
     {
@@ -22,7 +25,7 @@ internal sealed class ConfirmUserEmailCommandHandler(UserManager<User> userManag
             throw new ErrorException(UsersDomainErrors.User.EmailAlreadyVerified);
         }
 
-        user.AddDomainEvent(new UserEmailConfirmedEvent(Guid.NewGuid(), user.Id));
+        await outboxWriter.WriteAsync(new UserEmailConfirmedIntegrationEvent(user.Id), cancellationToken);
 
         // Confirm email using provided token
         IdentityResult result = await userManager.ConfirmEmailAsync(user, request.Token);

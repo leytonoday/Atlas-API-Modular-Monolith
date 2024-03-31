@@ -1,4 +1,5 @@
 ﻿using Atlas.Shared.Domain.Events;
+using Atlas.Shared.IntegrationEvents;
 using Newtonsoft.Json;
 
 namespace Atlas.Shared.Infrastructure.Integration.Outbox;

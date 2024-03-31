@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace Atlas.Shared.Infrastructure.Integration;
+namespace Atlas.Shared.IntegrationEvents;
 
 public interface IIntegrationEvent : INotification
 {

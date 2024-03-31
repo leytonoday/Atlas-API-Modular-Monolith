@@ -1,4 +1,4 @@
-﻿using Atlas.Infrastructure.CQRS.Users.Queries.GetUsersByPlanId;
+﻿using Atlas.Users.Application.CQRS.Users.Queries.GetUsersByPlanId;
 using Atlas.Shared.Application.Abstractions.Messaging.Query;
 using Atlas.Users.Application.CQRS.Users.Shared;
 using Atlas.Users.Domain.Entities.UserEntity;
@@ -7,7 +7,7 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace Atlas.Infrastructure.CQRS.Users.Queries.GetByPlanId;
+namespace Atlas.Users.Application.CQRS.Users.Queries.GetByPlanId;
 
 internal sealed class GetUsersByPlanIdQueryHandler(UserManager<User> userManager, IMapper mapper) : IQueryHandler<GetUsersByPlanIdQuery, IEnumerable<UserDto>>
 {

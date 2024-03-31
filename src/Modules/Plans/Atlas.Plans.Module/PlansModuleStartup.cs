@@ -30,6 +30,8 @@ public class PlansModuleStartup : IModuleStartup
 
         PlansCompositionRoot.SetProvider(serviceProvider);
 
+        PlansEventBusStartup.Initialize(loggerFactory.CreateLogger<PlansEventBusStartup>(), eventBus);
+
         if (enableScheduler)
         {
             _scheduler = await SetupScheduledJobs();

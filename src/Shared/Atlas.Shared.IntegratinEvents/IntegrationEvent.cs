@@ -1,6 +1,4 @@
-﻿using Atlas.Shared.Domain.Events;
-
-namespace Atlas.Shared.Infrastructure.Integration;
+﻿namespace Atlas.Shared.IntegrationEvents;
 
 /// <summary>
 /// Represents an integration event, which communicates something that has happened within the system to other systems or services. 

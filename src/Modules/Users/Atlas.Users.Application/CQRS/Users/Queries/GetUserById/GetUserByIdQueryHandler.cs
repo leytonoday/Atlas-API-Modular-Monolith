@@ -7,7 +7,7 @@ using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 
-namespace Atlas.Infrastructure.CQRS.Users.Queries.GetUserById;
+namespace Atlas.Users.Application.CQRS.Users.Queries.GetUserById;
 
 public sealed class GetUserByIdQueryHandler(UserManager<User> userManager, IMapper mapper) : IQueryHandler<GetUserByIdQuery, UserDto>
 {

@@ -1,4 +1,6 @@
-﻿namespace Atlas.Shared.Infrastructure.Integration.Bus;
+﻿using Atlas.Shared.IntegrationEvents;
+
+namespace Atlas.Shared.Infrastructure.Integration.Bus;
 
 /// <summary>
 /// Represents an in-memory event bus implementation that facilitates communication between different parts of the application through events.
