@@ -1,7 +1,6 @@
 ﻿using Atlas.Infrastructure.Persistance.Interceptors;
 using Atlas.Shared.Domain;
 using Atlas.Shared.Infrastructure.Behaviors;
-using Atlas.Shared.Infrastructure.Integration.Outbox;
 using Atlas.Shared.Infrastructure.Persistance.Options;
 using Atlas.Users.Application;
 using Atlas.Users.Domain;

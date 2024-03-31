@@ -4,7 +4,7 @@ public interface ICommandQueueMessageRepository
 {
     public Task CreateAsync(CommandQueueMessage commandQueueMessage, CancellationToken cancellationToken);
 
-    public Task UpdateAsync(CommandQueueMessage commandQueueMessage, CancellationToken cancellationToken);
+    public Task MarkProcessedAsync(CommandQueueMessage commandQueueMessage, CancellationToken cancellationToken);
 
-    public Task<List<CommandQueueMessage>> ListPending(CancellationToken token);
+    public Task<List<CommandQueueMessage>> ListPendingAsync(CancellationToken cancellationToken);
 }

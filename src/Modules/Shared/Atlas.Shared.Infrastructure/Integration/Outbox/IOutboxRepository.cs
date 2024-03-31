@@ -4,7 +4,7 @@ public interface IOutboxRepository
 {
     public Task CreateAsync(IIntegrationEvent integrationEvent, CancellationToken cancellationToken);
 
-    public Task UpdateAsync(OutboxMessage outboxMessage, CancellationToken cancellationToken);
+    public Task MarkProcessedAsync(OutboxMessage outboxMessage, CancellationToken cancellationToken);
 
-    public Task<List<OutboxMessage>> ListPending(CancellationToken token);
+    public Task<List<OutboxMessage>> ListPendingAsync(CancellationToken cancellationToken);
 }

@@ -4,10 +4,12 @@ using Atlas.Shared.Application.Abstractions.Services;
 using Atlas.Shared.Application.Abstractions.Services.EmailService;
 using Atlas.Shared.Application.Behaviors;
 using Atlas.Shared.Infrastructure.Builders;
+using Atlas.Shared.Infrastructure.CommandQueue;
+using Atlas.Shared.Infrastructure.Integration.Inbox;
+using Atlas.Shared.Infrastructure.Integration.Outbox;
 using Atlas.Shared.Infrastructure.Services;
 using FluentValidation;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
@@ -31,11 +33,19 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ISupportNotifierService, SupportNotifierService>();
         services.AddEmailServices();
 
-        // Background Task Queue
+        // Background task queue
         services.AddBackgroundTaskQueue();
 
         // Database
         services.AddDatabaseInterceptors();
+
+        // Command queue
+        services.AddScoped<ICommandQueueMessageRepository, CommandQueueMessageRepository>();
+
+        // Integration
+        services.AddScoped<IInboxRepository, InboxRepository>();
+        services.AddScoped<IOutboxRepository, OutboxRepository>();
+
 
         return services;
     }
