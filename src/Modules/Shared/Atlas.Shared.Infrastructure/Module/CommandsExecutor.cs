@@ -2,7 +2,7 @@
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Atlas.Shared.Module;
+namespace Atlas.Shared.Infrastructure.Module;
 
 public class CommandsExecutor<TCompositionRoot> where TCompositionRoot : ICompositionRoot
 {

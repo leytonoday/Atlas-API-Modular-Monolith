@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace Atlas.Shared.Module;
+namespace Atlas.Shared.Infrastructure.Module;
 
 /// <summary>
 /// Represents the interface for a Composition Root, responsible for configuring the application's object graph.
