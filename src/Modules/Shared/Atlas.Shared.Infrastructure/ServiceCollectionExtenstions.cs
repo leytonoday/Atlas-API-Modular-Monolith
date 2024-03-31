@@ -24,7 +24,7 @@ public static class ServiceCollectionExtensions
         //services.AddScoped<OutboxMessagePublisher>();
 
         // MediatR pipeline behaviours
-        //services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehaviour<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehaviour<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationPipelineBehavior<,>));
 
         // External communications

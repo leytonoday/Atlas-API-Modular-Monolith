@@ -37,6 +37,7 @@ public static class ServiceCollectionExtensions
 
         // Auto-mapper
         services.AddAutoMapper(infrastructureAssembly);
+
         // Identity
         services.AddIdentity();
 

@@ -1,13 +1,11 @@
 ﻿using Atlas.Shared.Module;
 using Microsoft.Extensions.Configuration;
-using Atlas.Shared.Application.Abstractions;
 using Atlas.Shared.Infrastructure.Integration.Bus;
 using Quartz;
 using Microsoft.Extensions.DependencyInjection;
 using Quartz.Impl;
 using System.Collections.Specialized;
 using System.Reflection;
-using Atlas.Users.Application;
 using Atlas.Users.Infrastructure;
 using Atlas.Shared.Infrastructure;
 using Microsoft.Extensions.Logging;
