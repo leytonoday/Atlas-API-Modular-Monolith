@@ -7,7 +7,6 @@ using Atlas.Shared.Domain.Entities;
 using Atlas.Shared.Domain.AggregateRoot;
 using Atlas.Shared.Domain.Events;
 using Atlas.Shared.Domain.Exceptions;
-using Atlas.Shared.Domain.Events.UserEvents;
 using Atlas.Shared;
 
 namespace Atlas.Users.Domain.Entities.UserEntity;
@@ -90,7 +89,6 @@ public sealed class User : IdentityUser<Guid>, IEntity<Guid>, IAuditableEntity, 
         user.UserName = userName;
         user.PhoneNumber = phoneNumber;
 
-        user.AddDomainEvent(new UserUpdatedEvent(Guid.NewGuid(), user.Id));
         await userManager.UpdateAsync(user);
     }
 
@@ -126,7 +124,6 @@ public sealed class User : IdentityUser<Guid>, IEntity<Guid>, IAuditableEntity, 
         else if (isCurrentUserAdmin && !isToDeleteUserAdmin && !isDeletingSelf)
         {
             // An admin can delete another non-admin user without a password, so proceed with deletion
-            userToBeDeleted.AddDomainEvent(new UserDeletedEvent(Guid.NewGuid(), userToBeDeleted.Id));
             await userManager.DeleteAsync(userToBeDeleted);
         }
         // If a user is deleting themselves, regardless of if they're an Admin or not, they have to provide their password
@@ -140,7 +137,6 @@ public sealed class User : IdentityUser<Guid>, IEntity<Guid>, IAuditableEntity, 
             }
 
             // Password has been provided successfully, so proceed with deletion
-            userToBeDeleted.AddDomainEvent(new UserDeletedEvent(Guid.NewGuid(), userToBeDeleted.Id));
             await userManager.DeleteAsync(userToBeDeleted);
         }
 

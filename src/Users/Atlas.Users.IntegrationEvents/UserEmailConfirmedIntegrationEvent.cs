@@ -2,4 +2,4 @@
 
 namespace Atlas.Users.IntegrationEvents;
 
-public record class UserEmailConfirmedIntegrationEvent(Guid UserId) : IntegrationEvent(Guid.NewGuid());
+public sealed record UserEmailConfirmedIntegrationEvent(Guid UserId) : IntegrationEvent(Guid.NewGuid());
