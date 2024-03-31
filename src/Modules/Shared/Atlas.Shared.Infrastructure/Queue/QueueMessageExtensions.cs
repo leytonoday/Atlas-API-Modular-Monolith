@@ -9,7 +9,7 @@ public static class QueueMessageExtensions
     {
         modelBuilder.Entity<QueueMessage>(entity =>
         {
-            entity.ToTable(SharedInfrastructureConstants.TableNames.CommandQueueMessages, schema);
+            entity.ToTable(SharedInfrastructureConstants.TableNames.QueueMessages, schema);
         });
     }
 }

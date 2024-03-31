@@ -1,4 +1,4 @@
-﻿using Atlas.Shared.Application.Abstractions.Messaging.QueuedCommand;
+﻿using Atlas.Shared.Application.Abstractions.Messaging.Queue;
 using Atlas.Shared.Application.Abstractions.Services.EmailService;
 using Atlas.Shared.Application.EmailContent;
 using Atlas.Shared.Domain.Exceptions;
@@ -7,7 +7,7 @@ using Atlas.Users.Domain.Errors;
 using Microsoft.AspNetCore.Identity;
 using System.Web;
 
-namespace Atlas.Users.Application.CQRS.Users.QueuedCommands.SendWelcomeEmail;
+namespace Atlas.Users.Application.CQRS.Users.Queue.SendWelcomeEmail;
 
 internal class SendWelcomeEmailQueuedCommandHandler(IEmailService emailService, UserManager<User> userManager) : IQueuedCommandHandler<SendWelcomeEmailQueuedCommand>
 {

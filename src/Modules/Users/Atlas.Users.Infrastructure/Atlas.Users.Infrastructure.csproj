@@ -16,4 +16,8 @@
     <ProjectReference Include="..\Atlas.Users.Domain\Atlas.Users.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Persistance\Repositories\" />
+  </ItemGroup>
+
 </Project>

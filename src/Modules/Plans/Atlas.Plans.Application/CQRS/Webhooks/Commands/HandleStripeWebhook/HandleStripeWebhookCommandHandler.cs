@@ -10,15 +10,12 @@ using Atlas.Users.Domain.Entities.UserEntity;
 using Atlas.Users.Domain.Errors;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.DependencyInjection;
 using Stripe;
 
 namespace Atlas.Plans.Application.CQRS.Webhooks.Commands.HandleStripeWebhook;
 
 internal sealed class HandleStripeWebhookCommandHandler(
     IStripeService stripeService,
-    IBackgroundTaskQueue backgroundTaskQueue,
-    IServiceScopeFactory serviceScopeFactory,
     IStripeCustomerRepository stripeCustomerRepository,
     UserManager<User> userManager,
     ISupportNotifierService supportNotifierService,

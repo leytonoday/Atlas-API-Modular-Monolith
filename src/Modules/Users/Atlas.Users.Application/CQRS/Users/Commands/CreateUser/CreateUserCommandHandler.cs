@@ -1,6 +1,6 @@
 ﻿using Atlas.Shared.Application.Abstractions.Messaging.Command;
 using Atlas.Shared.Application.Queue;
-using Atlas.Users.Application.CQRS.Users.QueuedCommands.SendWelcomeEmail;
+using Atlas.Users.Application.CQRS.Users.Queue.SendWelcomeEmail;
 using Atlas.Users.Domain.Entities.UserEntity;
 using Microsoft.AspNetCore.Identity;
 
