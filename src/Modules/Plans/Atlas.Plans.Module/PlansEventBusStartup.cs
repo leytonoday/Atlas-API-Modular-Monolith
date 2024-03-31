@@ -16,6 +16,8 @@ internal class PlansEventBusStartup : IEventBusStartup
     public static void SubscribeToIntegrationEvents(ILogger logger, IEventBus eventBus)
     {
         SubscribeToIntegrationEvent<UserEmailConfirmedIntegrationEvent>(logger, eventBus);
+        SubscribeToIntegrationEvent<UserUpdatedIntegrationEvent>(logger, eventBus);
+        SubscribeToIntegrationEvent<UserDeletedIntegrationEvent>(logger, eventBus);
     }
 
     private static void SubscribeToIntegrationEvent<TIntegrationEvent>(ILogger logger, IEventBus eventBus)
