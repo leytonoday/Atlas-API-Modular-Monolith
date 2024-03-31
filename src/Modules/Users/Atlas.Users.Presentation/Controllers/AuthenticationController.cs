@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Atlas.Infrastructure.CQRS.Users.Queries.GetUserById;
 using Microsoft.AspNetCore.Http;
-using Atlas.Users.Application.Abstractions;
 using Atlas.Shared.Presentation;
 using Atlas.Shared.Domain.Results;
 using Atlas.Users.Application.CQRS.Authentication.Commands.SignIn;

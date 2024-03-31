@@ -9,7 +9,6 @@ using Atlas.Plans.Application.CQRS.Plans.Queries.GetPlanFeaturesByPlanId;
 using Atlas.Shared.Application.Abstractions;
 using Atlas.Shared.Domain.Results;
 using Atlas.Shared.Presentation;
-using Atlas.Users.Application.Abstractions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

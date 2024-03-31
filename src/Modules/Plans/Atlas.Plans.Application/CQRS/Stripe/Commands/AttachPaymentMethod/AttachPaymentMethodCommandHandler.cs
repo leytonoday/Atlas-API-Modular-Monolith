@@ -8,7 +8,6 @@ using Atlas.Users.Domain.Errors;
 using Atlas.Plans.Domain.Entities.StripeCustomerEntity;
 using Atlas.Plans.Domain.Errors;
 using Atlas.Plans.Domain.Services;
-using Atlas.Users.Application.Abstractions;
 using Atlas.Shared.Application.Abstractions.Messaging.Command;
 using Atlas.Shared.Application.Abstractions;
 

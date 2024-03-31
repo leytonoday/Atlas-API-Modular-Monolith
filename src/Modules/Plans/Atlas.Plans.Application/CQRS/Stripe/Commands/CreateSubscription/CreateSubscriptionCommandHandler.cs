@@ -2,7 +2,6 @@
 using Stripe;
 using Microsoft.AspNetCore.Identity;
 using Atlas.Plans.Domain;
-using Atlas.Users.Application.Abstractions;
 using Atlas.Users.Domain.Entities.UserEntity;
 using Atlas.Plans.Domain.Services;
 using Atlas.Shared.Domain.Exceptions;

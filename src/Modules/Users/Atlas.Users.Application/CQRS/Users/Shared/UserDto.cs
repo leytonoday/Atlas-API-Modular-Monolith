@@ -4,11 +4,11 @@ namespace Atlas.Users.Application.CQRS.Users.Shared;
 
 public sealed class UserDto : BaseDto<Guid>
 {
-    public string UserName { get; set; }
+    public string UserName { get; set; } = null!;
 
-    public string Email { get; set; }
+    public string Email { get; set; } = null!;
 
-    public IEnumerable<string> Roles { get; set; }
+    public IEnumerable<string>? Roles { get; set; }
 
     public DateTime CreatedOnUtc { get; set; }
 

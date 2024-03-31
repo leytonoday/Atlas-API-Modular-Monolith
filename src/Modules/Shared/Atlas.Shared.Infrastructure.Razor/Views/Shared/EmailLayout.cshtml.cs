@@ -5,7 +5,7 @@ namespace Atlas.Infrastructure.Razor.Views.Shared
 {
     public class EmailLayoutModel : PageModel
     {
-        public string EmailTitle { get; set; }
+        public string EmailTitle { get; set; } = null!;
 
         public void OnGet()
         {

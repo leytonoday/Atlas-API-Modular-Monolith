@@ -1,7 +1,6 @@
 ﻿using Atlas.Shared.Application.Abstractions;
 using Atlas.Shared.Application.Abstractions.Messaging.Command;
 using Atlas.Shared.Domain.Exceptions;
-using Atlas.Users.Application.Abstractions;
 using Atlas.Users.Domain.Entities.UserEntity;
 using Atlas.Users.Domain.Errors;
 using MediatR;

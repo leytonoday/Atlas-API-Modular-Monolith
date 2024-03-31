@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Atlas.Infrastructure.CQRS.Users.Queries.GetUsersByPlanId;
 using Atlas.Infrastructure.CQRS.Users.Queries.GetRolesByUserId;
-using Atlas.Users.Application.Abstractions;
 using Atlas.Shared.Presentation;
 using Atlas.Users.Application.CQRS.Users.Commands.CreateUser;
 using Atlas.Shared.Domain.Results;
