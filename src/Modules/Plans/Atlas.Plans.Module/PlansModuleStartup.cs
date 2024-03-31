@@ -19,15 +19,10 @@ public class PlansModuleStartup : IModuleStartup
     private static IScheduler? _scheduler;
 
     /// <inheritdoc />
-    public static async Task Start(IExecutionContextAccessor? executionContextAccessor, IConfiguration configuration, IEventBus eventBus, ILoggerFactory loggerFactory, bool enableScheduler = true)
+    public static async Task Start(IConfiguration configuration, IEventBus eventBus, ILoggerFactory loggerFactory, bool enableScheduler = true)
     {
-        var plansApplicationAssembly = typeof(PlansApplicationAssemblyReference).Assembly;
-        var plansInfrastructureAssembly = typeof(PlansInfrastructureAssemblyReference).Assembly;
-
         var serviceProvider = new ServiceCollection()
             .AddCommon(configuration)
-            .AddValidation(plansApplicationAssembly)
-            .AddAutoMappings(plansInfrastructureAssembly)
             .AddServices(configuration)
             .AddSingleton(eventBus)
             .AddSingleton(loggerFactory)

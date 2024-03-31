@@ -1,4 +1,5 @@
-﻿using Atlas.Shared.Domain.Exceptions;
+﻿using Atlas.Shared.Application.Abstractions.Messaging.Query;
+using Atlas.Shared.Domain.Exceptions;
 using Atlas.Users.Application.CQRS.Users.Shared;
 using Atlas.Users.Domain.Entities.UserEntity;
 using Atlas.Users.Domain.Errors;
@@ -8,7 +9,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Atlas.Infrastructure.CQRS.Users.Queries.GetUserById;
 
-public sealed class GetUserByIdQueryHandler(UserManager<User> userManager, IMapper mapper) : IRequestHandler<GetUserByIdQuery, UserDto>
+public sealed class GetUserByIdQueryHandler(UserManager<User> userManager, IMapper mapper) : IQueryHandler<GetUserByIdQuery, UserDto>
 {
     public async Task<UserDto> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
     {

@@ -30,8 +30,8 @@ var executionContextAccessor = app.Services.GetService<IExecutionContextAccessor
 var eventBus = app.Services.GetRequiredService<IEventBus>();
 var loggerFactory = app.Services.GetRequiredService<ILoggerFactory>();
 
-await UsersModuleStartup.Start(executionContextAccessor, builder.Configuration, eventBus, loggerFactory);
-await PlansModuleStartup.Start(executionContextAccessor, builder.Configuration, eventBus, loggerFactory);
+await UsersModuleStartup.Start(builder.Configuration, eventBus, loggerFactory);
+await PlansModuleStartup.Start(builder.Configuration, eventBus, loggerFactory);
 
 // Register the exception handling middleware, which will catch any unhandled exceptions and return a 500 response
 app.ConfigureExceptionHander();

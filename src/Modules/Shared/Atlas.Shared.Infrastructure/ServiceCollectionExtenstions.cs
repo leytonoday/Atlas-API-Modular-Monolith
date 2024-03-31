@@ -23,13 +23,19 @@ public static class ServiceCollectionExtensions
         //services.AddScoped<DomainEventPublisher>();
         //services.AddScoped<OutboxMessagePublisher>();
 
+        // MediatR pipeline behaviours
         //services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehaviour<,>));
-        services
-            .AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationPipelineBehavior<,>))
-            .AddScoped<ISupportNotifierService, SupportNotifierService>()
-            .AddEmailServices()
-            .AddBackgroundTaskQueue()
-            .AddDatabaseInterceptors();
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationPipelineBehavior<,>));
+
+        // External communications
+        services.AddScoped<ISupportNotifierService, SupportNotifierService>();
+        services.AddEmailServices();
+
+        // Background Task Queue
+        services.AddBackgroundTaskQueue();
+
+        // Database
+        services.AddDatabaseInterceptors();
 
         return services;
     }
@@ -67,7 +73,7 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddAutoMappings(this IServiceCollection services, Assembly assembly)
     {
-        services.AddAutoMapper(assembly);
+        
         return services;
     }
 }

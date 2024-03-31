@@ -1,4 +1,5 @@
-﻿using Atlas.Shared.Domain.Exceptions;
+﻿using Atlas.Shared.Application.Abstractions.Messaging.Command;
+using Atlas.Shared.Domain.Exceptions;
 using Atlas.Users.Application.Abstractions;
 using Atlas.Users.Domain.Entities.UserEntity;
 using Atlas.Users.Domain.Errors;
@@ -7,7 +8,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Atlas.Users.Application.CQRS.Users.Commands.DeleteUser;
 
-internal sealed class DeleteUserCommandHandler(UserManager<User> userManager, IUserContext userContext) : IRequestHandler<DeleteUserCommand>
+internal sealed class DeleteUserCommandHandler(UserManager<User> userManager, IUserContext userContext) : ICommandHandler<DeleteUserCommand>
 {
     public async Task Handle(DeleteUserCommand request, CancellationToken cancellationToken)
     {

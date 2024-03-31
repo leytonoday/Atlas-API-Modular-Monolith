@@ -1,4 +1,5 @@
-﻿using Atlas.Shared.Domain.Events.UserEvents;
+﻿using Atlas.Shared.Application.Abstractions.Messaging.Command;
+using Atlas.Shared.Domain.Events.UserEvents;
 using Atlas.Shared.Domain.Exceptions;
 using Atlas.Users.Domain.Entities.UserEntity;
 using Atlas.Users.Domain.Errors;
@@ -9,7 +10,7 @@ using System.Web;
 
 namespace Atlas.Users.Application.CQRS.Users.Commands.ConfirmUserEmail;
 
-internal sealed class ConfirmUserEmailCommandHandler(UserManager<User> userManager) : IRequestHandler<ConfirmUserEmailCommand, string>
+internal sealed class ConfirmUserEmailCommandHandler(UserManager<User> userManager) : ICommandHandler<ConfirmUserEmailCommand, string>
 {
     public async Task<string> Handle(ConfirmUserEmailCommand request, CancellationToken cancellationToken)
     {

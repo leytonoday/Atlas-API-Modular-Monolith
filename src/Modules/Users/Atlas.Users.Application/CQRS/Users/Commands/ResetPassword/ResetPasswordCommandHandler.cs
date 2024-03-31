@@ -1,4 +1,5 @@
-﻿using Atlas.Shared.Domain.Exceptions;
+﻿using Atlas.Shared.Application.Abstractions.Messaging.Command;
+using Atlas.Shared.Domain.Exceptions;
 using Atlas.Users.Domain.Entities.UserEntity;
 using Atlas.Users.Domain.Errors;
 using Atlas.Users.Domain.Extensions;
@@ -7,7 +8,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Atlas.Users.Application.CQRS.Users.Commands.ResetPassword;
 
-internal sealed class ResetPasswordCommandHandler(UserManager<User> userManager) : IRequestHandler<ResetPasswordCommand>
+internal sealed class ResetPasswordCommandHandler(UserManager<User> userManager) : ICommandHandler<ResetPasswordCommand>
 {
     public async Task Handle(ResetPasswordCommand request, CancellationToken cancellationToken)
     {

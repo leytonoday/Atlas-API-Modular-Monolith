@@ -1,5 +1,4 @@
-﻿using Atlas.Infrastructure.BackgroundJobs;
-using Atlas.Plans.Application;
+﻿using Atlas.Plans.Application;
 using Atlas.Plans.Infrastructure;
 using Atlas.Plans.Presentation;
 using Atlas.Shared.Application.Behaviors;
@@ -16,8 +15,6 @@ using MediatR.NotificationPublishers;
 using Quartz;
 using System.Reflection;
 using Atlas.Plans.Infrastructure.Persistance;
-using Atlas.Plans.Infrastructure.Persistance.Entities;
-using Atlas.Users.Infrastructure.Persistance.Entities;
 using Atlas.Users.Infrastructure.Persistance;
 using Atlas.Shared.Application.Abstractions;
 using Atlas.Web.ExecutionContext;
@@ -117,8 +114,7 @@ public static class ServiceCollectionExtensions
             .AddApplicationPart(typeof(PlansPresentationAssemblyReference).Assembly);
 
         return services
-            .AddSharedPresentationDependencyInjection()
-            .AddPlansPresentationDependencyInjection();
+            .AddSharedPresentationDependencyInjection();
     }
 
     public static IServiceCollection AddConfigurations(this IServiceCollection services, IConfiguration configuration)

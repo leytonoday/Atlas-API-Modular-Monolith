@@ -7,9 +7,11 @@ using Microsoft.Extensions.Configuration;
 using Atlas.Infrastructure.Persistance.Interceptors;
 using Atlas.Plans.Domain.Services;
 using Atlas.Plans.Infrastructure.Services;
-using Atlas.Plans.Infrastructure.Persistance.Entities;
 using Atlas.Plans.Application;
 using FluentValidation;
+using MediatR;
+using Atlas.Plans.Infrastructure.Behaviors;
+using Atlas.Users.Domain;
 
 namespace Atlas.Plans.Infrastructure;
 
@@ -17,11 +19,27 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration)
     {
+        var applicationAssembly = typeof(PlansApplicationAssemblyReference).Assembly;
+        var infrastructureAssembly = typeof(PlansInfrastructureAssemblyReference).Assembly;
+
         services.AddScoped<PlanService>();
         services.AddScoped<IStripeService, StripeService>();
 
-        // DB Related Services
+        // Database related services
         services.AddDatabaseServices(configuration);
+
+        // MediatR
+        services.AddMediatR(config =>
+        {
+            config.RegisterServicesFromAssemblies(applicationAssembly);
+        });
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PlansUnitOfWorkBehavior<,>));
+
+        // Validation
+        services.AddValidatorsFromAssembly(applicationAssembly);
+
+        // Auto-mapper
+        services.AddAutoMapper(infrastructureAssembly);
 
         return services;
     }

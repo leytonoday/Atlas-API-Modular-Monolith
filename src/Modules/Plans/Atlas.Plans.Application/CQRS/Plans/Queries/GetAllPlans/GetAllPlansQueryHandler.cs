@@ -6,10 +6,11 @@ using Atlas.Plans.Domain.Entities.PlanEntity;
 using Atlas.Plans.Infrastructure.CQRS.PlanFeatures;
 using Atlas.Plans.Application.CQRS.Features.Shared;
 using Atlas.Plans.Application.CQRS.Plans.Shared;
+using Atlas.Shared.Application.Abstractions.Messaging.Query;
 
 namespace Atlas.Plans.Application.CQRS.Plans.Queries.GetAllPlans;
 
-internal sealed class GetAllPlansQueryHandler(IPlansUnitOfWork unitOfWork, PlanService planService, IMapper mapper) : IRequestHandler<GetAllPlansQuery, IEnumerable<PlanDto>>
+internal sealed class GetAllPlansQueryHandler(IPlansUnitOfWork unitOfWork, PlanService planService, IMapper mapper) : IQueryHandler<GetAllPlansQuery, IEnumerable<PlanDto>>
 {
     public async Task<IEnumerable<PlanDto>> Handle(GetAllPlansQuery request, CancellationToken cancellationToken)
     {

@@ -1,5 +1,6 @@
-﻿using MediatR;
+﻿using Atlas.Shared.Application.Abstractions.Messaging.Command;
+using MediatR;
 
 namespace Atlas.Users.Application.CQRS.Users.Commands.ResetPassword;
 
-public sealed record ResetPasswordCommand(string UserName, string NewPassword, string Token) : IRequest;
+public sealed record ResetPasswordCommand(string UserName, string NewPassword, string Token) : ICommand;

@@ -1,4 +1,5 @@
 ﻿using Atlas.Infrastructure.CQRS.Users.Queries.GetUsersByPlanId;
+using Atlas.Shared.Application.Abstractions.Messaging.Query;
 using Atlas.Users.Application.CQRS.Users.Shared;
 using Atlas.Users.Domain.Entities.UserEntity;
 using AutoMapper;
@@ -8,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Atlas.Infrastructure.CQRS.Users.Queries.GetByPlanId;
 
-internal sealed class GetUsersByPlanIdQueryHandler(UserManager<User> userManager, IMapper mapper) : IRequestHandler<GetUsersByPlanIdQuery, IEnumerable<UserDto>>
+internal sealed class GetUsersByPlanIdQueryHandler(UserManager<User> userManager, IMapper mapper) : IQueryHandler<GetUsersByPlanIdQuery, IEnumerable<UserDto>>
 {
     public async Task<IEnumerable<UserDto>> Handle(GetUsersByPlanIdQuery request, CancellationToken cancellationToken)
     {

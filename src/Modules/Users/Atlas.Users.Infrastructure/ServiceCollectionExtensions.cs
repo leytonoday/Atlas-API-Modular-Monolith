@@ -1,9 +1,13 @@
 ﻿using Atlas.Infrastructure.Persistance.Interceptors;
 using Atlas.Shared.Infrastructure.Integration.Outbox;
 using Atlas.Shared.Infrastructure.Persistance.Options;
+using Atlas.Users.Application;
 using Atlas.Users.Domain;
 using Atlas.Users.Domain.Entities.UserEntity;
+using Atlas.Users.Infrastructure.Behaviors;
 using Atlas.Users.Infrastructure.Persistance;
+using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -15,8 +19,27 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration)
     {
+        var applicationAssembly = typeof(UsersApplicationAssemblyReference).Assembly;
+        var infrastructureAssembly = typeof(UsersInfrastructureAssemblyReference).Assembly;
+
+        // Database related services
         services.AddDatabaseServices(configuration);
+
+        // MediatR
+        services.AddMediatR(config =>
+        {
+            config.RegisterServicesFromAssemblies(applicationAssembly);
+        });
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UsersUnitOfWorkBehavior<,>));
+
+        // Validation
+        services.AddValidatorsFromAssembly(applicationAssembly);
+
+        // Auto-mapper
+        services.AddAutoMapper(infrastructureAssembly);
+        // Identity
         services.AddIdentity();
+
         return services;
     }
 

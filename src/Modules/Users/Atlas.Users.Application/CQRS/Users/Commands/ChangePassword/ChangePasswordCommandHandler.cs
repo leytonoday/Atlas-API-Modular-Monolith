@@ -1,4 +1,5 @@
-﻿using Atlas.Shared.Domain.Exceptions;
+﻿using Atlas.Shared.Application.Abstractions.Messaging.Command;
+using Atlas.Shared.Domain.Exceptions;
 using Atlas.Users.Application.Abstractions;
 using Atlas.Users.Domain.Entities.UserEntity;
 using Atlas.Users.Domain.Errors;
@@ -8,7 +9,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Atlas.Users.Application.CQRS.Users.Commands.ChangePassword;
 
-internal sealed class ChangePasswordCommandHandler(UserManager<User> userManager, IUserContext userContext, SignInManager<User> signInManager) : IRequestHandler<ChangePasswordCommand>
+internal sealed class ChangePasswordCommandHandler(UserManager<User> userManager, IUserContext userContext, SignInManager<User> signInManager) : ICommandHandler<ChangePasswordCommand>
 {
     public async Task Handle(ChangePasswordCommand request, CancellationToken cancellationToken)
     {

@@ -15,12 +15,11 @@ public interface IModuleStartup
     /// <summary>
     /// Starts the module, and hooks up all services to the dependency injection container.
     /// </summary>
-    /// <param name="executionContextAccessor">The execution context accessor.</param>
     /// <param name="configuration">The configuration settings.</param>
     /// <param name="eventBus">The event bus for publishing events.</param>
     /// <param name="loggerFactory">The logger factory used to create concrete instances of <see cref="ILogger"/>.</param>
     /// <param name="enableScheduler">Flag indicating whether to enable the scheduler.</param>
-    public static abstract Task Start(IExecutionContextAccessor? executionContextAccessor, IConfiguration configuration, IEventBus eventBus, ILoggerFactory loggerFactory, bool enableScheduler = true);
+    public static abstract Task Start(IConfiguration configuration, IEventBus eventBus, ILoggerFactory loggerFactory, bool enableScheduler = true);
 
     /// <summary>
     /// Stops the module.

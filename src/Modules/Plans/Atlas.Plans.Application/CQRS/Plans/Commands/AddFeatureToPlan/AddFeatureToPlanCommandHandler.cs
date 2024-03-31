@@ -1,10 +1,11 @@
 ﻿using Atlas.Plans.Domain;
 using Atlas.Plans.Domain.Entities.PlanFeatureEntity;
+using Atlas.Shared.Application.Abstractions.Messaging.Command;
 using MediatR;
 
 namespace Atlas.Plans.Application.CQRS.Plans.Commands.AddFeatureToPlan;
 
-internal sealed class AddFeatureCommandHandler(IPlansUnitOfWork unitOfWork) : IRequestHandler<AddFeatureToPlanCommand>
+internal sealed class AddFeatureToPlanCommandHandler(IPlansUnitOfWork unitOfWork) : ICommandHandler<AddFeatureToPlanCommand>
 {
     public async Task Handle(AddFeatureToPlanCommand request, CancellationToken cancellationToken)
     {

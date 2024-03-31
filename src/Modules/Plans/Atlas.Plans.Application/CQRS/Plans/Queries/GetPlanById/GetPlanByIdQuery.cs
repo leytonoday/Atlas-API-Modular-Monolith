@@ -1,6 +1,6 @@
 ﻿using Atlas.Plans.Application.CQRS.Plans.Shared;
-using MediatR;
+using Atlas.Shared.Application.Abstractions.Messaging.Query;
 
 namespace Atlas.Plans.Application.CQRS.Plans.Queries.GetPlanById;
 
-public sealed record GetPlanByIdQuery(Guid Id) : IRequest<PlanDto>;
+public sealed record GetPlanByIdQuery(Guid Id) : IQuery<PlanDto>;

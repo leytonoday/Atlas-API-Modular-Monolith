@@ -1,4 +1,5 @@
-﻿using Atlas.Shared.Domain.Errors;
+﻿using Atlas.Shared.Application.Abstractions.Messaging.Command;
+using Atlas.Shared.Domain.Errors;
 using Atlas.Shared.Domain.Exceptions;
 using Atlas.Users.Domain.Entities.UserEntity;
 using Atlas.Users.Domain.Errors;
@@ -9,7 +10,7 @@ using System.Web;
 
 namespace Atlas.Users.Application.CQRS.Authentication.Commands.SignInWithToken;
 
-internal sealed class SignInWithTokenCommandHandler(UserManager<User> userManager, SignInManager<User> signInManager) : IRequestHandler<SignInWithTokenCommand>
+internal sealed class SignInWithTokenCommandHandler(UserManager<User> userManager, SignInManager<User> signInManager) : ICommandHandler<SignInWithTokenCommand>
 {
     public async Task Handle(SignInWithTokenCommand request, CancellationToken cancellationToken)
     {

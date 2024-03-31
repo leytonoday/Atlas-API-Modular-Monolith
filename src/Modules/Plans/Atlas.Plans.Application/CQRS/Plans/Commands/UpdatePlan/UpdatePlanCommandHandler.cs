@@ -1,11 +1,12 @@
 ﻿using Atlas.Plans.Domain;
 using Atlas.Plans.Domain.Entities.PlanEntity;
 using Atlas.Plans.Domain.Services;
+using Atlas.Shared.Application.Abstractions.Messaging.Command;
 using MediatR;
 
 namespace Atlas.Plans.Application.CQRS.Plans.Commands.CreatePlan;
 
-internal sealed class UpdatePlanCommandHandler(PlanService planService, IPlansUnitOfWork unitOfWork, IStripeService stripeService) : IRequestHandler<UpdatePlanCommand>
+internal sealed class UpdatePlanCommandHandler(PlanService planService, IPlansUnitOfWork unitOfWork, IStripeService stripeService) : ICommandHandler<UpdatePlanCommand>
 {
     public async Task Handle(UpdatePlanCommand request, CancellationToken cancellationToken)
     {

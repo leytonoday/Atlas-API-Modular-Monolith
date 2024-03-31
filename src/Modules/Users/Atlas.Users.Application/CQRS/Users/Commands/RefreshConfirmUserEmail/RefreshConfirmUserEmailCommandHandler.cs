@@ -1,4 +1,5 @@
-﻿using Atlas.Shared.Application.Abstractions.Services.EmailService;
+﻿using Atlas.Shared.Application.Abstractions.Messaging.Command;
+using Atlas.Shared.Application.Abstractions.Services.EmailService;
 using Atlas.Shared.Application.EmailContent;
 using Atlas.Shared.Domain.Exceptions;
 using Atlas.Users.Domain.Entities.UserEntity;
@@ -9,7 +10,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Atlas.Users.Application.CQRS.Users.Commands.RefreshConfirmUserEmail;
 
-internal sealed class RefreshConfirmUserEmailCommandHandler(UserManager<User> userManager, IEmailService emailService) : IRequestHandler<RefreshConfirmUserEmailCommand>
+internal sealed class RefreshConfirmUserEmailCommandHandler(UserManager<User> userManager, IEmailService emailService) : ICommandHandler<RefreshConfirmUserEmailCommand>
 {
     public async Task Handle(RefreshConfirmUserEmailCommand request, CancellationToken cancellationToken)
     {
