@@ -8,12 +8,13 @@ using Atlas.Users.Application.CQRS.Authentication.Commands.SignIn;
 using Atlas.Users.Application.CQRS.Authentication.Commands.SignInWithToken;
 using Atlas.Users.Application.CQRS.Authentication.Commands.SignOut;
 using Atlas.Shared.Application.Abstractions;
+using Atlas.Users.Module;
 
-namespace Atlas.Users.Presentation.Controllers;
+namespace Atlas.Web.Modules.Users.Controllers;
 
 [Route("/api/{version:apiVersion}/authentication")]
 [ApiVersion("1.0")]
-public class AuthenticationController(IExecutionContextAccessor executionContext) : ApiController
+public class AuthenticationController(IExecutionContextAccessor executionContext, IUsersModule usersModule) : ApiController
 {
     [HttpGet("is-authenticated")]
     public IActionResult IsAuthenticated()
@@ -26,14 +27,14 @@ public class AuthenticationController(IExecutionContextAccessor executionContext
     [HttpGet("who-am-i")]
     public async Task<IActionResult> WhoAmI(CancellationToken cancellationToken)
     {
-        var result = await Sender.Send(new GetUserByIdQuery(executionContext.UserId), cancellationToken);
+        var result = await usersModule.SendQuery(new GetUserByIdQuery(executionContext.UserId), cancellationToken);
         return Ok(Result.Success(result));
     }
 
     [HttpPost("sign-in")]
     public async Task<IActionResult> SignInUser([FromBody] SignInCommand command, CancellationToken cancellationToken)
     {
-        await Sender.Send(command, cancellationToken);
+        await usersModule.SendCommand(command, cancellationToken);
 
         return Ok(Result.Success());
     }
@@ -41,7 +42,7 @@ public class AuthenticationController(IExecutionContextAccessor executionContext
     [HttpPost("sign-in-with-token")]
     public async Task<IActionResult> SignInUserWithToken([FromBody] SignInWithTokenCommand command, CancellationToken cancellationToken)
     {
-        await Sender.Send(command, cancellationToken);
+        await usersModule.SendCommand(command, cancellationToken);
         return Ok(Result.Success());
     }
 
@@ -49,7 +50,7 @@ public class AuthenticationController(IExecutionContextAccessor executionContext
     [HttpPost("sign-out")]
     public async Task<IActionResult> SignOutUser(CancellationToken cancellationToken)
     {
-        await Sender.Send(new SignOutCommand(), cancellationToken);
+        await usersModule.SendCommand(new SignOutCommand(), cancellationToken);
         return Ok(Result.Success());
     }
 }

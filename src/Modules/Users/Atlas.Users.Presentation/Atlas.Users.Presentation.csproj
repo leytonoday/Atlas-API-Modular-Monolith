@@ -12,4 +12,8 @@
     <ProjectReference Include="..\Atlas.Users.Domain\Atlas.Users.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
+
 </Project>

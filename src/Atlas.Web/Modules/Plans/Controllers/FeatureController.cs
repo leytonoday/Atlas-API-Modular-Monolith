@@ -7,40 +7,41 @@ using Atlas.Shared.Domain.Results;
 using Atlas.Plans.Application.CQRS.Features.Commands.CreateFeature;
 using Atlas.Plans.Application.CQRS.Features.Commands.UpdateFeature;
 using Atlas.Plans.Application.CQRS.Features.Commands.DeleteFeature;
+using Atlas.Plans.Module;
 
-namespace Atlas.Plans.Presentation.Controllers;
+namespace Atlas.Web.Modules.Plans.Controllers;
 
 [Authorize(Roles = RoleNames.Administrator)]
 [Route("/api/{version:apiVersion}/feature")]
 [ApiVersion("1.0")]
-public class FeatureController() : ApiController
+public class FeatureController(IPlansModule plansModule) : ApiController
 {
     [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetAllFeatures(CancellationToken cancellationToken)
     {
-        var result = await Sender.Send(new GetAllFeaturesQuery(), cancellationToken);
+        var result = await plansModule.SendQuery(new GetAllFeaturesQuery(), cancellationToken);
         return Ok(Result.Success(result));
     }
 
     [HttpPost]
     public async Task<IActionResult> CreateFeature([FromBody] CreateFeatureCommand createFeatureCommand, CancellationToken cancellationToken)
     {
-        var result = await Sender.Send(createFeatureCommand, cancellationToken);
+        var result = await plansModule.SendCommand(createFeatureCommand, cancellationToken);
         return Ok(Result.Success(result));
     }
 
     [HttpPut]
     public async Task<IActionResult> UpdateFeature([FromBody] UpdateFeatureCommand updateFeatureCommand, CancellationToken cancellationToken)
     {
-        var result = await Sender.Send(updateFeatureCommand, cancellationToken);
+        var result = await plansModule.SendCommand(updateFeatureCommand, cancellationToken);
         return Ok(Result.Success(result));
     }
 
     [HttpDelete("{featureId:guid}")]
     public async Task<IActionResult> DeleteFeature([FromRoute] Guid featureId, CancellationToken cancellationToken)
     {
-        var result = await Sender.Send(new DeleteFeatureCommand(featureId), cancellationToken);
+        var result = await plansModule.SendCommand(new DeleteFeatureCommand(featureId), cancellationToken);
         return Ok(Result.Success(result));
     }
 }
