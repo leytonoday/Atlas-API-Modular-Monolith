@@ -10,8 +10,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Atlas.Plans.Infrastructure.Persistance;
 
-public sealed class PlansDatabaseContext(DbContextOptions<PlansDatabaseContext> options) : DbContext(options)
+public sealed class PlansDatabaseContext: DbContext
 {
+    public PlansDatabaseContext(DbContextOptions<PlansDatabaseContext> options) : base(options) { }
+
     /// <summary>
     /// Configures the model for the database context during the model creation process.
     /// </summary>

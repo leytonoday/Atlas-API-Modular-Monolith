@@ -48,7 +48,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddDatabaseServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<IUnitOfWork, UsersUnitOfWork>();
-        services.AddDbContextFactory<UsersDatabaseContext>((provider, options) =>
+        services.AddDbContext<UsersDatabaseContext>((provider, options) =>
         {
             var databaseOptions = new DatabaseOptions();
             configuration.GetSection("DatabaseOptions").Bind(databaseOptions);
@@ -62,16 +62,18 @@ public static class ServiceCollectionExtensions
             options.EnableDetailedErrors(databaseOptions.EnableDetailedErrors);
             options.EnableSensitiveDataLogging(databaseOptions.EnableSensitiveDataLogging);
 
-            var usersDatabaseContext = new UsersDatabaseContext(options.Options as DbContextOptions<UsersDatabaseContext>);
+            //var usersDatabaseContext = new UsersDatabaseContext(options.Options);
 
-            // Apply any migrations that have yet to be applied
-            IEnumerable<string> migrationsToApply = usersDatabaseContext.Database.GetPendingMigrations();
-            if (migrationsToApply.Any())
-                usersDatabaseContext.Database.Migrate();
+            //// Apply any migrations that have yet to be applied
+            //IEnumerable<string> migrationsToApply = usersDatabaseContext.Database.GetPendingMigrations();
+            //if (migrationsToApply.Any())
+            //    usersDatabaseContext.Database.Migrate();
 
             // Register database interceptors
             options.AddInterceptors(provider.GetRequiredService<UpdateAuditableEntitiesInterceptor>());
         });
+
+        var allServices = services.ToList();
 
         return services;
     }

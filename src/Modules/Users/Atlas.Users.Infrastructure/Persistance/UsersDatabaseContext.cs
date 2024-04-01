@@ -8,8 +8,10 @@ using Atlas.Shared.Infrastructure.CommandQueue;
 
 namespace Atlas.Users.Infrastructure.Persistance;
 
-public sealed class UsersDatabaseContext(DbContextOptions<UsersDatabaseContext> options) : IdentityDbContext<User, IdentityRole<Guid>, Guid>(options)
+public sealed class UsersDatabaseContext: IdentityDbContext<User, IdentityRole<Guid>, Guid>
 {
+    public UsersDatabaseContext(DbContextOptions<UsersDatabaseContext> options) : base(options) { } 
+
     /// <summary>
     /// Configures the model for the database context during the model creation process.
     /// </summary>
