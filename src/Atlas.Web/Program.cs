@@ -22,7 +22,7 @@ builder.Services.AddSingleton<IEventBus, InMemoryEventBus>();
 
 // Register Modules
 builder.Services.AddSingleton<IUsersModule, UsersModule>();
-//builder.Services.AddSingleton<IPlansModule, PlansModule>();
+builder.Services.AddSingleton<IPlansModule, PlansModule>();
 
 var app = builder.Build();
 
@@ -31,7 +31,7 @@ var eventBus = app.Services.GetRequiredService<IEventBus>();
 var loggerFactory = app.Services.GetRequiredService<ILoggerFactory>();
 
 await UsersModuleStartup.Start(builder.Configuration, eventBus, loggerFactory);
-//await PlansModuleStartup.Start(builder.Configuration, eventBus, loggerFactory);
+await PlansModuleStartup.Start(builder.Configuration, eventBus, loggerFactory);
 
 // Register the exception handling middleware, which will catch any unhandled exceptions and return a 500 response
 app.ConfigureExceptionHander();

@@ -10,21 +10,7 @@ public class InMemoryEventBus : IEventBus
     /// <summary>
     /// Dictionary storing event subscriptions where the key is the event type name and the value is a list of event handlers.
     /// </summary>
-    private readonly Dictionary<string, List<IIntegrationEventHandler>> _subscriptions;
-
-    /// <summary>
-    /// Private constructor to prevent external instantiation of the InMemoryEventBus class.
-    /// </summary>
-    private InMemoryEventBus()
-    {
-        _subscriptions = [];
-    }
-
-    /// <summary>
-    /// A singleton instance of the event bus.
-    /// This ensures that there is only one instance of the event bus throughout the application lifetime.
-    /// </summary>
-    public static InMemoryEventBus Instance { get; } = new InMemoryEventBus();
+    private readonly Dictionary<string, List<IIntegrationEventHandler>> _subscriptions = [];
 
     /// <inheritdoc />
     public async Task Publish<TEvent>(TEvent @event, CancellationToken cancellationToken) where TEvent : IIntegrationEvent

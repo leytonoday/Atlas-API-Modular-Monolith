@@ -48,7 +48,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<QueueReader>();
 
         // Inbox
-        services.AddScoped<IInboxWriter, IInboxWriter>();
+        services.AddScoped<IInboxWriter, InboxWriter>();
         services.AddScoped<InboxReader>();
 
         // Outbox
