@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Atlas.Shared;
-using Atlas.Shared.Presentation;
 using Atlas.Plans.Infrastructure.CQRS.Features.Queries.GetAllFeatures;
 using Atlas.Shared.Domain.Results;
 using Atlas.Plans.Application.CQRS.Features.Commands.CreateFeature;
 using Atlas.Plans.Application.CQRS.Features.Commands.UpdateFeature;
 using Atlas.Plans.Application.CQRS.Features.Commands.DeleteFeature;
 using Atlas.Plans.Module;
+using Atlas.Web.Modules.Shared;
 
 namespace Atlas.Web.Modules.Plans.Controllers;
 

@@ -16,10 +16,9 @@ using Atlas.Plans.Application.CQRS.Stripe.Queries.GetUserPaymentMethodsQuery;
 using Atlas.Plans.Module;
 using Atlas.Shared.Application.Abstractions;
 using Atlas.Shared.Domain.Results;
-using Atlas.Shared.Presentation;
+using Atlas.Web.Modules.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading;
 
 namespace Atlas.Web.Modules.Plans.Controllers;
 

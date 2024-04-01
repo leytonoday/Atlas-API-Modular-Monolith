@@ -8,6 +8,7 @@
   </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.1.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.3">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -23,16 +24,13 @@
       <ProjectReference Include="..\Modules\Plans\Atlas.Plans.Application\Atlas.Plans.Application.csproj" />
       <ProjectReference Include="..\Modules\Plans\Atlas.Plans.Domain\Atlas.Plans.Domain.csproj" />
       <ProjectReference Include="..\Modules\Plans\Atlas.Plans.Infrastructure\Atlas.Plans.Infrastructure.csproj" />
-      <ProjectReference Include="..\Modules\Plans\Atlas.Plans.Presentation\Atlas.Plans.Presentation.csproj" />
       <ProjectReference Include="..\Modules\Shared\Atlas.Shared.Application\Atlas.Shared.Application.csproj" />
       <ProjectReference Include="..\Modules\Shared\Atlas.Shared.Domain\Atlas.Shared.Domain.csproj" />
       <ProjectReference Include="..\Modules\Shared\Atlas.Shared.Infrastructure.Razor\Atlas.Shared.Infrastructure.Razor.csproj" />
       <ProjectReference Include="..\Modules\Shared\Atlas.Shared.Infrastructure\Atlas.Shared.Infrastructure.csproj" />
-      <ProjectReference Include="..\Modules\Shared\Atlas.Shared.Presentation\Atlas.Shared.Presentation.csproj" />
       <ProjectReference Include="..\Modules\Users\Atlas.Users.Application\Atlas.Users.Application.csproj" />
       <ProjectReference Include="..\Modules\Users\Atlas.Users.Domain\Atlas.Users.Domain.csproj" />
       <ProjectReference Include="..\Modules\Users\Atlas.Users.Infrastructure\Atlas.Users.Infrastructure.csproj" />
-      <ProjectReference Include="..\Modules\Users\Atlas.Users.Presentation\Atlas.Users.Presentation.csproj" />
     </ItemGroup>
 
 </Project>

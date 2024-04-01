@@ -1,14 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Atlas.Users.Application.CQRS.Users.Queries.GetUserById;
-using Microsoft.AspNetCore.Http;
-using Atlas.Shared.Presentation;
 using Atlas.Shared.Domain.Results;
 using Atlas.Users.Application.CQRS.Authentication.Commands.SignIn;
 using Atlas.Users.Application.CQRS.Authentication.Commands.SignInWithToken;
 using Atlas.Users.Application.CQRS.Authentication.Commands.SignOut;
 using Atlas.Shared.Application.Abstractions;
 using Atlas.Users.Module;
+using Atlas.Web.Modules.Shared;
 
 namespace Atlas.Web.Modules.Users.Controllers;
 

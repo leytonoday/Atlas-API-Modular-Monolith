@@ -1,7 +1,7 @@
 ﻿using Atlas.Plans.Application.CQRS.Webhooks.Commands.HandleStripeWebhook;
 using Atlas.Plans.Infrastructure.Options;
 using Atlas.Plans.Module;
-using Atlas.Shared.Presentation;
+using Atlas.Web.Modules.Shared;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Stripe;

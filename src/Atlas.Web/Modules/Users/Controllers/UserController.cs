@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Atlas.Users.Application.CQRS.Users.Queries.GetUsersByPlanId;
 using Atlas.Users.Application.CQRS.Users.Queries.GetRolesByUserId;
-using Atlas.Shared.Presentation;
 using Atlas.Users.Application.CQRS.Users.Commands.CreateUser;
 using Atlas.Shared.Domain.Results;
 using Atlas.Users.Application.CQRS.Users.Commands.UpdateUser;
@@ -14,6 +13,7 @@ using Atlas.Users.Application.CQRS.Users.Commands.ResetPassword;
 using Atlas.Users.Application.CQRS.Users.Commands.ChangePassword;
 using Atlas.Shared.Application.Abstractions;
 using Atlas.Users.Module;
+using Atlas.Web.Modules.Shared;
 
 namespace Atlas.Web.Modules.Users.Controllers;
 

@@ -26,11 +26,6 @@ public static class ServiceCollectionExtensions
         // Database related services
         services.AddDatabaseServices(configuration);
 
-        //var types = applicationAssembly.GetTypes().Where(t => t.IsAssignableTo(typeof(ICommmand)))
-
-        IEnumerable<Type> commandTypes = applicationAssembly.GetTypes().Where(t => typeof(ICommand).IsAssignableFrom(t) && t.IsClass)
-            .ToList();
-
         // MediatR
         services.AddMediatR(config =>
         {
