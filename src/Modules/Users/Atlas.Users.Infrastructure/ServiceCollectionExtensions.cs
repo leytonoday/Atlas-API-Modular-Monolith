@@ -62,12 +62,12 @@ public static class ServiceCollectionExtensions
             options.EnableDetailedErrors(databaseOptions.EnableDetailedErrors);
             options.EnableSensitiveDataLogging(databaseOptions.EnableSensitiveDataLogging);
 
-            //var usersDatabaseContext = new UsersDatabaseContext(options.Options);
+            var usersDatabaseContext = new UsersDatabaseContext(options.Options as DbContextOptions<UsersDatabaseContext>);
 
-            //// Apply any migrations that have yet to be applied
-            //IEnumerable<string> migrationsToApply = usersDatabaseContext.Database.GetPendingMigrations();
-            //if (migrationsToApply.Any())
-            //    usersDatabaseContext.Database.Migrate();
+            // Apply any migrations that have yet to be applied
+            IEnumerable<string> migrationsToApply = usersDatabaseContext.Database.GetPendingMigrations();
+            if (migrationsToApply.Any())
+                usersDatabaseContext.Database.Migrate();
 
             // Register database interceptors
             options.AddInterceptors(provider.GetRequiredService<UpdateAuditableEntitiesInterceptor>());
