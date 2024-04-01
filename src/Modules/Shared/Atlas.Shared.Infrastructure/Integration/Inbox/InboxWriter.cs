@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Atlas.Shared.Infrastructure.Integration.Inbox;
 
-internal class InboxWriter(DbContext databaseContext) : IInboxWriter
+internal class InboxWriter<TDatabaseContext>(TDatabaseContext databaseContext) : IInboxWriter where TDatabaseContext : DbContext
 {
     private DbSet<InboxMessage> GetDbSet() => databaseContext.Set<InboxMessage>();
 

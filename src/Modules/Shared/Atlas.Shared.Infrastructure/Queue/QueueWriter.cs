@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Atlas.Shared.Infrastructure.CommandQueue;
 
-public class QueueWriter(DbContext databaseContext) : IQueueWriter
+public class QueueWriter<TDatabaseContext>(TDatabaseContext databaseContext) : IQueueWriter where TDatabaseContext : DbContext
 {
     private DbSet<QueueMessage> GetDbSet() => databaseContext.Set<QueueMessage>();
 

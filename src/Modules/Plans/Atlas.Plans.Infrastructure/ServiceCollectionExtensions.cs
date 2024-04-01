@@ -1,6 +1,4 @@
-﻿using Atlas.Plans.Domain;
-using Atlas.Plans.Infrastructure.Persistance;
-using Atlas.Shared.Infrastructure.Persistance.Options;
+﻿using Atlas.Plans.Infrastructure.Persistance;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
@@ -19,6 +17,10 @@ using Atlas.Plans.Domain.Entities.PlanFeatureEntity;
 using Atlas.Plans.Domain.Entities.StripeCustomerEntity;
 using Atlas.Plans.Domain.Entities.StripeCardFingerprintEntity;
 using Atlas.Shared.Domain;
+using Atlas.Shared.Application;
+using System.Reflection;
+using Atlas.Shared.Infrastructure.Options;
+using Atlas.Plans.Infrastructure.Options.OptionSetup;
 
 namespace Atlas.Plans.Infrastructure;
 
@@ -26,6 +28,8 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddOptions();
+
         var applicationAssembly = typeof(PlansApplicationAssemblyReference).Assembly;
         var infrastructureAssembly = typeof(PlansInfrastructureAssemblyReference).Assembly;
 
@@ -33,9 +37,10 @@ public static class ServiceCollectionExtensions
         services.AddDatabaseServices(configuration);
 
         // MediatR
+        var assemblies = new[] { Assembly.GetExecutingAssembly(), typeof(SharedApplicationAssemblyReference).Assembly };
         services.AddMediatR(config =>
         {
-            config.RegisterServicesFromAssemblies(applicationAssembly);
+            config.RegisterServicesFromAssemblies(assemblies);
         });
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnitOfWorkBehavior<,>));
 
@@ -50,6 +55,12 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IStripeService, StripeService>();
 
         return services;
+    }
+
+    public static IServiceCollection AddOptions(this IServiceCollection services)
+    {
+        return services
+            .ConfigureOptions<StripeOptionsSetup>();
     }
 
     public static IServiceCollection AddDatabaseServices(this IServiceCollection services, IConfiguration configuration)

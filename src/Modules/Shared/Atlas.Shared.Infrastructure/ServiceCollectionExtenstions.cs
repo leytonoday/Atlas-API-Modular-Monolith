@@ -10,10 +10,13 @@ using Atlas.Shared.Infrastructure.Builders;
 using Atlas.Shared.Infrastructure.CommandQueue;
 using Atlas.Shared.Infrastructure.Integration.Inbox;
 using Atlas.Shared.Infrastructure.Integration.Outbox;
+using Atlas.Shared.Infrastructure.Module;
+using Atlas.Shared.Infrastructure.Options.OptonsSetup;
 using Atlas.Shared.Infrastructure.Queue;
 using Atlas.Shared.Infrastructure.Services;
 using FluentValidation;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
@@ -22,20 +25,21 @@ namespace Atlas.Shared.Infrastructure;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddCommon(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddCommon<TDatabaseContext, TCompositionRoot>(this IServiceCollection services, IConfiguration configuration)
+        where TDatabaseContext : DbContext
+        where TCompositionRoot : ICompositionRoot
     {
-        //// domain events
-        //services.AddScoped<DomainEventAccessor>();
-        //services.AddScoped<DomainEventPublisher>();
-        //services.AddScoped<OutboxMessagePublisher>();
+        services.AddSingleton(configuration);
+
+        services.AddOptions();
 
         // MediatR pipeline behaviours
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehaviour<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationPipelineBehavior<,>));
 
         // External communications
+        services.AddEmailServices<TCompositionRoot>();
         services.AddScoped<ISupportNotifierService, SupportNotifierService>();
-        services.AddEmailServices();
 
         // Background task queue
         services.AddBackgroundTaskQueue();
@@ -44,25 +48,31 @@ public static class ServiceCollectionExtensions
         services.AddDatabaseInterceptors();
 
         // Command queue
-        services.AddScoped<IQueueWriter, QueueWriter>();
-        services.AddScoped<QueueReader>();
+        services.AddScoped<IQueueWriter, QueueWriter<TDatabaseContext>>();
+        services.AddScoped<IQueueReader, QueueReader<TDatabaseContext>>();
 
         // Inbox
-        services.AddScoped<IInboxWriter, InboxWriter>();
-        services.AddScoped<InboxReader>();
+        services.AddScoped<IInboxWriter, InboxWriter<TDatabaseContext>>();
+        services.AddScoped<IInboxReader, InboxReader<TDatabaseContext>>();
 
         // Outbox
-        services.AddScoped<IOutboxWriter, OutboxWriter>();
-        services.AddScoped<OutboxReader>();
-
+        services.AddScoped<IOutboxWriter, OutboxWriter<TDatabaseContext>>();
+        services.AddScoped<IOutboxReader, OutboxReader<TDatabaseContext>>();
 
         return services;
     }
 
-    public static IServiceCollection AddEmailServices(this IServiceCollection services)
+    public static IServiceCollection AddOptions(this IServiceCollection services)
+    {
+        return services
+            .ConfigureOptions<EmailOptionsSetup>()
+            .ConfigureOptions<DatabaseOptionsSetup>()
+            .ConfigureOptions<SupportNotificationOptionsSetup>();
+    }
+
+    public static IServiceCollection AddEmailServices<TCompositionRoot>(this IServiceCollection services) where TCompositionRoot : ICompositionRoot
     {
         services.AddMvcCore().AddRazorViewEngine();
-        services.AddScoped<RazorViewToStringRenderer>();
         services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<EmailContentBuilder>();
 
@@ -87,12 +97,6 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddValidation(this IServiceCollection services, Assembly assembly)
     {
         services.AddValidatorsFromAssembly(assembly);
-        return services;
-    }
-
-    public static IServiceCollection AddAutoMappings(this IServiceCollection services, Assembly assembly)
-    {
-        
         return services;
     }
 }

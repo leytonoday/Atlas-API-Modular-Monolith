@@ -1,4 +1,4 @@
-﻿namespace Atlas.Shared.Infrastructure.Persistance.Options;
+﻿namespace Atlas.Shared.Infrastructure.Options;
 
 /// <summary>
 /// Represents the options for the database and Entity Framework Core, which are loaded from the appsettings.json file.

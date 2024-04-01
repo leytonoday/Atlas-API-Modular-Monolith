@@ -1,9 +1,8 @@
-﻿using Atlas.Shared.Infrastructure.Persistance.Options;
-using Microsoft.EntityFrameworkCore.Design;
+﻿using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.Json;
 using Atlas.Shared;
+using Atlas.Shared.Infrastructure.Options;
 
 namespace Atlas.Plans.Infrastructure.Persistance;
 

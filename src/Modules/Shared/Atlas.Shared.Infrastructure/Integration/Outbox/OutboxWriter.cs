@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Atlas.Shared.Infrastructure.Integration.Outbox;
 
-internal class OutboxWriter(DbContext databaseContext) : IOutboxWriter
+internal class OutboxWriter<TDatabaseContext>(TDatabaseContext databaseContext) : IOutboxWriter where TDatabaseContext : DbContext
 {
     private DbSet<OutboxMessage> GetDbSet() => databaseContext.Set<OutboxMessage>();
 

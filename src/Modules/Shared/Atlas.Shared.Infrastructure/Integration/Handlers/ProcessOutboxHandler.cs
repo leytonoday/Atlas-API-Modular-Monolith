@@ -1,13 +1,14 @@
 ﻿using Atlas.Shared.Application.Abstractions.Messaging.Command;
 using Atlas.Shared.Application.Commands;
 using Atlas.Shared.Infrastructure.Integration.Bus;
+using Atlas.Shared.Infrastructure.Integration.Outbox;
 using Atlas.Shared.Infrastructure.Queue;
 using Atlas.Shared.IntegrationEvents;
 using Microsoft.Extensions.Logging;
 
-namespace Atlas.Shared.Infrastructure.Integration.Outbox;
+namespace Atlas.Shared.Infrastructure.Integration.Handlers;
 
-public class ProcessOutboxHandler(OutboxReader outboxReader, IEventBus eventBus, ILogger<ProcessOutboxHandler> logger) : ICommandHandler<ProcessOutboxCommand>
+public class ProcessOutboxHandler(IOutboxReader outboxReader, IEventBus eventBus, ILogger<ProcessOutboxHandler> logger) : ICommandHandler<ProcessOutboxCommand>
 {
     public async Task Handle(ProcessOutboxCommand command, CancellationToken cancellationToken)
     {
@@ -19,7 +20,7 @@ public class ProcessOutboxHandler(OutboxReader outboxReader, IEventBus eventBus,
         {
             logger.LogInformation($"Processing outbox message: {message.Id} {message.Type} {message.Data}");
             IIntegrationEvent? integrationEvent = OutboxMessage.ToIntegrationEvent(message);
-            if (integrationEvent is null) 
+            if (integrationEvent is null)
             {
                 continue;
             }

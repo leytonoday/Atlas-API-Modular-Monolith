@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Atlas.Shared.Infrastructure.Queue;
 
-public class OutboxReader(DbContext databaseContext)
+public class OutboxReader<TDatabaseContext>(TDatabaseContext databaseContext) : IOutboxReader where TDatabaseContext : DbContext
 {
     private DbSet<OutboxMessage> GetDbSet() => databaseContext.Set<OutboxMessage>();
 

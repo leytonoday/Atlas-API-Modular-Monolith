@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using Atlas.Shared.Infrastructure.Module;
 using Atlas.Shared.Infrastructure.Integration;
 using Atlas.Shared.Infrastructure.BackgroundJobs;
+using Atlas.Plans.Infrastructure.Persistance;
 
 namespace Atlas.Plans.Module;
 
@@ -62,7 +63,7 @@ public class PlansModuleStartup : IModuleStartup
     public static void SetupCompositionRoot(IConfiguration configuration, IEventBus eventBus, ILoggerFactory loggerFactory)
     {
         var serviceProvider = new ServiceCollection()
-            .AddCommon(configuration)
+            .AddCommon<PlansDatabaseContext, PlansCompositionRoot>(configuration)
             .AddServices(configuration)
             .AddSingleton(eventBus)
             .AddSingleton(loggerFactory)

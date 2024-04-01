@@ -1,8 +1,9 @@
 ﻿using Atlas.Infrastructure.Persistance.Interceptors;
-using Atlas.Shared.Application.Abstractions.Messaging.Command;
+using Atlas.Shared.Application;
 using Atlas.Shared.Domain;
+using Atlas.Shared.Infrastructure;
 using Atlas.Shared.Infrastructure.Behaviors;
-using Atlas.Shared.Infrastructure.Persistance.Options;
+using Atlas.Shared.Infrastructure.Options;
 using Atlas.Users.Application;
 using Atlas.Users.Domain;
 using Atlas.Users.Domain.Entities.UserEntity;
@@ -13,6 +14,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 
 namespace Atlas.Users.Infrastructure;
 
@@ -22,14 +24,17 @@ public static class ServiceCollectionExtensions
     {
         var applicationAssembly = typeof(UsersApplicationAssemblyReference).Assembly;
         var infrastructureAssembly = typeof(UsersInfrastructureAssemblyReference).Assembly;
+        var sharedApplicationAssembly = typeof(SharedApplicationAssemblyReference).Assembly;
+        var sharedInfrastructureAssembly = typeof(SharedInfrastructureAssemblyReference).Assembly;
 
         // Database related services
         services.AddDatabaseServices(configuration);
 
         // MediatR
+        var assemblies = new[] { infrastructureAssembly, applicationAssembly, sharedApplicationAssembly, sharedInfrastructureAssembly };
         services.AddMediatR(config =>
         {
-            config.RegisterServicesFromAssemblies(applicationAssembly);
+            config.RegisterServicesFromAssemblies(assemblies);
         });
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnitOfWorkBehavior<,>));
 
@@ -72,8 +77,6 @@ public static class ServiceCollectionExtensions
             // Register database interceptors
             options.AddInterceptors(provider.GetRequiredService<UpdateAuditableEntitiesInterceptor>());
         });
-
-        var allServices = services.ToList();
 
         return services;
     }

@@ -3,15 +3,14 @@ using Atlas.Shared.Application.EmailContent;
 using Atlas.Shared.Infrastructure.Razor.Views.Emails.ConfirmUserEmail;
 using Atlas.Shared.Infrastructure.Razor.Views.Emails.ResetPasswordEmail;
 using Atlas.Shared.Infrastructure.Razor.Views.Emails.SupportNotificationEmail;
-using Atlas.Shared.Infrastructure.Services;
+using Razor.Templating.Core;
 
 namespace Atlas.Shared.Infrastructure.Builders;
 
 /// <summary>
 /// Builds email content asynchronously using Razor views for templating.
 /// </summary>
-/// <param name="_razorViewToStringRenderer"></param>
-public class EmailContentBuilder(RazorViewToStringRenderer _razorViewToStringRenderer)
+public class EmailContentBuilder()
 {
     /// <summary>
     /// Builds email content asynchronously for the specified <typeparamref name="TData"/>.
@@ -34,15 +33,15 @@ public class EmailContentBuilder(RazorViewToStringRenderer _razorViewToStringRen
     private async Task<BuiltEmailContent> BuildEmailContentAsync(ConfirmUserEmailEmailContent data)
     {
         var confirmUserModel = new ConfirmUserEmailViewModel(data.UserName, data.Token);
-        string body = await _razorViewToStringRenderer.RenderViewToStringAsync("/Views/Emails/ConfirmUserEmail/ConfirmUserEmail.cshtml", confirmUserModel);
-        
+        string body = await RazorTemplateEngine.RenderAsync("/Views/Emails/ConfirmUserEmail/ConfirmUserEmail.cshtml", confirmUserModel);
+
         return new BuiltEmailContent("Confirm User Email", body);
     }
     
     private async Task<BuiltEmailContent> BuildEmailContentAsync(ResetPasswordEmailContent data)
     {
         var confirmUserModel = new ResetPasswordEmailViewModel(data.UserName, data.Token);
-        string body = await _razorViewToStringRenderer.RenderViewToStringAsync("/Views/Emails/ResetPasswordEmail/ResetPasswordEmail.cshtml", confirmUserModel);
+        string body = await RazorTemplateEngine.RenderAsync("/Views/Emails/ResetPasswordEmail/ResetPasswordEmail.cshtml", confirmUserModel);
 
         return new BuiltEmailContent("Reset Password", body);
     }
@@ -50,7 +49,7 @@ public class EmailContentBuilder(RazorViewToStringRenderer _razorViewToStringRen
     private async Task<BuiltEmailContent> BuildEmailContentAsync(SupportNotificationEmailContent data)
     {
         var confirmUserModel = new SupportNotificationEmailViewModel(data.Message);
-        string body = await _razorViewToStringRenderer.RenderViewToStringAsync("/Views/Emails/SupportNotificationEmail/SupportNotificationEmail.cshtml", confirmUserModel);
+        string body = await RazorTemplateEngine.RenderAsync("/Views/Emails/SupportNotificationEmail/SupportNotificationEmail.cshtml", confirmUserModel);
 
         return new BuiltEmailContent("Support Notification", body);
     }

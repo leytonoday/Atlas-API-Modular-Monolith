@@ -11,6 +11,8 @@ using Microsoft.Extensions.Logging;
 using Atlas.Shared.Infrastructure.Module;
 using Atlas.Shared.Infrastructure.BackgroundJobs;
 using Atlas.Shared.Infrastructure.Integration;
+using Atlas.Users.Infrastructure.Persistance;
+using Microsoft.AspNetCore.Hosting;
 
 namespace Atlas.Users.Module;
 
@@ -21,6 +23,7 @@ public class UsersModuleStartup : IModuleStartup
     /// <inheritdoc />
     public static async Task Start(IConfiguration configuration, IEventBus eventBus, ILoggerFactory loggerFactory, bool enableScheduler = true)
     {
+
         SetupCompositionRoot(configuration, eventBus, loggerFactory);
 
         UsersEventBusStartup.Initialize(loggerFactory.CreateLogger<UsersEventBusStartup>(), eventBus);
@@ -62,7 +65,7 @@ public class UsersModuleStartup : IModuleStartup
     public static void SetupCompositionRoot(IConfiguration configuration, IEventBus eventBus, ILoggerFactory loggerFactory)
     {
         var serviceProvider = new ServiceCollection()
-            .AddCommon(configuration)
+            .AddCommon<UsersDatabaseContext, UsersCompositionRoot>(configuration)
             .AddServices(configuration)
             .AddSingleton(eventBus)
             .AddSingleton(loggerFactory)

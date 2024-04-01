@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Atlas.Shared.Infrastructure.Queue;
 
-public class QueueReader(DbContext databaseContext)
+public class QueueReader<TDatabaseContext>(TDatabaseContext databaseContext) : IQueueReader where TDatabaseContext : DbContext
 {
     private DbSet<QueueMessage> GetDbSet() => databaseContext.Set<QueueMessage>();
 

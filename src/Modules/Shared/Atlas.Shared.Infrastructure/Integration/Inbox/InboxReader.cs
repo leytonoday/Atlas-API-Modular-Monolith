@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Atlas.Shared.Infrastructure.Queue;
 
-public class InboxReader(DbContext databaseContext)
+public class InboxReader<TDatabaseContext>(TDatabaseContext databaseContext) : IInboxReader where TDatabaseContext : DbContext
 {
     private DbSet<InboxMessage> GetDbSet() => databaseContext.Set<InboxMessage>();
 

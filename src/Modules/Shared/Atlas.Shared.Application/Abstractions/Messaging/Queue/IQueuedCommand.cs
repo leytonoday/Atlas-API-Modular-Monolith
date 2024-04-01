@@ -1,5 +1,5 @@
-﻿using MediatR;
+﻿using Atlas.Shared.Application.Abstractions.Messaging.Command;
 
 namespace Atlas.Shared.Application.Queue;
 
-public interface IQueuedCommand : IRequest;
+public interface IQueuedCommand : ICommand;
