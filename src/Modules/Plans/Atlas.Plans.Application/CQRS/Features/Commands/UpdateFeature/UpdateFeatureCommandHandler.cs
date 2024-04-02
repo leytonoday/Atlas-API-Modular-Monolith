@@ -1,16 +1,23 @@
-﻿using Atlas.Plans.Domain;
+﻿using Atlas.Plans.Application.CQRS.Features.RemoveFromPlansIfHasIsInheritableChanged.FeatureUpdated;
 using Atlas.Plans.Domain.Entities.FeatureEntity;
+using Atlas.Plans.Domain.Errors;
 using Atlas.Shared.Application.Abstractions.Messaging.Command;
-using MediatR;
+using Atlas.Shared.Application.Queue;
+using Atlas.Shared.Domain.Exceptions;
 
 namespace Atlas.Plans.Application.CQRS.Features.Commands.UpdateFeature;
 
-internal sealed class UpdateFeatureCommandHandler(IFeatureRepository featureRepository) : ICommandHandler<UpdateFeatureCommand, Feature>
+internal sealed class UpdateFeatureCommandHandler(IFeatureRepository featureRepository, IQueueWriter queueWriter) : ICommandHandler<UpdateFeatureCommand, Feature>
 {
     public async Task<Feature> Handle(UpdateFeatureCommand request, CancellationToken cancellationToken)
     {
-        var feature = await Feature.UpdateAsync(
-            request.Id,
+        Feature feature = await featureRepository.GetByIdAsync(request.Id, true, cancellationToken)
+            ?? throw new ErrorException(PlansDomainErrors.Feature.FeatureNotFound);
+
+        bool hasIsInheritableChanged = request.IsInheritable != feature.IsInheritable;
+
+        await Feature.UpdateAsync(
+            feature,
             request.Name, 
             request.Description, 
             request.IsInheritable, 
@@ -19,6 +26,8 @@ internal sealed class UpdateFeatureCommandHandler(IFeatureRepository featureRepo
             cancellationToken);
 
         await featureRepository.UpdateAsync(feature, cancellationToken);
+
+        await queueWriter.WriteAsync(new RemoveFromPlansIfHasIsInheritableChangedQueuedCommand(feature.Id, hasIsInheritableChanged), cancellationToken);
 
         return feature;
     }

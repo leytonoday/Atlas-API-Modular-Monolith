@@ -14,6 +14,7 @@ internal class UsersEventBusStartup : IEventBusStartup
 
     public static void SubscribeToIntegrationEvents(ILogger logger, IEventBus eventBus)
     {
+
     }
 
     private static void SubscribeToIntegrationEvent<TIntegrationEvent>(ILogger logger, IEventBus eventBus)

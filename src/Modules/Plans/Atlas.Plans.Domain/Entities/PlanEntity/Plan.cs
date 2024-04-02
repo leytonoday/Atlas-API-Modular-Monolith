@@ -1,5 +1,4 @@
 ﻿using Atlas.Plans.Domain.Entities.FeatureEntity;
-using Atlas.Plans.Domain.Entities.PlanEntity.Events;
 using Atlas.Plans.Domain.Entities.PlanFeatureEntity;
 using Atlas.Plans.Domain.Errors;
 using Atlas.Plans.Domain.Services;
@@ -135,13 +134,12 @@ public class Plan : AggregateRoot<Guid>
             InheritsFromId = inheritsFromId
         };
 
-        plan.AddDomainEvent(new PlanCreatedEvent(Guid.NewGuid(), name));
-
         return plan;
     }
 
-    public static async Task<Plan> UpdateAsync(
-        Guid id,
+    public static async Task UpdateAsync(
+        Plan originalPlan,
+        bool hasBeenDeactivated,
         string name,
         string description,
         string isoCurrencyCode,
@@ -160,41 +158,35 @@ public class Plan : AggregateRoot<Guid>
         IPlanRepository planRepository,
         CancellationToken cancellationToken)
     {
-        Plan plan = await planRepository.GetByIdAsync(id, true, cancellationToken)
-            ?? throw new ErrorException(PlansDomainErrors.Plan.PlanNotFound);
-
         // If the name has been changed, ensure that a Plan with this name doesn't already exist
-        if (name.ToLower() != plan.Name.ToLower() && await planService.IsNameTakenAsync(name, cancellationToken))
+        if (name.ToLower() != originalPlan.Name.ToLower() && await planService.IsNameTakenAsync(name, cancellationToken))
         {
             throw new ErrorException(PlansDomainErrors.Plan.NameMustBeUnique);
         }
 
-        bool hasBeenReactivated = !plan.Active && active; // Has the plan been re-activated?
-        bool hasBeenDeactivated = plan.Active && !active; // Has the plan de-activated?
-        bool havePricesChanged = plan.MonthlyPrice != monthyPrice || plan.AnnualPrice != annualPrice;
 
-        if (hasBeenDeactivated && await stripeService.DoesPlanHaveActiveSubscriptions(plan, cancellationToken))
+        if (hasBeenDeactivated && await stripeService.DoesPlanHaveActiveSubscriptions(originalPlan, cancellationToken))
         {
             throw new ErrorException(PlansDomainErrors.Plan.CannotDeactivateWithActiveSubscribers);
         }
 
         // Update fields manually
-        plan.Name = name;
-        plan.Description = description;
-        plan.IsoCurrencyCode = isoCurrencyCode;
-        plan.MonthlyPrice = monthyPrice;
-        plan.AnnualPrice = annualPrice;
-        plan.TrialPeriodDays = trialPeriodDays;
-        plan.Tag = tag;
-        plan.Icon = icon;
-        plan.IconColour = iconColour;
-        plan.BackgroundColour = backgroundColour;
-        plan.TextColour = textColour;
-        plan.Active = active;
-        plan.InheritsFromId = inheritsFromId;
+        originalPlan.Name = name;
+        originalPlan.Description = description;
+        originalPlan.IsoCurrencyCode = isoCurrencyCode;
+        originalPlan.MonthlyPrice = monthyPrice;
+        originalPlan.AnnualPrice = annualPrice;
+        originalPlan.TrialPeriodDays = trialPeriodDays;
+        originalPlan.Tag = tag;
+        originalPlan.Icon = icon;
+        originalPlan.IconColour = iconColour;
+        originalPlan.BackgroundColour = backgroundColour;
+        originalPlan.TextColour = textColour;
+        originalPlan.Active = active;
+        originalPlan.InheritsFromId = inheritsFromId;
 
         // Check for circular dependencies
-        if (plan.InheritsFromId.HasValue && await planService.IsCircularInheritanceDetectedAsync(plan, cancellationToken))
+        if (originalPlan.InheritsFromId.HasValue && await planService.IsCircularInheritanceDetectedAsync(originalPlan, cancellationToken))
         {
             throw new ErrorException(PlansDomainErrors.Plan.CircularInheritanceDetected);
         }
@@ -202,14 +194,10 @@ public class Plan : AggregateRoot<Guid>
         // If the plan has been de-activated, make sure that no other plans inherit from this plan.
         if (hasBeenDeactivated)
         {
-            Plan? targetPlan = await planRepository.GetByInheritsFromIdAsync(plan.Id, true, cancellationToken);
+            Plan? targetPlan = await planRepository.GetByInheritsFromIdAsync(originalPlan.Id, true, cancellationToken);
             if (targetPlan is not null)
                 targetPlan.InheritsFromId = null;
         }
-
-        plan.AddDomainEvent(new PlanUpdatedEvent(Guid.NewGuid(), plan.Id, hasBeenDeactivated, hasBeenReactivated, havePricesChanged));
-
-        return plan;
     }
 
     /// <summary>

@@ -1,12 +1,12 @@
-﻿using Atlas.Plans.Domain;
+﻿using Atlas.Plans.Application.CQRS.Plans.Queue.CreateStripeProductAndPrices;
 using Atlas.Plans.Domain.Entities.PlanEntity;
 using Atlas.Plans.Domain.Services;
 using Atlas.Shared.Application.Abstractions.Messaging.Command;
-using MediatR;
+using Atlas.Shared.Application.Queue;
 
 namespace Atlas.Plans.Application.CQRS.Plans.Commands.CreatePlan;
 
-internal sealed class CreatePlanCommandHandler(PlanService planService, IPlanRepository planRepository) : ICommandHandler<CreatePlanCommand, Guid>
+internal sealed class CreatePlanCommandHandler(PlanService planService, IPlanRepository planRepository, IQueueWriter queueWriter) : ICommandHandler<CreatePlanCommand, Guid>
 {
     public async Task<Guid> Handle(CreatePlanCommand request, CancellationToken cancellationToken)
     {
@@ -29,6 +29,8 @@ internal sealed class CreatePlanCommandHandler(PlanService planService, IPlanRep
         );
 
         await planRepository.AddAsync(plan, cancellationToken);
+
+        await queueWriter.WriteAsync(new CreateStripeProductAndPricesQueuedCommand(plan.Name), cancellationToken);
 
         return plan.Id;
     }

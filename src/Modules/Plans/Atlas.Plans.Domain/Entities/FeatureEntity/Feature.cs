@@ -1,5 +1,4 @@
-﻿using Atlas.Plans.Domain.Entities.FeatureEntity.Events;
-using Atlas.Plans.Domain.Entities.PlanEntity;
+﻿using Atlas.Plans.Domain.Entities.PlanEntity;
 using Atlas.Plans.Domain.Errors;
 using Atlas.Shared.Domain.AggregateRoot;
 using Atlas.Shared.Domain.Exceptions;
@@ -53,7 +52,7 @@ public class Feature : AggregateRoot<Guid>
     }
 
     public static async Task<Feature> UpdateAsync(
-        Guid id,
+        Feature feature,
         string name,
         string description,
         bool isInheritable,
@@ -61,23 +60,16 @@ public class Feature : AggregateRoot<Guid>
         IFeatureRepository featureRepository,
         CancellationToken cancellationToken)
     {
-        Feature feature = await featureRepository.GetByIdAsync(id, true, cancellationToken)
-            ?? throw new ErrorException(PlansDomainErrors.Feature.FeatureNotFound);
-
         // If the name has changed, ensure another Feature doesn't already have that name
         if (name != feature.Name && await AlreadyExists(name, featureRepository, cancellationToken))
         {
             throw new ErrorException(PlansDomainErrors.Feature.NameMustBeUnique);
         }
 
-        bool hasIsInheritableChanged = isInheritable != feature.IsInheritable;
-
         feature.Name = name;
         feature.Description = description;
         feature.IsInheritable = isInheritable;
         feature.IsHidden = isHidden;
-
-        feature.AddDomainEvent(new FeatureUpdatedEvent(id, hasIsInheritableChanged));
 
         return feature;
     }
