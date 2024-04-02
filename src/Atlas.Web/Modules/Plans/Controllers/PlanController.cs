@@ -7,6 +7,7 @@ using Atlas.Plans.Application.CQRS.Plans.Queries.GetPlanById;
 using Atlas.Plans.Application.CQRS.Plans.Queries.GetPlanByUserId;
 using Atlas.Plans.Application.CQRS.Plans.Queries.GetPlanFeaturesByPlanId;
 using Atlas.Plans.Module;
+using Atlas.Shared;
 using Atlas.Shared.Application.Abstractions;
 using Atlas.Shared.Domain.Results;
 using Atlas.Web.Modules.Shared;
@@ -42,6 +43,7 @@ public class PlanController(IPlansModule plansModule, IExecutionContextAccessor 
     }
 
     [HttpPost]
+    [Authorize(Roles = RoleNames.Administrator)]
     public async Task<IActionResult> CreatePlan([FromBody] CreatePlanCommand createPlanCommand, CancellationToken cancellationToken)
     {
         var result = await plansModule.SendCommand(createPlanCommand, cancellationToken);
@@ -49,6 +51,7 @@ public class PlanController(IPlansModule plansModule, IExecutionContextAccessor 
     }
 
     [HttpPut]
+    [Authorize(Roles = RoleNames.Administrator)]
     public async Task<IActionResult> UpdatePlan([FromBody] UpdatePlanCommand updatePlanCommand, CancellationToken cancellationToken)
     {
         await plansModule.SendCommand(updatePlanCommand, cancellationToken);
@@ -56,6 +59,7 @@ public class PlanController(IPlansModule plansModule, IExecutionContextAccessor 
     }
 
     [HttpPost("features")]
+    [Authorize(Roles = RoleNames.Administrator)]
     public async Task<IActionResult> AddFeatureToPlan([FromBody] AddFeatureToPlanCommand addFeatureToPlanCommand, CancellationToken cancellationToken)
     {
         await plansModule.SendCommand(addFeatureToPlanCommand, cancellationToken);
@@ -63,6 +67,7 @@ public class PlanController(IPlansModule plansModule, IExecutionContextAccessor 
     }
 
     [HttpDelete("features")]
+    [Authorize(Roles = RoleNames.Administrator)]
     public async Task<IActionResult> RemoveFeatureFromPlan([FromBody] RemoveFeatureFromPlanCommand removeFeatureFromPlanCommand, CancellationToken cancellationToken)
     {
         await plansModule.SendCommand(removeFeatureFromPlanCommand, cancellationToken);
@@ -70,6 +75,7 @@ public class PlanController(IPlansModule plansModule, IExecutionContextAccessor 
     }
 
     [HttpPut("features")]
+    [Authorize(Roles = RoleNames.Administrator)]
     public async Task<IActionResult> UpdateFeatureOnPlan([FromBody] UpdateFeatureOnPlanCommand updateFeatureOnPlanCommand, CancellationToken cancellationToken)
     {
         await plansModule.SendCommand(updateFeatureOnPlanCommand, cancellationToken);

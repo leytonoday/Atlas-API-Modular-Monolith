@@ -14,6 +14,7 @@ using Atlas.Users.Application.CQRS.Users.Commands.ChangePassword;
 using Atlas.Shared.Application.Abstractions;
 using Atlas.Users.Module;
 using Atlas.Web.Modules.Shared;
+using Atlas.Shared;
 
 namespace Atlas.Web.Modules.Users.Controllers;
 
@@ -87,6 +88,7 @@ public class UserController(IExecutionContextAccessor executionContext, IUsersMo
     }
 
     [HttpGet("plan/{planId}")]
+    [Authorize(Roles = RoleNames.Administrator)]
     public async Task<IActionResult> GetAllUsersOnPlan([FromRoute] Guid planId, CancellationToken cancellationToken)
     {
         var result = await usersModule.SendQuery(new GetUsersByPlanIdQuery(planId), cancellationToken);
