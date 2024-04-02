@@ -24,6 +24,7 @@ using Atlas.Plans.Infrastructure.Options.OptionSetup;
 using Atlas.Shared.Infrastructure;
 using Atlas.Users.Domain.Entities.UserEntity;
 using Atlas.Users.Infrastructure.Persistance.Repositories;
+using Atlas.Shared.Infrastructure.Persistance.Interceptors;
 
 namespace Atlas.Plans.Infrastructure;
 
@@ -104,6 +105,7 @@ public static class ServiceCollectionExtensions
 
             // Register database interceptors
             options.AddInterceptors(provider.GetRequiredService<UpdateAuditableEntitiesInterceptor>());
+            options.AddInterceptors(provider.GetRequiredService<DomainEventPublisherInterceptor>());
         });
 
         return services;

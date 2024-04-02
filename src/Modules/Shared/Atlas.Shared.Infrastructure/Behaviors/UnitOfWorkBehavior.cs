@@ -15,13 +15,18 @@ public class UnitOfWorkBehavior<TRequest, TResponse>(IUnitOfWork unitOfWork) : I
             return await next();
         }
 
-        // We can now presume that this is a command, and therefore there should be some side-effect which should be persisted to the database
+        // We can now presume that this is a command rather than a query, and therefore there should be some side-effect which
+        // should be persisted to the database. Therefore, start a transaction. EF Core change tracker will handle track everything, 
+        // so we don't need to wrap the "next" in the transaction. 
 
         // Execute the next step in the pipeline
         var response = await next();
 
-        // Save changes to the database
-        await unitOfWork.CommitAsync(cancellationToken);
+        // Save changes to the database if there have been any
+        if (unitOfWork.HasUnsavedChanges())
+        {
+            await unitOfWork.CommitAsync(cancellationToken);
+        }
 
         return response;
     }

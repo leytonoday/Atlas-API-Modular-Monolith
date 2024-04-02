@@ -12,6 +12,7 @@ using Atlas.Shared.Infrastructure.Integration.Inbox;
 using Atlas.Shared.Infrastructure.Integration.Outbox;
 using Atlas.Shared.Infrastructure.Module;
 using Atlas.Shared.Infrastructure.Options.OptonsSetup;
+using Atlas.Shared.Infrastructure.Persistance.Interceptors;
 using Atlas.Shared.Infrastructure.Queue;
 using Atlas.Shared.Infrastructure.Services;
 using FluentValidation;
@@ -62,18 +63,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IOutboxWriter, OutboxWriter<TDatabaseContext>>();
         services.AddScoped<IOutboxReader, OutboxReader<TDatabaseContext>>();
 
-        services.AddCookieAuthentication();
-
-        return services;
-    }
-
-    /// <summary>
-    /// Adds cookie-based authentication services to the specified <see cref="IServiceCollection"/>.
-    /// </summary>
-    public static IServiceCollection AddCookieAuthentication(this IServiceCollection services)
-    {
-
-
         return services;
     }
 
@@ -106,6 +95,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddDatabaseInterceptors(this IServiceCollection services)
     {
         services.AddSingleton<UpdateAuditableEntitiesInterceptor>();
+        services.AddSingleton<DomainEventPublisherInterceptor>();
         return services;
     }
 

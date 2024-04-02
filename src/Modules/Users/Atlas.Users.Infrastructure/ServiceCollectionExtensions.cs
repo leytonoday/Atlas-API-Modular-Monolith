@@ -4,6 +4,7 @@ using Atlas.Shared.Domain;
 using Atlas.Shared.Infrastructure;
 using Atlas.Shared.Infrastructure.Behaviors;
 using Atlas.Shared.Infrastructure.Options;
+using Atlas.Shared.Infrastructure.Persistance.Interceptors;
 using Atlas.Users.Application;
 using Atlas.Users.Domain;
 using Atlas.Users.Domain.Entities.UserEntity;
@@ -79,6 +80,7 @@ public static class ServiceCollectionExtensions
 
             // Register database interceptors
             options.AddInterceptors(provider.GetRequiredService<UpdateAuditableEntitiesInterceptor>());
+            options.AddInterceptors(provider.GetRequiredService<DomainEventPublisherInterceptor>());
         });
 
         return services;

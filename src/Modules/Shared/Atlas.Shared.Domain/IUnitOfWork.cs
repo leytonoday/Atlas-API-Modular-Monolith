@@ -19,4 +19,10 @@ public interface IUnitOfWork
     public Task<bool> HasDomainEventBeenHandledAsync(string eventHandlerName, Guid domainEventId, CancellationToken cancellationToken);
 
     public void MarkDomainEventAsHandled(string eventHandlerName, Guid domainEventId, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Determines if there have been any unsaved changes that need saving.
+    /// </summary>
+    /// <returns><c>true</c> if changes have been made and a database commit is required, <c>false</c> otherwise.</returns>
+    public bool HasUnsavedChanges();
 }
