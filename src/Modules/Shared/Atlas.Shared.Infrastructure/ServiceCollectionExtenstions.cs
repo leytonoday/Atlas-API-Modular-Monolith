@@ -16,6 +16,9 @@ using Atlas.Shared.Infrastructure.Queue;
 using Atlas.Shared.Infrastructure.Services;
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -58,6 +61,18 @@ public static class ServiceCollectionExtensions
         // Outbox
         services.AddScoped<IOutboxWriter, OutboxWriter<TDatabaseContext>>();
         services.AddScoped<IOutboxReader, OutboxReader<TDatabaseContext>>();
+
+        services.AddCookieAuthentication();
+
+        return services;
+    }
+
+    /// <summary>
+    /// Adds cookie-based authentication services to the specified <see cref="IServiceCollection"/>.
+    /// </summary>
+    public static IServiceCollection AddCookieAuthentication(this IServiceCollection services)
+    {
+
 
         return services;
     }

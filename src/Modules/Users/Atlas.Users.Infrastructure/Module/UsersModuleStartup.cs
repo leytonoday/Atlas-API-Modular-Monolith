@@ -13,6 +13,7 @@ using Atlas.Shared.Infrastructure.BackgroundJobs;
 using Atlas.Shared.Infrastructure.Integration;
 using Atlas.Users.Infrastructure.Persistance;
 using Microsoft.AspNetCore.Hosting;
+using Atlas.Shared.Application.Abstractions;
 
 namespace Atlas.Users.Module;
 
@@ -21,10 +22,9 @@ public class UsersModuleStartup : IModuleStartup
     private static IScheduler? _scheduler;
 
     /// <inheritdoc />
-    public static async Task Start(IConfiguration configuration, IEventBus eventBus, ILoggerFactory loggerFactory, bool enableScheduler = true)
+    public static async Task Start(IExecutionContextAccessor executionContextAccessor, IConfiguration configuration, IEventBus eventBus, ILoggerFactory loggerFactory, bool enableScheduler = true)
     {
-
-        SetupCompositionRoot(configuration, eventBus, loggerFactory);
+        SetupCompositionRoot(executionContextAccessor, configuration, eventBus, loggerFactory);
 
         UsersEventBusStartup.Initialize(loggerFactory.CreateLogger<UsersEventBusStartup>(), eventBus);
 
@@ -62,9 +62,10 @@ public class UsersModuleStartup : IModuleStartup
         return scheduler;
     }
 
-    public static void SetupCompositionRoot(IConfiguration configuration, IEventBus eventBus, ILoggerFactory loggerFactory)
+    public static void SetupCompositionRoot(IExecutionContextAccessor executionContextAccessor, IConfiguration configuration, IEventBus eventBus, ILoggerFactory loggerFactory)
     {
         var serviceProvider = new ServiceCollection()
+            .AddScoped<IExecutionContextAccessor>(_ => executionContextAccessor)
             .AddCommon<UsersDatabaseContext, UsersCompositionRoot>(configuration)
             .AddServices(configuration)
             .AddSingleton(eventBus)

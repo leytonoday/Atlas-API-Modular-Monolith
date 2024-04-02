@@ -8,6 +8,7 @@ using Atlas.Users.Application;
 using Atlas.Users.Domain;
 using Atlas.Users.Domain.Entities.UserEntity;
 using Atlas.Users.Infrastructure.Persistance;
+using Atlas.Users.Infrastructure.Persistance.Repositories;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -53,6 +54,8 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddDatabaseServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<IUnitOfWork, UsersUnitOfWork>();
+        services.AddScoped<IUserRepository, UserRepository>();
+
         services.AddDbContext<UsersDatabaseContext>((provider, options) =>
         {
             var databaseOptions = new DatabaseOptions();

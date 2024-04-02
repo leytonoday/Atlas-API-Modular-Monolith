@@ -9,18 +9,15 @@ using Atlas.Users.Domain.Errors;
 using Atlas.Plans.Domain.Errors;
 using Atlas.Plans.Domain.Entities.StripeCustomerEntity;
 using Atlas.Shared.Application.Abstractions.Messaging.Query;
+using Atlas.Shared.Application.Abstractions;
 
 namespace Atlas.Plans.Application.CQRS.Stripe.Queries.GetIsUserEligibleForTrial;
 
-internal sealed class GetIsUserEligibleForTrialQueryHandler(IStripeCustomerRepository stripeCustomerRepository, IStripeService stripeService, UserManager<User> userManager) : IQueryHandler<GetIsUserEligibleForTrialQuery, bool>
+internal sealed class GetIsUserEligibleForTrialQueryHandler(IStripeCustomerRepository stripeCustomerRepository, IStripeService stripeService, IExecutionContextAccessor executionContext) : IQueryHandler<GetIsUserEligibleForTrialQuery, bool>
 {
     public async Task<bool> Handle(GetIsUserEligibleForTrialQuery request, CancellationToken cancellationToken)
     {
-        // Get user
-        User user = await userManager.FindByIdAsync(request.UserId.ToString())
-            ?? throw new ErrorException(UsersDomainErrors.User.UserNotFound);
-
-        StripeCustomer? stripeCustomer = await stripeCustomerRepository.GetByUserId(user.Id, false, cancellationToken)
+        StripeCustomer? stripeCustomer = await stripeCustomerRepository.GetByUserId(executionContext.UserId, false, cancellationToken)
             ?? throw new ErrorException(PlansDomainErrors.StripeCustomer.StripeCustomerNotFound);
 
         return await stripeService.IsUserEligibleForTrialAsync(stripeCustomer.StripeCustomerId, cancellationToken);

@@ -14,7 +14,7 @@ using Atlas.Shared.Application.Abstractions;
 
 namespace Atlas.Plans.Application.CQRS.Stripe.Commands.CreateSubscription;
 
-internal sealed class CreateSubscriptionCommandHandler(IStripeCustomerRepository stripeCustomerRepository, IPlanRepository planRepository, IExecutionContextAccessor executionContext, UserManager<User> userManager, IStripeService stripeService) : ICommandHandler<CreateSubscriptionCommand, Subscription>
+internal sealed class CreateSubscriptionCommandHandler(IStripeCustomerRepository stripeCustomerRepository, IPlanRepository planRepository, IExecutionContextAccessor executionContext, IStripeService stripeService) : ICommandHandler<CreateSubscriptionCommand, Subscription>
 {
     public async Task<Subscription> Handle(CreateSubscriptionCommand request, CancellationToken cancellationToken)
     {
@@ -23,10 +23,7 @@ internal sealed class CreateSubscriptionCommandHandler(IStripeCustomerRepository
             throw new ErrorException(PlansDomainErrors.Stripe.InvalidSubscriptionInterval);
         }
 
-        User user = await userManager.FindByIdAsync(executionContext.UserId.ToString())
-            ?? throw new ErrorException(UsersDomainErrors.User.UserNotFound);
-
-        StripeCustomer? stripeCustomer = await stripeCustomerRepository.GetByUserId(user.Id, false, cancellationToken)
+        StripeCustomer? stripeCustomer = await stripeCustomerRepository.GetByUserId(executionContext.UserId, false, cancellationToken)
             ?? throw new ErrorException(PlansDomainErrors.StripeCustomer.StripeCustomerNotFound);
 
         // Ensure user is not already subscribed to a plan. We get the subscription, rather than checking the PlanId column because when the 

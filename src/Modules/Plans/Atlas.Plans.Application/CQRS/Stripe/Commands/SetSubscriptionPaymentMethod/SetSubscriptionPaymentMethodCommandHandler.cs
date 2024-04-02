@@ -9,17 +9,15 @@ using Atlas.Plans.Domain.Entities.StripeCustomerEntity;
 using Atlas.Users.Domain.Errors;
 using Atlas.Plans.Domain.Errors;
 using Atlas.Shared.Application.Abstractions.Messaging.Command;
+using Atlas.Shared.Application.Abstractions;
 
 namespace Atlas.Plans.Application.CQRS.Stripe.Commands.SetSubscriptionPaymentMethod;
 
-internal sealed class SetSubscriptionPaymentMethodCommandHandler(IStripeCustomerRepository stripeCustomerRepository, UserManager<User> userManager, IStripeService stripeService) : ICommandHandler<SetSubscriptionPaymentMethodCommand>
+internal sealed class SetSubscriptionPaymentMethodCommandHandler(IStripeCustomerRepository stripeCustomerRepository, IExecutionContextAccessor executionContext, IStripeService stripeService) : ICommandHandler<SetSubscriptionPaymentMethodCommand>
 {
     public async Task Handle(SetSubscriptionPaymentMethodCommand request, CancellationToken cancellationToken)
     {
-        User user = await userManager.FindByIdAsync(request.UserId.ToString())
-            ?? throw new ErrorException(UsersDomainErrors.User.UserNotFound);
-
-        StripeCustomer? stripeCustomer = await stripeCustomerRepository.GetByUserId(user.Id, false, cancellationToken)
+        StripeCustomer? stripeCustomer = await stripeCustomerRepository.GetByUserId(executionContext.UserId, false, cancellationToken)
             ?? throw new ErrorException(PlansDomainErrors.StripeCustomer.StripeCustomerNotFound);
 
         // Get the user's current subscription

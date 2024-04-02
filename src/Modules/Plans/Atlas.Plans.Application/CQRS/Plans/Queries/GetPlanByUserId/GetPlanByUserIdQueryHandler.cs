@@ -7,16 +7,14 @@ using Atlas.Shared.Domain.Exceptions;
 using Atlas.Users.Domain.Entities.UserEntity;
 using Atlas.Users.Domain.Errors;
 using AutoMapper;
-using MediatR;
-using Microsoft.AspNetCore.Identity;
 
 namespace Atlas.Plans.Application.CQRS.Plans.Queries.GetPlanByUserId;
 
-internal sealed class GetPlanByUserIdQueryHandler(UserManager<User> userManager, IPlanRepository planRepository, IMapper mapper) : IQueryHandler<GetPlanByUserIdQuery, PlanDto?>
+internal sealed class GetPlanByUserIdQueryHandler(IUserRepository userRepository, IPlanRepository planRepository, IMapper mapper) : IQueryHandler<GetPlanByUserIdQuery, PlanDto?>
 {
     public async Task<PlanDto?> Handle(GetPlanByUserIdQuery request, CancellationToken cancellationToken)
     {
-        User user = await userManager.FindByIdAsync(request.UserId.ToString())
+        User user = await userRepository.GetByIdAsync(request.UserId, false, cancellationToken)
             ?? throw new ErrorException(UsersDomainErrors.User.UserNotFound);
         
         if (!user.PlanId.HasValue)

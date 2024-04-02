@@ -9,18 +9,15 @@ using Atlas.Users.Domain.Errors;
 using Atlas.Plans.Domain.Errors;
 using Atlas.Plans.Domain.Entities.StripeCustomerEntity;
 using Atlas.Shared.Application.Abstractions.Messaging.Query;
+using Atlas.Shared.Application.Abstractions;
 
 namespace Atlas.Plans.Application.CQRS.Stripe.Queries.GetUpcomingInvoice;
 
-internal sealed class GetUpcomingInvoiceQueryHandler(IStripeCustomerRepository stripeCustomerRepository, IStripeService stripeService, UserManager<User> userManager) : IQueryHandler<GetUpcomingInvoiceQuery, Invoice>
+internal sealed class GetUpcomingInvoiceQueryHandler(IStripeCustomerRepository stripeCustomerRepository, IStripeService stripeService, IExecutionContextAccessor executionContext) : IQueryHandler<GetUpcomingInvoiceQuery, Invoice>
 {
     public async Task<Invoice> Handle(GetUpcomingInvoiceQuery request, CancellationToken cancellationToken)
     {
-        // Get user
-        User user = await userManager.FindByIdAsync(request.UserId.ToString())
-            ?? throw new ErrorException(UsersDomainErrors.User.UserNotFound);
-
-        StripeCustomer? stripeCustomer = await stripeCustomerRepository.GetByUserId(user.Id, false, cancellationToken)
+        StripeCustomer? stripeCustomer = await stripeCustomerRepository.GetByUserId(executionContext.UserId, false, cancellationToken)
             ?? throw new ErrorException(PlansDomainErrors.StripeCustomer.StripeCustomerNotFound);
 
         // Get the user's current subscription

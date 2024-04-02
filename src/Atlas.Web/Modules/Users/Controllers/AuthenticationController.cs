@@ -2,12 +2,18 @@
 using Microsoft.AspNetCore.Authorization;
 using Atlas.Users.Application.CQRS.Users.Queries.GetUserById;
 using Atlas.Shared.Domain.Results;
-using Atlas.Users.Application.CQRS.Authentication.Commands.SignIn;
 using Atlas.Users.Application.CQRS.Authentication.Commands.SignInWithToken;
-using Atlas.Users.Application.CQRS.Authentication.Commands.SignOut;
 using Atlas.Shared.Application.Abstractions;
 using Atlas.Users.Module;
 using Atlas.Web.Modules.Shared;
+using Atlas.Users.Application.CQRS.Authentication.Queries.CanSignIn;
+using Atlas.Users.Application.CQRS.Authentication.Queries.Shared;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Security.Claims;
+using Atlas.Shared;
+using Quartz.Impl.AdoJobStore;
+using Atlas.Users.Application.CQRS.Authentication.Queries.CanSignInWithToken;
 
 namespace Atlas.Web.Modules.Users.Controllers;
 
@@ -31,26 +37,76 @@ public class AuthenticationController(IExecutionContextAccessor executionContext
     }
 
     [HttpPost("sign-in")]
-    public async Task<IActionResult> SignInUser([FromBody] SignInCommand command, CancellationToken cancellationToken)
+    public async Task<IActionResult> SignInUser([FromBody] CanSignInQuery query, CancellationToken cancellationToken)
     {
-        await usersModule.SendCommand(command, cancellationToken);
+        CanSignInResponse result = await usersModule.SendQuery(query, cancellationToken);
+        if (result.IsSuccess)
+        {
+            await SignInAsync(result.UserId, result.UserName, result.Email, result.Roles);
+        }
 
         return Ok(Result.Success());
     }
 
     [HttpPost("sign-in-with-token")]
-    public async Task<IActionResult> SignInUserWithToken([FromBody] SignInWithTokenCommand command, CancellationToken cancellationToken)
+    public async Task<IActionResult> SignInUserWithToken([FromBody] CanSignInWithTokenQuery query, CancellationToken cancellationToken)
     {
-        await usersModule.SendCommand(command, cancellationToken);
+        CanSignInResponse result = await usersModule.SendQuery(query, cancellationToken);
+        if (result.IsSuccess)
+        {
+            await SignInAsync(result.UserId, result.UserName, result.Email, result.Roles);
+        }
+
         return Ok(Result.Success());
     }
 
     [Authorize]
     [HttpPost("sign-out")]
-    public async Task<IActionResult> SignOutUser(CancellationToken cancellationToken)
+    public async Task<IActionResult> SignOutUser()
     {
-        await usersModule.SendCommand(new SignOutCommand(), cancellationToken);
+        await SignOutAsync();
         return Ok(Result.Success());
+    }
+
+    private async Task SignInAsync(Guid userId, string userName, string email, IEnumerable<string> roles)
+    {
+        var claims = new List<Claim>
+        {
+            new (ClaimTypes.NameIdentifier, userId.ToString()),
+            new (ClaimTypes.Email, email),
+            new ("UserName", userName),
+        };
+
+        // Add all roles to the user's claims
+        foreach(string role in roles)
+        {
+            claims.Add(new(ClaimTypes.Role, role));
+        }
+
+        var claimsIdentity = new ClaimsIdentity(
+            claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+        var authProperties = new AuthenticationProperties
+        {
+            AllowRefresh = true,
+            // Refreshing the authentication session should be allowed.
+
+            IsPersistent = true,
+            // Whether the authentication session is persisted across 
+            // multiple requests. When used with cookies, controls
+            // whether the cookie's lifetime is absolute (matching the
+            // lifetime of the authentication ticket) or session-based.
+        };
+
+        await HttpContext.SignInAsync(
+            CookieAuthenticationDefaults.AuthenticationScheme,
+            new ClaimsPrincipal(claimsIdentity),
+            authProperties);
+    }
+
+    private async Task SignOutAsync()
+    {
+        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
     }
 }
 

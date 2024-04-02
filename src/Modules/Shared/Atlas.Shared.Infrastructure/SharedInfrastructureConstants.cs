@@ -23,5 +23,6 @@ public static class SharedInfrastructureConstants
         /// Represents the table name for <see cref="QueueMessage"/> entities in the database.
         /// </summary>
         public const string QueueMessages = nameof(QueueMessages);
+
     }
 }

@@ -12,6 +12,7 @@ using Atlas.Shared.Infrastructure.Module;
 using Atlas.Shared.Infrastructure.Integration;
 using Atlas.Shared.Infrastructure.BackgroundJobs;
 using Atlas.Plans.Infrastructure.Persistance;
+using Atlas.Shared.Application.Abstractions;
 
 namespace Atlas.Plans.Module;
 
@@ -20,9 +21,9 @@ public class PlansModuleStartup : IModuleStartup
     private static IScheduler? _scheduler;
 
     /// <inheritdoc />
-    public static async Task Start(IConfiguration configuration, IEventBus eventBus, ILoggerFactory loggerFactory, bool enableScheduler = true)
+    public static async Task Start(IExecutionContextAccessor executionContextAccessor, IConfiguration configuration, IEventBus eventBus, ILoggerFactory loggerFactory, bool enableScheduler = true)
     {
-        SetupCompositionRoot(configuration, eventBus, loggerFactory);
+        SetupCompositionRoot(executionContextAccessor, configuration, eventBus, loggerFactory);
 
         PlansEventBusStartup.Initialize(loggerFactory.CreateLogger<PlansEventBusStartup>(), eventBus);
 
@@ -60,9 +61,10 @@ public class PlansModuleStartup : IModuleStartup
         return scheduler;
     }
 
-    public static void SetupCompositionRoot(IConfiguration configuration, IEventBus eventBus, ILoggerFactory loggerFactory)
+    public static void SetupCompositionRoot(IExecutionContextAccessor executionContextAccessor, IConfiguration configuration, IEventBus eventBus, ILoggerFactory loggerFactory)
     {
         var serviceProvider = new ServiceCollection()
+            .AddScoped<IExecutionContextAccessor>(_ => executionContextAccessor)
             .AddCommon<PlansDatabaseContext, PlansCompositionRoot>(configuration)
             .AddServices(configuration)
             .AddSingleton(eventBus)

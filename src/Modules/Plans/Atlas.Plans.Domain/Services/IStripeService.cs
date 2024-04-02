@@ -26,9 +26,9 @@ public interface IStripeService
 
     public string GetPublishableKey();
 
-    public Task<StripeCustomer> CreateCustomerAsync(User user, CancellationToken cancellationToken);
+    public Task<StripeCustomer> CreateCustomerAsync(Guid userId, string userName, string email, string? phoneNumber, CancellationToken cancellationToken);
 
-    public Task UpdateCustomerAsync(User user, CancellationToken cancellationToken);
+    public Task UpdateCustomerAsync(Guid userId, string userName, string email, string? phoneNumber, CancellationToken cancellationToken);
 
     public Task DeleteCustomerAsync(string stripeCustomerId, CancellationToken cancellationToken);
 

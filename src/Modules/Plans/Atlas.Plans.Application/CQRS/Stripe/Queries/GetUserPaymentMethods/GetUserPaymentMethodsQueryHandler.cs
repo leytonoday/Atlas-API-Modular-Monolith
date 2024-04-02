@@ -9,18 +9,15 @@ using Atlas.Shared.Domain.Exceptions;
 using Atlas.Plans.Domain.Entities.StripeCustomerEntity;
 using Atlas.Plans.Domain.Errors;
 using Atlas.Shared.Application.Abstractions.Messaging.Query;
+using Atlas.Shared.Application.Abstractions;
 
 namespace Atlas.Plans.Application.CQRS.Stripe.Queries.GetUserPaymentMethodsQuery;
 
-internal sealed class GetUserPaymentMethodsQueryHandler(IStripeCustomerRepository stripeCustomerRepository, IStripeService stripeService, UserManager<User> userManager) : IQueryHandler<GetUserPaymentMethodsQuery, IEnumerable<PaymentMethod>>
+internal sealed class GetUserPaymentMethodsQueryHandler(IStripeCustomerRepository stripeCustomerRepository, IStripeService stripeService, IExecutionContextAccessor executionContext) : IQueryHandler<GetUserPaymentMethodsQuery, IEnumerable<PaymentMethod>>
 {
     public async Task<IEnumerable<PaymentMethod>> Handle(GetUserPaymentMethodsQuery request, CancellationToken cancellationToken)
     {
-        // Get user
-        User user = await userManager.FindByIdAsync(request.UserId.ToString())
-            ?? throw new ErrorException(UsersDomainErrors.User.UserNotFound);
-
-        StripeCustomer? stripeCustomer = await stripeCustomerRepository.GetByUserId(user.Id, false, cancellationToken)
+        StripeCustomer? stripeCustomer = await stripeCustomerRepository.GetByUserId(executionContext.UserId, false, cancellationToken)
             ?? throw new ErrorException(PlansDomainErrors.StripeCustomer.StripeCustomerNotFound);
 
         var paymentMethodListOptions = new PaymentMethodListOptions

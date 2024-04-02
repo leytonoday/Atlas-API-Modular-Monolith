@@ -11,21 +11,18 @@ using Atlas.Users.Domain.Errors;
 using Atlas.Plans.Domain.Errors;
 using Atlas.Plans.Domain.Entities.PlanEntity;
 using Atlas.Shared.Application.Abstractions.Messaging.Query;
+using Atlas.Shared.Application.Abstractions;
 
 namespace Atlas.Infrastructure.CQRS.Queries.GetInvoiceHistory;
 
-internal sealed class GetSubscriptionQuoteInvoiceQueryHandler(IStripeCustomerRepository stripeCustomerRepository, IPlanRepository planRepository, IStripeService stripeService, UserManager<User> userManager) : IQueryHandler<GetSubscriptionQuoteInvoiceQuery, Invoice>
+internal sealed class GetSubscriptionQuoteInvoiceQueryHandler(IStripeCustomerRepository stripeCustomerRepository, IPlanRepository planRepository, IStripeService stripeService, IExecutionContextAccessor executionContext) : IQueryHandler<GetSubscriptionQuoteInvoiceQuery, Invoice>
 {
     public async Task<Invoice> Handle(GetSubscriptionQuoteInvoiceQuery request, CancellationToken cancellationToken)
     {
-        // Get user
-        User user = await userManager.FindByIdAsync(request.UserId.ToString())
-            ?? throw new ErrorException(UsersDomainErrors.User.UserNotFound);
-
         var plan = await planRepository.GetByIdAsync(request.PlanId, false, cancellationToken)
             ?? throw new ErrorException(PlansDomainErrors.Plan.PlanNotFound);
 
-        StripeCustomer? stripeCustomer = await stripeCustomerRepository.GetByUserId(user.Id, false, cancellationToken)
+        StripeCustomer? stripeCustomer = await stripeCustomerRepository.GetByUserId(executionContext.UserId, false, cancellationToken)
             ?? throw new ErrorException(PlansDomainErrors.StripeCustomer.StripeCustomerNotFound);
 
         Subscription? currentSubscription = await stripeService.GetStripeCustomerSubscriptionAsync(stripeCustomer.StripeCustomerId!, cancellationToken);

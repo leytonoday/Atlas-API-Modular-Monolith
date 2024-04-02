@@ -50,36 +50,36 @@ public sealed class StripeService : IStripeService
         return _publishableKey;
     }
 
-    public async Task<StripeCustomer> CreateCustomerAsync(User user, CancellationToken cancellationToken)
+    public async Task<StripeCustomer> CreateCustomerAsync(Guid userId, string userName, string email, string? phoneNumber, CancellationToken cancellationToken)
     {
         var customerCreateOptions = new CustomerCreateOptions()
         {
-            Name = user.UserName,
-            Email = user.Email,
-            Phone = user.PhoneNumber,
+            Name = userName,
+            Email = email,
+            Phone = phoneNumber,
             Description = "Atlas Customer",
             Metadata = new Dictionary<string, string>()
             {
-                { "Id", user.Id.ToString() }, // Set the user Id in the meta-data
+                { "Id", userId.ToString() }, // Set the user Id in the meta-data
             },
             TestClock = Utils.IsDevelopment() ? _testClockId : null, // If in development, set the test clock
         };
 
         Customer customer = await CustomerService.CreateAsync(customerCreateOptions, cancellationToken: cancellationToken);
 
-        return StripeCustomer.Create(user.Id, customer.Id);
+        return StripeCustomer.Create(userId, customer.Id);
     }
 
-    public async Task UpdateCustomerAsync(User user, CancellationToken cancellationToken)
+    public async Task UpdateCustomerAsync(Guid userId, string userName, string email, string? phoneNumber, CancellationToken cancellationToken)
     {
-        StripeCustomer stripeCustomer = await _stripeCustomerRepository.GetByUserId(user.Id, false, cancellationToken)
+        StripeCustomer stripeCustomer = await _stripeCustomerRepository.GetByUserId(userId, false, cancellationToken)
             ?? throw new ErrorException(PlansDomainErrors.StripeCustomer.StripeCustomerNotFound);
 
         var customerUpdateOptions = new CustomerUpdateOptions()
         {
-            Name = user.UserName,
-            Phone = user.PhoneNumber,
-            Email = user.Email,
+            Name = userName,
+            Phone = phoneNumber,
+            Email = email,
         };
         await CustomerService.UpdateAsync(stripeCustomer.StripeCustomerId, customerUpdateOptions, null, cancellationToken);
     }

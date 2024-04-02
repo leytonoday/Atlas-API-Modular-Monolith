@@ -1,5 +1,7 @@
 using Atlas.Plans.Module;
+using Atlas.Shared;
 using Atlas.Shared.Application.Abstractions;
+using Atlas.Shared.Infrastructure;
 using Atlas.Shared.Infrastructure.Integration.Bus;
 using Atlas.Users.Module;
 using Atlas.Web.ExecutionContext;
@@ -9,8 +11,7 @@ using Atlas.Web.Middleware;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
-builder.Services.AddConfigurations(builder.Configuration);
+builder.Services.AddConfigurations();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -26,12 +27,14 @@ builder.Services.AddSingleton<IPlansModule, PlansModule>();
 
 var app = builder.Build();
 
-var executionContextAccessor = app.Services.GetService<IExecutionContextAccessor>();
+var httpContextAccessor = app.Services.GetService<IHttpContextAccessor>();
+var executionContextAccessor = new ExecutionContextAccessor(httpContextAccessor);
+
 var eventBus = app.Services.GetRequiredService<IEventBus>();
 var loggerFactory = app.Services.GetRequiredService<ILoggerFactory>();
 
-await UsersModuleStartup.Start(builder.Configuration, eventBus, loggerFactory);
-//await PlansModuleStartup.Start(builder.Configuration, eventBus, loggerFactory);
+await UsersModuleStartup.Start(executionContextAccessor, builder.Configuration, eventBus, loggerFactory);
+await PlansModuleStartup.Start(executionContextAccessor, builder.Configuration, eventBus, loggerFactory);
 
 // Register the exception handling middleware, which will catch any unhandled exceptions and return a 500 response
 app.ConfigureExceptionHander();

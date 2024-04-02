@@ -8,13 +8,10 @@ using Atlas.Users.IntegrationEvents;
 
 namespace Atlas.Plans.Application.CQRS.Stripe.Events;
 
-public sealed class UpdateStripeCustomerOnUserUpdated(IStripeService stripeService, UserManager<User> userManager) : INotificationHandler<UserUpdatedIntegrationEvent>
+public sealed class UpdateStripeCustomerOnUserUpdated(IStripeService stripeService) : INotificationHandler<UserUpdatedIntegrationEvent>
 {
     public async Task Handle(UserUpdatedIntegrationEvent notification, CancellationToken cancellationToken)
     {
-        User user = await userManager.FindByIdAsync(notification.UserId.ToString())
-            ?? throw new ErrorException(UsersDomainErrors.User.UserNotFound);
-
-        await stripeService.UpdateCustomerAsync(user, cancellationToken);
+        await stripeService.UpdateCustomerAsync(notification.UserId, notification.UserName, notification.Email, notification.PhoneNumber, cancellationToken);
     }
 }

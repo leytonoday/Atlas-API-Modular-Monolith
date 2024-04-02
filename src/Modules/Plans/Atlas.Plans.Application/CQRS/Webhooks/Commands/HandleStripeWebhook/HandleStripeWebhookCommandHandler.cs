@@ -1,15 +1,12 @@
-﻿using Atlas.Plans.Domain;
-using Atlas.Plans.Domain.Entities.StripeCardFingerprintEntity;
+﻿using Atlas.Plans.Domain.Entities.StripeCardFingerprintEntity;
 using Atlas.Plans.Domain.Entities.StripeCustomerEntity;
 using Atlas.Plans.Domain.Errors;
 using Atlas.Plans.Domain.Services;
-using Atlas.Shared.Application.Abstractions;
 using Atlas.Shared.Application.Abstractions.Services;
 using Atlas.Shared.Domain.Exceptions;
 using Atlas.Users.Domain.Entities.UserEntity;
 using Atlas.Users.Domain.Errors;
 using MediatR;
-using Microsoft.AspNetCore.Identity;
 using Stripe;
 
 namespace Atlas.Plans.Application.CQRS.Webhooks.Commands.HandleStripeWebhook;
@@ -17,7 +14,7 @@ namespace Atlas.Plans.Application.CQRS.Webhooks.Commands.HandleStripeWebhook;
 internal sealed class HandleStripeWebhookCommandHandler(
     IStripeService stripeService,
     IStripeCustomerRepository stripeCustomerRepository,
-    UserManager<User> userManager,
+    IUserRepository userRepository,
     ISupportNotifierService supportNotifierService,
     IStripeCardFingerprintRepository stripeCardFingerprintRepository) : IRequestHandler<HandleStripeWebhookCommand>
 {
@@ -70,7 +67,7 @@ internal sealed class HandleStripeWebhookCommandHandler(
         StripeCustomer? stripeCustomer = await stripeCustomerRepository.GetByStripeCustomerId(subscription.CustomerId, false, cancellationToken)
             ?? throw new ErrorException(PlansDomainErrors.StripeCustomer.StripeCustomerNotFound);
 
-        User user = await userManager.FindByIdAsync(stripeCustomer.UserId.ToString())
+        User user = await userRepository.GetByIdAsync(stripeCustomer.UserId, true, cancellationToken)
           ?? throw new ErrorException(UsersDomainErrors.User.UserNotFound);
 
         // Set the user's planId to the planId that was specified in the subscription's metadata
@@ -78,7 +75,7 @@ internal sealed class HandleStripeWebhookCommandHandler(
 
         await AddCardFingerprintIfNewAsync(invoice, subscription, cancellationToken);
 
-        await userManager.UpdateAsync(user);
+        await userRepository.UpdateAsync(user, cancellationToken);
     }
 
     /// <summary>
@@ -141,7 +138,7 @@ internal sealed class HandleStripeWebhookCommandHandler(
         StripeCustomer? stripeCustomer = await stripeCustomerRepository.GetByStripeCustomerId(customer.Id, false, cancellationToken)
             ?? throw new ErrorException(PlansDomainErrors.StripeCustomer.StripeCustomerNotFound);
 
-        User user = await userManager.FindByIdAsync(stripeCustomer.UserId.ToString())
+        User user = await userRepository.GetByIdAsync(stripeCustomer.UserId, true, cancellationToken)
           ?? throw new ErrorException(UsersDomainErrors.User.UserNotFound);
 
         // TODO - Send email to user, AND specify the reason for the failure.
@@ -149,7 +146,7 @@ internal sealed class HandleStripeWebhookCommandHandler(
         // Clear the user's planId
         User.SetPlanId(user, null);
 
-        await userManager.UpdateAsync(user);
+        await userRepository.UpdateAsync(user, cancellationToken);
     }
 
     /// <summary>
@@ -167,13 +164,13 @@ internal sealed class HandleStripeWebhookCommandHandler(
         StripeCustomer? stripeCustomer = await stripeCustomerRepository.GetByStripeCustomerId(subscription.CustomerId, false, cancellationToken)
             ?? throw new ErrorException(PlansDomainErrors.StripeCustomer.StripeCustomerNotFound);
 
-        User user = await userManager.FindByIdAsync(stripeCustomer.UserId.ToString())
+        User user = await userRepository.GetByIdAsync(stripeCustomer.UserId, true, cancellationToken)
           ?? throw new ErrorException(UsersDomainErrors.User.UserNotFound);
 
         // Clear the user's planId
         User.SetPlanId(user, null);
 
-        await userManager.UpdateAsync(user);
+        await userRepository.UpdateAsync(user, cancellationToken);
 
         // If the user's subscription is cancelled automatically as a result of multiple failed payments, then we need to void all open invoices.
         await stripeService.VoidAllOpenInvoicesAsync(stripeCustomer.StripeCustomerId, cancellationToken);
@@ -196,14 +193,11 @@ internal sealed class HandleStripeWebhookCommandHandler(
         StripeCustomer? stripeCustomer = await stripeCustomerRepository.GetByStripeCustomerId(charge.CustomerId, false, cancellationToken)
             ?? throw new ErrorException(PlansDomainErrors.StripeCustomer.StripeCustomerNotFound);
 
-        User user = await userManager.FindByIdAsync(stripeCustomer.UserId.ToString())
-          ?? throw new ErrorException(UsersDomainErrors.User.UserNotFound);
-
         if (refund.Status == "succeeded" || refund.Status == "pending" || refund.Status == "canceled")
             return;
 
         //// Alert the user, and the support email of the refund failure
-        await supportNotifierService.AttemptNotifyAsync(@$"Refund for {refund.Amount / 100.0} {refund.Currency.ToUpper()} failed for user with Id {user.Id}. Reason: '{refund.FailureReason}'.", cancellationToken);
+        await supportNotifierService.AttemptNotifyAsync(@$"Refund for {refund.Amount / 100.0} {refund.Currency.ToUpper()} failed for user with Id {stripeCustomer.UserId}. Reason: '{refund.FailureReason}'.", cancellationToken);
 
         // Before a refund is processed, we directly remove the credit from their account that downgrading would've given them. 
         // If the refund fails, then we need to add that credit back to their account.

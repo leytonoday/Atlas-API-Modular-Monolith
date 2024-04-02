@@ -23,8 +23,6 @@ internal sealed class ConfirmUserEmailCommandHandler(UserManager<User> userManag
             throw new ErrorException(UsersDomainErrors.User.EmailAlreadyVerified);
         }
 
-        await outboxWriter.WriteAsync(new UserEmailConfirmedIntegrationEvent(user.Id), cancellationToken);
-
         // Confirm email using provided token
         IdentityResult result = await userManager.ConfirmEmailAsync(user, request.Token);
         if (!result.Succeeded)
@@ -38,6 +36,9 @@ internal sealed class ConfirmUserEmailCommandHandler(UserManager<User> userManag
         // Create a new token that can be used to sign in the user 
         string signInToken = await userManager.GenerateUserTokenAsync(user, "Default", UserToken.SignIn);
 
+        // Alert external systems
+        await outboxWriter.WriteAsync(new UserEmailConfirmedIntegrationEvent(user.Id, user.UserName, user.Email, user.PhoneNumber), cancellationToken);
+        
         return HttpUtility.UrlEncode(signInToken);
     }
 }

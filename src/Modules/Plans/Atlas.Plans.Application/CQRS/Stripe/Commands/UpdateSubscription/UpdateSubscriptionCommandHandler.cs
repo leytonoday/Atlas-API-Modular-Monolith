@@ -14,7 +14,7 @@ using Atlas.Shared.Application.Abstractions;
 
 namespace Atlas.Plans.Application.CQRS.Stripe.Commands.UpdateSubscription;
 
-internal sealed class UpdateSubscriptionCommandHandler(IStripeCustomerRepository stripeCustomerRepository, IPlanRepository planRepository, IExecutionContextAccessor executionContext, UserManager<User> userManager, IStripeService stripeService) : ICommandHandler<UpdateSubscriptionCommand, Subscription>
+internal sealed class UpdateSubscriptionCommandHandler(IStripeCustomerRepository stripeCustomerRepository, IPlanRepository planRepository, IExecutionContextAccessor executionContext, IStripeService stripeService) : ICommandHandler<UpdateSubscriptionCommand, Subscription>
 {
     public async Task<Subscription> Handle(UpdateSubscriptionCommand request, CancellationToken cancellationToken)
     {
@@ -22,9 +22,6 @@ internal sealed class UpdateSubscriptionCommandHandler(IStripeCustomerRepository
         {
             throw new ErrorException(PlansDomainErrors.Stripe.InvalidSubscriptionInterval);
         }
-
-        User user = await userManager.FindByIdAsync(executionContext.UserId.ToString())
-            ?? throw new ErrorException(UsersDomainErrors.User.UserNotFound);
 
         var plan = await planRepository.GetByIdAsync(request.PlanId, false, cancellationToken)
             ?? throw new ErrorException(UsersDomainErrors.User.UserNotFound);
@@ -40,7 +37,7 @@ internal sealed class UpdateSubscriptionCommandHandler(IStripeCustomerRepository
             }
         }
 
-        StripeCustomer? stripeCustomer = await stripeCustomerRepository.GetByUserId(user.Id, false, cancellationToken)
+        StripeCustomer? stripeCustomer = await stripeCustomerRepository.GetByUserId(executionContext.UserId, false, cancellationToken)
             ?? throw new ErrorException(PlansDomainErrors.StripeCustomer.StripeCustomerNotFound);
 
         // Cancel any existing incomplete or incomplete_expired subscriptions. These can occur if the user fails or abandons 3D Secure authentication

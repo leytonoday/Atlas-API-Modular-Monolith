@@ -5,7 +5,6 @@ using Atlas.Shared.Domain.Exceptions;
 using Atlas.Users.Domain.Entities.UserEntity;
 using Atlas.Users.Domain.Errors;
 using Atlas.Users.IntegrationEvents;
-using MediatR;
 using Microsoft.AspNetCore.Identity;
 
 namespace Atlas.Users.Application.CQRS.Users.Commands.UpdateUser;
@@ -19,6 +18,6 @@ internal sealed class UpdateUserCommandHandler(UserManager<User> userManager, IE
 
         await User.UpdateAsync(user, request.UserName, request.PhoneNumber, userManager);
 
-        await outboxWriter.WriteAsync(new UserUpdatedIntegrationEvent(user.Id), cancellationToken);
+        await outboxWriter.WriteAsync(new UserUpdatedIntegrationEvent(user.Id, user.UserName, user.Email, user.PhoneNumber), cancellationToken);
     }
 }

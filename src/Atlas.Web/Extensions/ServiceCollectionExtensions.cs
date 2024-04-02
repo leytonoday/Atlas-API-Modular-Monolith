@@ -1,5 +1,4 @@
 ﻿using Atlas.Shared;
-using Atlas.Web.OptonsSetup;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.AspNetCore.Mvc;
@@ -10,45 +9,6 @@ namespace Atlas.Web.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    /// <summary>
-    /// Adds cookie-based authentication services to the specified <see cref="IServiceCollection"/>.
-    /// </summary>
-    public static IServiceCollection AddCookieAuthentication(this IServiceCollection services)
-    {
-        services.AddAuthentication(options =>
-        {
-            options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            options.DefaultSignOutScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-        });
-
-        services.Configure<CookiePolicyOptions>(options =>
-        {
-            options.CheckConsentNeeded = context => true;
-            options.MinimumSameSitePolicy = SameSiteMode.Strict;
-        });
-
-        services.ConfigureApplicationCookie(options =>
-        {
-            options.Cookie.HttpOnly = true;
-            options.Cookie.SecurePolicy = Utils.IsDevelopment() ? CookieSecurePolicy.None : CookieSecurePolicy.Always;
-            options.Cookie.Name = Constants.CookieName;
-
-            options.Events.OnRedirectToAccessDenied = context =>
-            {
-                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                return Task.CompletedTask;
-            };
-            options.Events.OnRedirectToLogin = context =>
-            {
-                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                return Task.CompletedTask;
-            };
-        });
-
-        return services;
-    }
-
     /// <summary>
     /// Configures response compression. Using Gzip.
     /// </summary>
@@ -66,6 +26,41 @@ public static class ServiceCollectionExtensions
             options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "application/json" });
             options.EnableForHttps = true;
         });
+        return services;
+    }
+
+    public static IServiceCollection ConfigureCookieAuthentication(this IServiceCollection services)
+    {
+        services.AddAuthentication(options =>
+        {
+            options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            options.DefaultSignOutScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        })
+        .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+        {
+            options.Cookie.HttpOnly = true;
+            options.Cookie.SecurePolicy = Utils.IsDevelopment() ? CookieSecurePolicy.None : CookieSecurePolicy.Always;
+            options.Cookie.Name = Constants.CookieName;
+
+            options.Events.OnRedirectToAccessDenied = context =>
+            {
+                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                return Task.CompletedTask;
+            };
+            options.Events.OnRedirectToLogin = context =>
+            {
+                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                return Task.CompletedTask;
+            };
+        });
+
+        services.Configure<CookiePolicyOptions>(options =>
+        {
+            options.CheckConsentNeeded = context => true;
+            options.MinimumSameSitePolicy = SameSiteMode.Strict;
+        });
+
         return services;
     }
 
@@ -99,15 +94,6 @@ public static class ServiceCollectionExtensions
         });
     }
 
-    public static IServiceCollection AddOptions(this IServiceCollection services)
-    {
-        return services
-            .ConfigureOptions<EmailOptionsSetup>()
-            .ConfigureOptions<DatabaseOptionsSetup>()
-            .ConfigureOptions<SupportNotificationOptionsSetup>()
-            .ConfigureOptions<StripeOptionsSetup>();
-    }
-
     public static IServiceCollection AddPresentation(this IServiceCollection services)
     {
         services.AddControllers(config =>
@@ -116,18 +102,17 @@ public static class ServiceCollectionExtensions
             config.ReturnHttpNotAcceptable = true;
         });
 
-        services.AddCookieAuthentication();
         services.AddVersioning();
         services.ConfigureResponseCompression();
 
         return services;
     }
 
-    public static IServiceCollection AddConfigurations(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddConfigurations(this IServiceCollection services)
     {
         return services
             .AddPresentation()
-            .ConfigureCors()
-            .AddOptions();
+            .ConfigureCookieAuthentication()
+            .ConfigureCors();
     }
 }

@@ -21,6 +21,9 @@ using Atlas.Shared.Application;
 using System.Reflection;
 using Atlas.Shared.Infrastructure.Options;
 using Atlas.Plans.Infrastructure.Options.OptionSetup;
+using Atlas.Shared.Infrastructure;
+using Atlas.Users.Domain.Entities.UserEntity;
+using Atlas.Users.Infrastructure.Persistance.Repositories;
 
 namespace Atlas.Plans.Infrastructure;
 
@@ -32,12 +35,13 @@ public static class ServiceCollectionExtensions
 
         var applicationAssembly = typeof(PlansApplicationAssemblyReference).Assembly;
         var infrastructureAssembly = typeof(PlansInfrastructureAssemblyReference).Assembly;
-
+        var sharedApplicationAssembly = typeof(SharedApplicationAssemblyReference).Assembly;
+        var sharedInfrastructureAssembly = typeof(SharedInfrastructureAssemblyReference).Assembly;
         // Database related services
         services.AddDatabaseServices(configuration);
 
         // MediatR
-        var assemblies = new[] { Assembly.GetExecutingAssembly(), typeof(SharedApplicationAssemblyReference).Assembly };
+        var assemblies = new[] { applicationAssembly, infrastructureAssembly, sharedApplicationAssembly, sharedInfrastructureAssembly };
         services.AddMediatR(config =>
         {
             config.RegisterServicesFromAssemblies(assemblies);
@@ -72,6 +76,10 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IPlanFeatureRepository, PlanFeatureRepository>();
         services.AddScoped<IStripeCustomerRepository, StripeCustomerRepository>();
         services.AddScoped<IStripeCardFingerprintRepository, StripeCardFingerprintRepository>();
+
+        // External repo dependencies
+        // TODO - There are some use-cases in the Plans module that NEEDS data from the Users module. So we kinda have to register this here. There's probably some better way to do this. Figure it out.
+        services.AddScoped<IUserRepository, UserRepository>();
 
         services.AddDbContext<PlansDatabaseContext>((provider, options) =>
         {
