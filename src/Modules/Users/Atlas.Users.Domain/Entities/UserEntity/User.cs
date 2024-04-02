@@ -8,6 +8,7 @@ using Atlas.Shared.Domain.AggregateRoot;
 using Atlas.Shared.Domain.Events;
 using Atlas.Shared.Domain.Exceptions;
 using Atlas.Shared;
+using Atlas.Users.Domain.Entities.UserEntity.Events;
 
 namespace Atlas.Users.Domain.Entities.UserEntity;
 
@@ -89,6 +90,8 @@ public sealed class User : IdentityUser<Guid>, IEntity<Guid>, IAuditableEntity, 
         user.UserName = userName;
         user.PhoneNumber = phoneNumber;
 
+        user.AddDomainEvent(new UserUpdatedDomainEvent(user.Id));
+
         await userManager.UpdateAsync(user);
     }
 
@@ -140,6 +143,8 @@ public sealed class User : IdentityUser<Guid>, IEntity<Guid>, IAuditableEntity, 
             await userManager.DeleteAsync(userToBeDeleted);
         }
 
+        // Add domain event to allow domain to react 
+        userToBeDeleted.AddDomainEvent(new UserDeletedDomainEvent(userToBeDeleted.Id));
 
         return userToBeDeleted;
     }

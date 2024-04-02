@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Atlas.Users.Application.CQRS.Users.Commands.UpdateUser;
 
-internal sealed class UpdateUserCommandHandler(UserManager<User> userManager, IExecutionContextAccessor executionContext, IOutboxWriter outboxWriter) : ICommandHandler<UpdateUserCommand>
+internal sealed class UpdateUserCommandHandler(UserManager<User> userManager, IExecutionContextAccessor executionContext) : ICommandHandler<UpdateUserCommand>
 {
     public async Task Handle(UpdateUserCommand request, CancellationToken cancellationToken)
     {
@@ -17,7 +17,5 @@ internal sealed class UpdateUserCommandHandler(UserManager<User> userManager, IE
             ?? throw new ErrorException(UsersDomainErrors.User.UserNotFound);
 
         await User.UpdateAsync(user, request.UserName, request.PhoneNumber, userManager);
-
-        await outboxWriter.WriteAsync(new UserUpdatedIntegrationEvent(user.Id, user.UserName, user.Email, user.PhoneNumber), cancellationToken);
     }
 }
