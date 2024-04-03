@@ -1,4 +1,5 @@
-﻿using Atlas.Shared.Application.Queue;
+﻿using Atlas.Shared.Application.Abstractions.Messaging.Queue;
+using Atlas.Shared.Application.Queue;
 using Microsoft.EntityFrameworkCore;
 
 namespace Atlas.Shared.Infrastructure.CommandQueue;
@@ -7,7 +8,7 @@ public class QueueWriter<TDatabaseContext>(TDatabaseContext databaseContext) : I
 {
     private DbSet<QueueMessage> GetDbSet() => databaseContext.Set<QueueMessage>();
 
-    public Task WriteAsync(IQueuedCommand queuedCommand, CancellationToken cancellationToken)
+    public Task WriteAsync(QueuedCommand queuedCommand, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         var set = GetDbSet();

@@ -5,4 +5,4 @@ namespace Atlas.Shared.Application.Abstractions.Messaging.Queue;
 
 public interface IQueuedCommandHandler<in TQueuedCommand> :
     IRequestHandler<TQueuedCommand>
-    where TQueuedCommand : IQueuedCommand;
+    where TQueuedCommand : QueuedCommand;

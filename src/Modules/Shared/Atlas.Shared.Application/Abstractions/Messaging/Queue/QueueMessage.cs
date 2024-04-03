@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Atlas.Shared.Application.Abstractions.Messaging.Queue;
+using Newtonsoft.Json;
 
 namespace Atlas.Shared.Application.Queue;
 
@@ -30,19 +31,19 @@ public class QueueMessage
     public DateTime? ProcessedOnUtc { get; private set; }
 
     /// <summary>
-    /// The error thrown when attempting to consume the queue message and publish it's <see cref="IQueuedCommand"/>.
+    /// The error thrown when attempting to consume the queue message and publish it's <see cref="QueuedCommand"/>.
     /// </summary>
     public string? Error { get; private set; }
 
     /// <summary>
-    /// Marks the <see cref="QueueMessage"/> as processed, indicating that the <see cref="IQueuedCommand"/> that it stores has been successfully execited.
+    /// Marks the <see cref="QueueMessage"/> as processed, indicating that the <see cref="QueuedCommand"/> that it stores has been successfully execited.
     /// </summary>
     public void MarkProcessed()
     {
         ProcessedOnUtc = DateTime.UtcNow; // TODO - Get date from IDateTimeProvider
     }
 
-    public static QueueMessage CreateFrom<TCommand>(TCommand command) where TCommand : IQueuedCommand
+    public static QueueMessage CreateFrom<TCommand>(TCommand command) where TCommand : QueuedCommand
     {
         return new()
         {
@@ -59,14 +60,14 @@ public class QueueMessage
     }
 
     /// <summary>
-    /// Deserialises an <see cref="QueueMessage"/> into an <see cref="IQueuedCommand"/>.
+    /// Deserialises an <see cref="QueueMessage"/> into an <see cref="QueuedCommand"/>.
     /// </summary>
     /// <param name="commandQueueMessage">The <see cref="QueueMessage"/> to convert.</param>
-    /// <returns>The deserialised <see cref="IQueuedCommand"/>.</returns>
-    public static IQueuedCommand? ToRequest(QueueMessage commandQueueMessage)
+    /// <returns>The deserialised <see cref="QueuedCommand"/>.</returns>
+    public static QueuedCommand? ToRequest(QueueMessage commandQueueMessage)
     {
         return JsonConvert
-            .DeserializeObject<IQueuedCommand>(
+            .DeserializeObject<QueuedCommand>(
                 commandQueueMessage.Data,
                 new JsonSerializerSettings
                 {

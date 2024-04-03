@@ -1,6 +1,8 @@
-﻿namespace Atlas.Shared.Application.Queue;
+﻿using Atlas.Shared.Application.Abstractions.Messaging.Queue;
+
+namespace Atlas.Shared.Application.Queue;
 
 public interface IQueueWriter
 {
-    public Task WriteAsync(IQueuedCommand queuedCommand, CancellationToken cancellationToken);
+    public Task WriteAsync(QueuedCommand queuedCommand, CancellationToken cancellationToken);
 }
