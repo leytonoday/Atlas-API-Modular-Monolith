@@ -17,23 +17,13 @@ public static class PlansDomainErrors
 
     public static class Feature
     {
-        public static readonly Error NameMustBeUnique = new(CreateErrorCode(typeof(Feature)), "The Feature name must be unique.");
-
         public static readonly Error FeatureNotFound = new(CreateErrorCode(typeof(Feature)), "The Feature with the specified Id does not exist.");
 
     }
 
     public static class Plan
     {
-        public static readonly Error NameMustBeUnique = new(CreateErrorCode(typeof(Plan)), "The Plan name must be unique");
-
         public static readonly Error PlanNotFound = new(CreateErrorCode(typeof(Plan)), "The Plan with the specified Id does not exist.");
-
-        public static readonly Error CircularInheritanceDetected = new(CreateErrorCode(typeof(Plan)), "The InheritsFromId value provided causes a circular dependence.");
-
-        public static readonly Error FeatureAlreadyOnPlan = new(CreateErrorCode(typeof(Plan)), "The specified Feature already exists on the specified Plan.");
-
-        public static readonly Error CannotDeactivateWithActiveSubscribers = new(CreateErrorCode(typeof(Plan)), "A Plan cannot be deactivated when it has active Subscribers.");
     }
 
     public static class PlanFeature
