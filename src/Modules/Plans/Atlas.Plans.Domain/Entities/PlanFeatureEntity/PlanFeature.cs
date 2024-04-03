@@ -1,5 +1,6 @@
 ﻿using Atlas.Plans.Domain.Entities.FeatureEntity;
 using Atlas.Plans.Domain.Entities.PlanEntity;
+using Atlas.Plans.Domain.Entities.PlanFeatureEntity.BusinessRules;
 using Atlas.Plans.Domain.Errors;
 using Atlas.Shared.Domain.Entities;
 using Atlas.Shared.Domain.Exceptions;
@@ -40,8 +41,7 @@ public class PlanFeature : Entity
             ?? throw new ErrorException(PlansDomainErrors.Feature.FeatureNotFound);
 
         // Ensure this feature is not already on the plan
-        if (plan.PlanFeatures is not null && plan.PlanFeatures.Any(x => x.FeatureId == featureId))
-            throw new ErrorException(PlansDomainErrors.Plan.FeatureAlreadyOnPlan);
+        CheckBusinessRule(new FeatureMustNotAlreadyBeOnPlanBusinessRule(plan, featureId));
 
         return new PlanFeature()
         {

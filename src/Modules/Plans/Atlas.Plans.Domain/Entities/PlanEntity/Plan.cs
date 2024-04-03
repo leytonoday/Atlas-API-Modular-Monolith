@@ -1,4 +1,5 @@
 ﻿using Atlas.Plans.Domain.Entities.FeatureEntity;
+using Atlas.Plans.Domain.Entities.PlanEntity.BusinessRules;
 using Atlas.Plans.Domain.Entities.PlanFeatureEntity;
 using Atlas.Plans.Domain.Errors;
 using Atlas.Plans.Domain.Services;
@@ -107,15 +108,11 @@ public class Plan : AggregateRoot<Guid>
         string? textColour,
         bool active,
         Guid? inheritsFromId,
-        PlanService planService,
-        CancellationToken cancellationToken
-        )
+        IPlanRepository planRepository,
+        CancellationToken cancellationToken)
     {
-        bool isNameTaken = await planService.IsNameTakenAsync(name, cancellationToken);
-        if (isNameTaken)
-        {
-            throw new ErrorException(PlansDomainErrors.Plan.NameMustBeUnique);
-        }
+        // Ensure name unique
+        await CheckAsyncBusinessRule(new PlanNameMustBeUniqueBusinessRule(name, planRepository), cancellationToken);
 
         var plan = new Plan()
         {
@@ -159,16 +156,12 @@ public class Plan : AggregateRoot<Guid>
         CancellationToken cancellationToken)
     {
         // If the name has been changed, ensure that a Plan with this name doesn't already exist
-        if (name.ToLower() != originalPlan.Name.ToLower() && await planService.IsNameTakenAsync(name, cancellationToken))
+        if (!name.Equals(originalPlan.Name, StringComparison.CurrentCultureIgnoreCase))
         {
-            throw new ErrorException(PlansDomainErrors.Plan.NameMustBeUnique);
+            await CheckAsyncBusinessRule(new PlanNameMustBeUniqueBusinessRule(name, planRepository), cancellationToken);
         }
 
-
-        if (hasBeenDeactivated && await stripeService.DoesPlanHaveActiveSubscriptions(originalPlan, cancellationToken))
-        {
-            throw new ErrorException(PlansDomainErrors.Plan.CannotDeactivateWithActiveSubscribers);
-        }
+        await CheckAsyncBusinessRule(new PlanMustHaveNoActiveSubscriptionsToBeDeactivatedBusinessRule(hasBeenDeactivated, stripeService, originalPlan), cancellationToken);
 
         // Update fields manually
         originalPlan.Name = name;
@@ -186,10 +179,7 @@ public class Plan : AggregateRoot<Guid>
         originalPlan.InheritsFromId = inheritsFromId;
 
         // Check for circular dependencies
-        if (originalPlan.InheritsFromId.HasValue && await planService.IsCircularInheritanceDetectedAsync(originalPlan, cancellationToken))
-        {
-            throw new ErrorException(PlansDomainErrors.Plan.CircularInheritanceDetected);
-        }
+        await CheckAsyncBusinessRule(new PlanMustNotHaveCircularDependenciesBusinessRule(planService, originalPlan), cancellationToken);
 
         // If the plan has been de-activated, make sure that no other plans inherit from this plan.
         if (hasBeenDeactivated)

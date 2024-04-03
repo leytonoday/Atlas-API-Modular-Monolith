@@ -46,7 +46,7 @@ public abstract class Entity : IEntity, IAuditableEntity
     /// </summary>
     /// <param name="rule">The business rule to ensure isn't broken.</param>
     /// <exception cref="BusinessRuleBrokenException" />
-    static async Task CheckAsyncBusinessRule(IAsyncBusinessRule rule, CancellationToken cancellationToken = default)
+    protected static async Task CheckAsyncBusinessRule(IAsyncBusinessRule rule, CancellationToken cancellationToken = default)
     {
         if (await rule.IsBrokenAsync(cancellationToken)) throw new BusinessRuleBrokenException(rule.Message);
     }

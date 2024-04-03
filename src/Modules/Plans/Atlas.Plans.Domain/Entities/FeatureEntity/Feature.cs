@@ -1,7 +1,6 @@
-﻿using Atlas.Plans.Domain.Entities.PlanEntity;
-using Atlas.Plans.Domain.Errors;
+﻿using Atlas.Plans.Domain.Entities.FeatureEntity.BusinessRules;
+using Atlas.Plans.Domain.Entities.PlanEntity;
 using Atlas.Shared.Domain.AggregateRoot;
-using Atlas.Shared.Domain.Exceptions;
 
 namespace Atlas.Plans.Domain.Entities.FeatureEntity;
 
@@ -43,10 +42,7 @@ public class Feature : AggregateRoot<Guid>
         CancellationToken cancellationToken)
     {
         // Ensure the name is unique
-        if (await AlreadyExists(name, featureRepository, cancellationToken))
-        {
-            throw new ErrorException(PlansDomainErrors.Feature.NameMustBeUnique);
-        }
+        await CheckAsyncBusinessRule(new FeatureNameMustBeUniqueBusinessRule(name, featureRepository), cancellationToken);
 
         return new Feature { Name = name, Description = description, IsInheritable = isInheritable, IsHidden = isHidden };
     }
@@ -61,9 +57,9 @@ public class Feature : AggregateRoot<Guid>
         CancellationToken cancellationToken)
     {
         // If the name has changed, ensure another Feature doesn't already have that name
-        if (name != feature.Name && await AlreadyExists(name, featureRepository, cancellationToken))
+        if (name != feature.Name)
         {
-            throw new ErrorException(PlansDomainErrors.Feature.NameMustBeUnique);
+            await CheckAsyncBusinessRule(new FeatureNameMustBeUniqueBusinessRule(name, featureRepository), cancellationToken);
         }
 
         feature.Name = name;
@@ -72,11 +68,5 @@ public class Feature : AggregateRoot<Guid>
         feature.IsHidden = isHidden;
 
         return feature;
-    }
-
-    private static async Task<bool> AlreadyExists(string name, IFeatureRepository featureRepository, CancellationToken cancellationToken)
-    {
-        Feature? existingFeature = await featureRepository.GetByNameAsync(name, false, cancellationToken);
-        return existingFeature is not null;
     }
 }

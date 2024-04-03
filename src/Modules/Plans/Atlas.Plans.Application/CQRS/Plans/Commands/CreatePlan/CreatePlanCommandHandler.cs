@@ -6,7 +6,7 @@ using Atlas.Shared.Application.Queue;
 
 namespace Atlas.Plans.Application.CQRS.Plans.Commands.CreatePlan;
 
-internal sealed class CreatePlanCommandHandler(PlanService planService, IPlanRepository planRepository, IQueueWriter queueWriter) : ICommandHandler<CreatePlanCommand, Guid>
+internal sealed class CreatePlanCommandHandler(IPlanRepository planRepository, IQueueWriter queueWriter) : ICommandHandler<CreatePlanCommand, Guid>
 {
     public async Task<Guid> Handle(CreatePlanCommand request, CancellationToken cancellationToken)
     {
@@ -24,7 +24,7 @@ internal sealed class CreatePlanCommandHandler(PlanService planService, IPlanRep
             textColour: request.TextColour,
             active: request.Active,
             inheritsFromId: request.InheritsFromId,
-            planService,
+            planRepository,
             cancellationToken
         );
 

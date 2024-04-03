@@ -7,17 +7,6 @@ namespace Atlas.Plans.Domain.Services;
 public sealed class PlanService(IPlanRepository planRepository, IFeatureRepository featureRepository)
 {
     /// <summary>
-    /// Determines if a <see cref="Plan"/> with the name of <paramref name="name"/> already exists.
-    /// </summary>
-    /// <param name="name">The name to check for.</param>
-    /// <param name="cancellationToken">Propogates notification that operations should be cancelled.</param>
-    /// <returns>A <see cref="Task"/> that returns if the plan exists or not.</returns>
-    public async Task<bool> IsNameTakenAsync(string name, CancellationToken cancellationToken)
-    {
-        return await planRepository.IsNameTakenAsync(name, cancellationToken);
-    }
-
-    /// <summary>
     /// Determins whether the InheritsFromId property of the <see cref="Plan"/> would cause a circular reference.
     /// </summary>
     /// <param name="plan">The <see cref="Plan"/> to check.</param>
