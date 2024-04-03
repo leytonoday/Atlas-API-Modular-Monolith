@@ -17,6 +17,8 @@ internal sealed class CanSignInWithTokenQueryHandler(UserManager<User> userManag
         User user = await userManager.FindByUserNameOrEmailAsync(request.Identifier)
             ?? throw new ErrorException(UsersDomainErrors.User.InvalidCredentials);
 
+        User.CanSignInAsync(user);
+
         // Verify if the token is legit
         if (!await userManager.VerifyUserTokenAsync(user, "Default", UserToken.SignIn, HttpUtility.UrlDecode(request.Token)))
         {
@@ -25,22 +27,6 @@ internal sealed class CanSignInWithTokenQueryHandler(UserManager<User> userManag
 
         // If token legit, remove it 
         await userManager.RemoveAuthenticationTokenAsync(user, "Default", UserToken.SignIn);
-
-        // TODO - Convert this to a check on the user with a series of Business Rules
-        //if (!await signInManager.CanSignInAsync(user!))
-        //{
-        //    if (user!.EmailConfirmed == false)
-        //    {
-        //        throw new ErrorException(UsersDomainErrors.User.MustVerifyEmail);
-        //    }
-        //    else
-        //    {
-        //        throw new ErrorException(Error.UnknownError);
-        //    }
-
-        //    // TODO - add logic for lockout as well, for account suspension
-        //}
-
 
         IEnumerable<string> roles = await userManager.GetRolesAsync(user);
 

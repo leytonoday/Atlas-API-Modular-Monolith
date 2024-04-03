@@ -25,28 +25,11 @@ public static class UsersDomainErrors
         public static readonly Error CannotBeEmpty = new(CreateErrorCode(typeof(Email)), "The email for the provided cannot be empty.");
     }
 
-    public static class PhoneNumber
-    {
-        public static readonly Error Invalid = new(CreateErrorCode(typeof(PhoneNumber)), "The phone number provided is invalid.");
-    }
-
     public static class User
     {
-        public static readonly Error EmailAlreadyInUse = new(CreateErrorCode(typeof(User)), "The specified email is already in use.");
-
-        public static readonly Error UserNameAlreadyInUse = new(CreateErrorCode(typeof(User)), "The specified username is already in use.");
-
         public static readonly Error InvalidCredentials = new(CreateErrorCode(typeof(User)), "The provided credentials are invalid.");
 
-        public static readonly Error MustVerifyEmail = new(CreateErrorCode(typeof(User)), "Email must be verified before signing in.");
-
         public static readonly Error UserNotFound = new(CreateErrorCode(typeof(User)), "The User could not be found.");
-
-        public static readonly Error EmailAlreadyVerified = new(CreateErrorCode(typeof(User)), "The email for the provided user is already verified.");
-
-        public static readonly Error NonAdminCanOnlyDeleteOwnAccount = new(CreateErrorCode(typeof(User)), "Non-Administrators can only delete their own accounts.");
-
-        public static readonly Error AdminCanNotDeleteOtherAdmins = new(CreateErrorCode(typeof(User)), "Administrators can not delete other Administrators.");
 
         public static readonly Error InvalidToken = new(CreateErrorCode(typeof(User)), "The token provided is invalid.");
     }

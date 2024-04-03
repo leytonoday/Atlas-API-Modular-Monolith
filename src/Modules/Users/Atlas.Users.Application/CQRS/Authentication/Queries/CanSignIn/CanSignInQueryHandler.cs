@@ -8,12 +8,14 @@ using Atlas.Users.Application.CQRS.Authentication.Queries.Shared;
 
 namespace Atlas.Users.Application.CQRS.Authentication.Queries.CanSignIn;
 
-internal sealed class CanSignInQueryHandler(UserManager<User> userManager) : IQueryHandler<CanSignInQuery, CanSignInResponse>
+internal sealed class CanSignInQueryHandler(UserManager<User> userManager, SignInManager<User> signInManager) : IQueryHandler<CanSignInQuery, CanSignInResponse>
 {
     public async Task<CanSignInResponse> Handle(CanSignInQuery request, CancellationToken cancellationToken)
     {
         User user = await userManager.FindByUserNameOrEmailAsync(request.Identifier)
             ?? throw new ErrorException(UsersDomainErrors.User.InvalidCredentials);
+
+        User.CanSignInAsync(user);
 
         var passwordHasher = new PasswordHasher<User>();
         if (string.IsNullOrWhiteSpace(request.Password) || passwordHasher.VerifyHashedPassword(user!, user!.PasswordHash!, request.Password) != PasswordVerificationResult.Success)
@@ -21,20 +23,6 @@ internal sealed class CanSignInQueryHandler(UserManager<User> userManager) : IQu
             throw new ErrorException(UsersDomainErrors.User.InvalidCredentials);
         }
 
-        // TODO - Convert this to a check on the user with a series of Business Rules
-        //if (!await signInManager.CanSignInAsync(user!))
-        //{
-        //    if (user!.EmailConfirmed == false)
-        //    {
-        //        throw new ErrorException(UsersDomainErrors.User.MustVerifyEmail);
-        //    }
-        //    else
-        //    {
-        //        throw new ErrorException(Error.UnknownError);
-        //    }
-
-        //    // TODO - add logic for lockout as well, for account suspension
-        //}
 
         IEnumerable<string> roles = await userManager.GetRolesAsync(user);
 

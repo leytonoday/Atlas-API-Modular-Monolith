@@ -71,7 +71,7 @@ public sealed class User : IdentityUser<Guid>, IEntity<Guid>, IAuditableEntity, 
         user.CustomerId = customerId;
     }
 
-    public static async Task<User> CreateAsync(string userName, string email, string password, UserManager<User> userManager)
+    public static async Task<User> CreateAsync(string userName, string email, string password, UserManager<User> userManager, IUserRepository userRepository)
     {
         var user = new User()
         {
@@ -82,7 +82,7 @@ public sealed class User : IdentityUser<Guid>, IEntity<Guid>, IAuditableEntity, 
 
         // Username Validation
         CheckBusinessRule(new UserNameMustUseAllowedCharactersBusinessRule(userName));
-        await CheckAsyncBusinessRule(new UserNameMustBeUniqueBusinessRule(userName, userManager));
+        await CheckAsyncBusinessRule(new UserNameMustBeUniqueBusinessRule(userName, userRepository));
 
         // Email validation
         await CheckAsyncBusinessRule(new EmailMustBeUniqueBusinessRule(email, userManager));
@@ -100,6 +100,11 @@ public sealed class User : IdentityUser<Guid>, IEntity<Guid>, IAuditableEntity, 
         user.SecurityStamp = userManager.GenerateNewAuthenticatorKey();
 
         return user;
+    }
+
+    public static void CanSignInAsync(User user)
+    {
+        CheckBusinessRule(new EmailMustBeVerifiedBusinessRule(user));
     }
 
     public static void ChangePassword(User user, string oldPassword, string newPassword, UserManager<User> userManager)
