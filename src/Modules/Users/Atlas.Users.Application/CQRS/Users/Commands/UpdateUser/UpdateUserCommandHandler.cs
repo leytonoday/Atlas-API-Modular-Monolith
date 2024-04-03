@@ -9,13 +9,15 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Atlas.Users.Application.CQRS.Users.Commands.UpdateUser;
 
-internal sealed class UpdateUserCommandHandler(UserManager<User> userManager, IExecutionContextAccessor executionContext) : ICommandHandler<UpdateUserCommand>
+internal sealed class UpdateUserCommandHandler(IUserRepository userRepository, IExecutionContextAccessor executionContext) : ICommandHandler<UpdateUserCommand>
 {
     public async Task Handle(UpdateUserCommand request, CancellationToken cancellationToken)
     {
-        User user = await userManager.FindByIdAsync(executionContext.UserId.ToString())
+        User user = await userRepository.GetByIdAsync(executionContext.UserId, true, cancellationToken)
             ?? throw new ErrorException(UsersDomainErrors.User.UserNotFound);
 
-        await User.UpdateAsync(user, request.UserName, request.PhoneNumber, userManager);
+        await User.UpdateAsync(user, request.UserName, request.PhoneNumber, userRepository);
+
+        await userRepository.UpdateAsync(user, cancellationToken);
     }
 }

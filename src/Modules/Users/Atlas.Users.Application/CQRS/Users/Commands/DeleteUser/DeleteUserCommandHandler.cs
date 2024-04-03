@@ -1,5 +1,4 @@
 ﻿using Atlas.Shared.Application.Abstractions;
-using Atlas.Shared.Application.Abstractions.Integration.Outbox;
 using Atlas.Shared.Application.Abstractions.Messaging.Command;
 using Atlas.Shared.Domain.Exceptions;
 using Atlas.Users.Domain.Entities.UserEntity;

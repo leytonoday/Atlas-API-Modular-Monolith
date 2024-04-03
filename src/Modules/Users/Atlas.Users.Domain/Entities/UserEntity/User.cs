@@ -129,30 +129,24 @@ public sealed class User : IdentityUser<Guid>, IEntity<Guid>, IAuditableEntity, 
         User user, 
         string userName, 
         string? phoneNumber, 
-        UserManager<User> userManager)
+        IUserRepository userRepository)
     {
         // If the user has changed username, ensure it hasn't been taken already
         if (user.UserName != userName)
         {
-            User? existingUser = await userManager.FindByUserNameOrEmailAsync(userName);
-            if (existingUser is not null) 
-            {
-                throw new ErrorException(UsersDomainErrors.User.UserNameAlreadyInUse);
-            }
+            await CheckAsyncBusinessRule(new UserNameMustBeUniqueBusinessRule(userName, userRepository));
         }
 
-        // Validate phonenumber
-        if (phoneNumber is not null && user.PhoneNumber != phoneNumber && !PhoneNumberUtil.IsViablePhoneNumber(phoneNumber))
+        // Validate phonenumber if it has changed
+        if (phoneNumber is not null && user.PhoneNumber != phoneNumber)
         {
-            throw new ErrorException(UsersDomainErrors.PhoneNumber.Invalid);
+            CheckBusinessRule(new PhoneNumberMustBeValidBusinessRule(phoneNumber));
         }
 
         user.UserName = userName;
         user.PhoneNumber = phoneNumber;
 
         user.AddDomainEvent(new UserUpdatedDomainEvent(user.Id));
-
-        await userManager.UpdateAsync(user);
     }
 
     public static async Task DeleteUserAsync(
