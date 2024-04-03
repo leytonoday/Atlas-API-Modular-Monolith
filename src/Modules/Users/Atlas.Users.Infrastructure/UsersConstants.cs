@@ -7,11 +7,6 @@ internal static class UsersConstants
         internal const string SchemaName = "Users";
     }
 
-    internal static class Identity
-    {
-        internal const string AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    }
-
     internal static class SeedData
     {
         internal static readonly Guid SupportUserId = new("ee845b42-3b09-48b1-98ae-8809693b8e46");

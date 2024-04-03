@@ -93,14 +93,8 @@ public static class ServiceCollectionExtensions
     {
         services.AddIdentity<User, IdentityRole<Guid>>(options =>
         {
-            options.Password.RequireDigit = true;
-            options.Password.RequireLowercase = true;
-            options.Password.RequireUppercase = true;
-            options.Password.RequireNonAlphanumeric = true;
-            options.Password.RequiredLength = 10;
             options.User.RequireUniqueEmail = true;
             options.SignIn.RequireConfirmedEmail = true;
-            options.User.AllowedUserNameCharacters = UsersConstants.Identity.AllowedUserNameCharacters;
         })
            .AddEntityFrameworkStores<UsersDatabaseContext>()
            .AddDefaultTokenProviders();

@@ -9,6 +9,9 @@ using Atlas.Shared.Domain.Events;
 using Atlas.Shared.Domain.Exceptions;
 using Atlas.Shared;
 using Atlas.Users.Domain.Entities.UserEntity.Events;
+using Atlas.Shared.Domain.BusinessRules;
+using Atlas.Users.Domain.Entities.UserEntity.BusinessRules;
+using System.Buffers.Text;
 
 namespace Atlas.Users.Domain.Entities.UserEntity;
 
@@ -27,7 +30,27 @@ public sealed class User : IdentityUser<Guid>, IEntity<Guid>, IAuditableEntity, 
     public void RemoveDomainEvent(IDomainEvent domainEvent) => _domainEvents.Remove(domainEvent);
 
     /// <inheritdoc />
-    public void ClearDomainEvent(IDomainEvent domainEvent) => _domainEvents.Clear();
+    public void ClearDomainEvents() => _domainEvents.Clear();
+
+    /// <summary>
+    /// Ensures a given business rule has not been broken.
+    /// </summary>
+    /// <param name="rule">The business rule to ensure isn't broken.</param>
+    /// <exception cref="BusinessRuleBrokenException" />
+    static void CheckBusinessRule(IBusinessRule rule)
+    {
+        if (rule.IsBroken()) throw new BusinessRuleBrokenException(rule.Message);
+    }
+
+    /// <summary>
+    /// Ensures a given asynchronous business rule has not been broken.
+    /// </summary>
+    /// <param name="rule">The business rule to ensure isn't broken.</param>
+    /// <exception cref="BusinessRuleBrokenException" />
+    static async Task CheckAsyncBusinessRule(IAsyncBusinessRule rule, CancellationToken cancellationToken = default)
+    {
+        if (await rule.IsBrokenAsync(cancellationToken)) throw new BusinessRuleBrokenException(rule.Message);
+    }
 
     /// <inheritdoc />
     public DateTime CreatedOnUtc { get; init; }
@@ -56,11 +79,24 @@ public sealed class User : IdentityUser<Guid>, IEntity<Guid>, IAuditableEntity, 
             Email = email,
         };
 
-        IdentityResult result = await userManager.CreateAsync(user, password);
-        if (!result.Succeeded)
-        {
-            throw new ErrorException(result.GetErrors());
-        }
+        // Username Validation
+        CheckBusinessRule(new UserNameMustUseAllowedCharactersBusinessRule(userName));
+        await CheckAsyncBusinessRule(new UserNameMustBeUniqueBusinessRule(userName, userManager));
+
+        // Email validation
+        await CheckAsyncBusinessRule(new EmailMustBeUniqueBusinessRule(email, userManager));
+
+        // Password Validation
+        CheckBusinessRule(new PasswordMustHaveDigitsBusinessRule(password));
+        CheckBusinessRule(new PasswordMustHaveLowerCaseBusinessRule(password));
+        CheckBusinessRule(new PasswordMustHaveUpperCaseBusinessRule(password));
+        CheckBusinessRule(new PasswordMustHaveNonAlphanumericLettersBusinessRule(password));
+        CheckBusinessRule(new PasswordMustBeMinimumLengthBusinessRule(password));
+
+        user.PasswordHash = userManager.PasswordHasher.HashPassword(user, password);
+        user.NormalizedEmail = userManager.NormalizeEmail(email);
+        user.NormalizedUserName = userManager.NormalizeName(userName);
+        user.SecurityStamp = userManager.GenerateNewAuthenticatorKey();
 
         return user;
     }

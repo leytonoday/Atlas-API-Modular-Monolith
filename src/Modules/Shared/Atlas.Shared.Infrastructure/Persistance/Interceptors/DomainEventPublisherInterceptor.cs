@@ -1,4 +1,5 @@
 ﻿using Atlas.Shared.Domain.AggregateRoot;
+using Atlas.Shared.Domain.Entities;
 using Atlas.Shared.Domain.Events;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -29,15 +30,22 @@ public sealed class DomainEventPublisherInterceptor(IPublisher publisher) : Save
 
         // Extract domain events from all aggregate roots within the change tracker.
         IEnumerable<IDomainEvent> domainEvents = dbContext.ChangeTracker
-            .Entries<IAggregateRoot>()
+            .Entries<IEntity>()
             .Select(x => x.Entity)
-            .SelectMany(aggregateRoot => aggregateRoot.DomainEvents);
+            .SelectMany(entity => entity.DomainEvents);
 
         // Iterate over each domain event and publish it sequentially
         foreach(IDomainEvent domainEvent in domainEvents)
         {
             await publisher.Publish(domainEvent, cancellationToken);
         }
+
+        // Clear all domain events
+        dbContext.ChangeTracker
+            .Entries<IEntity>()
+            .Select(x => x.Entity)
+            .ToList()
+            .ForEach(x => x.ClearDomainEvents());
 
         return await base.SavingChangesAsync(
             eventData,

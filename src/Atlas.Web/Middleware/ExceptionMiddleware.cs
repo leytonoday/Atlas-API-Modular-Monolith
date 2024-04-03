@@ -39,10 +39,10 @@ public static class ExceptionMiddleware
                     context.Response.StatusCode = StatusCodes.Status400BadRequest;
                     result = Result.Failure(ErrorException.Errors);
                 }
-                else if (contextFeature.Error is ErrorException errorException)
+                else if (contextFeature.Error is BusinessRuleBrokenException businessRuleBrokenExeption)
                 {
                     context.Response.StatusCode = StatusCodes.Status400BadRequest;
-                    result = Result.Failure(errorException.Errors);
+                    result = Result.Failure(new Error("BusinesRuleError", businessRuleBrokenExeption.Message));
                 }
                 else
                 {
