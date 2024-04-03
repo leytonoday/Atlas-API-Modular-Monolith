@@ -1,8 +1,12 @@
-﻿using Atlas.Shared.IntegrationEvents;
+﻿using Atlas.Shared.Domain.Events;
+using Atlas.Shared.IntegrationEvents;
+using MediatR;
 
 namespace Atlas.Shared.Infrastructure.Integration;
 
-public interface IIntegrationEventHandler
-{
-    public Task Handle(IIntegrationEvent @event);
-}
+/// <summary>
+/// Represents an event handler for a <see cref="IIntegrationEvent"/>.
+/// </summary>
+/// <typeparam name="TEvent">The type of <see cref="IIntegrationEvent"/> to handle.</typeparam>
+public interface IIntegrationEventHandler<TEvent> : INotificationHandler<TEvent>
+    where TEvent : IIntegrationEvent;

@@ -7,7 +7,7 @@ using Atlas.Users.Domain.Errors;
 using Atlas.Users.IntegrationEvents;
 using Microsoft.Extensions.Logging;
 
-namespace Atlas.Users.Application.CQRS.Users.Events;
+namespace Atlas.Users.Application.CQRS.Users.DomainEventHandlers;
 
 internal sealed class UserUpdatedDomainEventHandler(IUserRepository userRepository, IOutboxWriter outboxWriter, ILogger<UserUpdatedDomainEventHandler> logger) : IDomainEventHandler<UserUpdatedDomainEvent>
 {

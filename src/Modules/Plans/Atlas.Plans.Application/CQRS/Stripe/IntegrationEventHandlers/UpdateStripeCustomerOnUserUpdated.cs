@@ -5,10 +5,11 @@ using Atlas.Users.Domain.Errors;
 using Microsoft.AspNetCore.Identity;
 using MediatR;
 using Atlas.Users.IntegrationEvents;
+using Atlas.Shared.Infrastructure.Integration;
 
-namespace Atlas.Plans.Application.CQRS.Stripe.Events;
+namespace Atlas.Plans.Application.CQRS.Stripe.IntegrationEventHandlers;
 
-public sealed class UpdateStripeCustomerOnUserUpdated(IStripeService stripeService) : INotificationHandler<UserUpdatedIntegrationEvent>
+public sealed class UpdateStripeCustomerOnUserUpdated(IStripeService stripeService) : IIntegrationEventHandler<UserUpdatedIntegrationEvent>
 {
     public async Task Handle(UserUpdatedIntegrationEvent notification, CancellationToken cancellationToken)
     {

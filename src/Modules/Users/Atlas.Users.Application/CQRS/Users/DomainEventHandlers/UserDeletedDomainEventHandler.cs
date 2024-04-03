@@ -4,7 +4,7 @@ using Atlas.Users.Domain.Entities.UserEntity.Events;
 using Atlas.Users.IntegrationEvents;
 using Microsoft.Extensions.Logging;
 
-namespace Atlas.Users.Application.CQRS.Users.Events;
+namespace Atlas.Users.Application.CQRS.Users.DomainEventHandlers;
 
 internal sealed class UserDeletedDomainEventHandler(IOutboxWriter outboxWriter, ILogger<UserDeletedDomainEventHandler> logger) : IDomainEventHandler<UserDeletedDomainEvent>
 {
