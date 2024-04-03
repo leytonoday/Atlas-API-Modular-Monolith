@@ -9,19 +9,15 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Atlas.Users.Application.CQRS.Users.Commands.ChangePassword;
 
-internal sealed class ChangePasswordCommandHandler(UserManager<User> userManager, IExecutionContextAccessor executionContext, SignInManager<User> signInManager) : ICommandHandler<ChangePasswordCommand>
+internal sealed class ChangePasswordCommandHandler(UserManager<User> userManager, IUserRepository userRepository, IExecutionContextAccessor executionContext) : ICommandHandler<ChangePasswordCommand>
 {
     public async Task Handle(ChangePasswordCommand request, CancellationToken cancellationToken)
     {
-        User user = await userManager.FindByIdAsync(executionContext.UserId.ToString())
+        User user = await userRepository.GetByIdAsync(executionContext.UserId, true, cancellationToken)
             ?? throw new ErrorException(UsersDomainErrors.User.UserNotFound);
 
-        IdentityResult result = await userManager.ChangePasswordAsync(user, request.OldPassword, request.NewPassword);
-        if (!result.Succeeded)
-        {
-            throw new ErrorException(result.GetErrors());
-        }
-        // Once password has been reset, user must essentially be re-logged in
-        await signInManager.RefreshSignInAsync(user);
+        User.ChangePassword(user, request.OldPassword, request.NewPassword, userManager);
+
+        await userRepository.UpdateAsync(user, cancellationToken);
     }
 }

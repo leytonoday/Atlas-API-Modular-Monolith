@@ -101,6 +101,17 @@ public sealed class User : IdentityUser<Guid>, IEntity<Guid>, IAuditableEntity, 
         return user;
     }
 
+    public static void ChangePassword(User user, string oldPassword, string newPassword, UserManager<User> userManager)
+    {
+        var oldPasswordHashed = userManager.PasswordHasher.HashPassword(user, oldPassword);
+
+        // Validation
+        CheckBusinessRule(new NewPasswordMustMatchOldPassword(oldPasswordHashed, user.PasswordHash!));
+
+        user.PasswordHash = userManager.PasswordHasher.HashPassword(user, newPassword);
+        user.SecurityStamp = userManager.GenerateNewAuthenticatorKey();
+    }
+
     public static async Task UpdateAsync(
         User user, 
         string userName, 

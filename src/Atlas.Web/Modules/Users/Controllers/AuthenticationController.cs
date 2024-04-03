@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Atlas.Users.Application.CQRS.Users.Queries.GetUserById;
 using Atlas.Shared.Domain.Results;
-using Atlas.Users.Application.CQRS.Authentication.Commands.SignInWithToken;
 using Atlas.Shared.Application.Abstractions;
 using Atlas.Users.Module;
 using Atlas.Web.Modules.Shared;
@@ -11,8 +10,6 @@ using Atlas.Users.Application.CQRS.Authentication.Queries.Shared;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
-using Atlas.Shared;
-using Quartz.Impl.AdoJobStore;
 using Atlas.Users.Application.CQRS.Authentication.Queries.CanSignInWithToken;
 
 namespace Atlas.Web.Modules.Users.Controllers;
