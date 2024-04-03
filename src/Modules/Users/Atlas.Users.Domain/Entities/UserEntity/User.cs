@@ -12,6 +12,7 @@ using Atlas.Users.Domain.Entities.UserEntity.Events;
 using Atlas.Shared.Domain.BusinessRules;
 using Atlas.Users.Domain.Entities.UserEntity.BusinessRules;
 using System.Buffers.Text;
+using Microsoft.Extensions.Options;
 
 namespace Atlas.Users.Domain.Entities.UserEntity;
 
@@ -110,6 +111,18 @@ public sealed class User : IdentityUser<Guid>, IEntity<Guid>, IAuditableEntity, 
 
         user.PasswordHash = userManager.PasswordHasher.HashPassword(user, newPassword);
         user.SecurityStamp = userManager.GenerateNewAuthenticatorKey();
+    }
+
+    public static async Task ConfirmEmailAsync(User user, string token, UserManager<User> userManager)
+    {
+        CheckBusinessRule(new EmailMustNotBeAlreadyVerifiedBusinessRule(user));
+    
+        if (!await userManager.VerifyUserTokenAsync(user, TokenOptions.DefaultProvider, UserManager<User>.ConfirmEmailTokenPurpose, token))
+        {
+            throw new ErrorException(UsersDomainErrors.User.InvalidToken);
+        }
+
+        user.EmailConfirmed = true;
     }
 
     public static async Task UpdateAsync(

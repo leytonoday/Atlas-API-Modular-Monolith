@@ -5,4 +5,7 @@ namespace Atlas.Users.Domain.Entities.UserEntity;
 /// <summary>
 /// Represents a repository for managing <see cref="User"/> entities.
 /// </summary>
-public interface IUserRepository : IRepository<User, Guid>;
+public interface IUserRepository : IRepository<User, Guid>
+{
+    public Task<User?> GetByUserNameAsync(string userName, bool trackChanges, CancellationToken cancellationToken);
+}

@@ -11,24 +11,14 @@ using Atlas.Users.IntegrationEvents;
 
 namespace Atlas.Users.Application.CQRS.Users.Commands.ConfirmUserEmail;
 
-internal sealed class ConfirmUserEmailCommandHandler(UserManager<User> userManager, IOutboxWriter outboxWriter) : ICommandHandler<ConfirmUserEmailCommand, string>
+internal sealed class ConfirmUserEmailCommandHandler(UserManager<User> userManager, IUserRepository userRepository, IOutboxWriter outboxWriter) : ICommandHandler<ConfirmUserEmailCommand, string>
 {
     public async Task<string> Handle(ConfirmUserEmailCommand request, CancellationToken cancellationToken)
     {
-        User user = await userManager.FindByNameAsync(request.UserName)
+        User user = await userRepository.GetByUserNameAsync(request.UserName, true, cancellationToken)
             ?? throw new ErrorException(UsersDomainErrors.User.UserNotFound);
 
-        if (user.EmailConfirmed)
-        {
-            throw new ErrorException(UsersDomainErrors.User.EmailAlreadyVerified);
-        }
-
-        // Confirm email using provided token
-        IdentityResult result = await userManager.ConfirmEmailAsync(user, request.Token);
-        if (!result.Succeeded)
-        {
-            throw new ErrorException(result.GetErrors());
-        }
+        await User.ConfirmEmailAsync(user, request.Token, userManager);
 
         // Delete the confirm email token that was generated upon sign up
         await userManager.RemoveAuthenticationTokenAsync(user, "Default", UserToken.ConfirmUserEmail);
