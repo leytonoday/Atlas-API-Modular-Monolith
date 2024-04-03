@@ -1,4 +1,5 @@
 ﻿using Atlas.Plans.Domain.Entities.FeatureEntity.BusinessRules;
+using Atlas.Plans.Domain.Entities.FeatureEntity.DomainEvents;
 using Atlas.Plans.Domain.Entities.PlanEntity;
 using Atlas.Shared.Domain.AggregateRoot;
 
@@ -56,6 +57,8 @@ public class Feature : AggregateRoot<Guid>
         IFeatureRepository featureRepository,
         CancellationToken cancellationToken)
     {
+        bool hasIsInheritableChanged = isInheritable != feature.IsInheritable;
+
         // If the name has changed, ensure another Feature doesn't already have that name
         if (name != feature.Name)
         {
@@ -66,6 +69,8 @@ public class Feature : AggregateRoot<Guid>
         feature.Description = description;
         feature.IsInheritable = isInheritable;
         feature.IsHidden = isHidden;
+
+        feature.AddDomainEvent(new FeatureUpdatedDomainEvent(feature.Id, hasIsInheritableChanged));
 
         return feature;
     }
