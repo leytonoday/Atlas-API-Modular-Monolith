@@ -1,4 +1,5 @@
-﻿using Atlas.Shared.IntegrationEvents;
+﻿using Atlas.Shared.Application.Abstractions.Integration;
+using Atlas.Shared.IntegrationEvents;
 
 namespace Atlas.Shared.Infrastructure.Integration.Bus;
 
@@ -10,7 +11,7 @@ public class InMemoryEventBus : IEventBus
     /// <summary>
     /// Dictionary storing event subscriptions where the key is the event type name and the value is a list of event handlers.
     /// </summary>
-    private readonly Dictionary<string, List<IIntegrationEventHandler>> _subscriptions = [];
+    private readonly Dictionary<string, List<IEventBusIntegrationEventHandler>> _subscriptions = [];
 
     /// <inheritdoc />
     public async Task Publish<TEvent>(TEvent @event, CancellationToken cancellationToken) where TEvent : IIntegrationEvent
@@ -18,21 +19,21 @@ public class InMemoryEventBus : IEventBus
         string eventTypeName = GetEventTypeName(@event);
 
         // Get all event handlers that have previously subscribed to this event type
-        List<IIntegrationEventHandler> eventHandlers = GetEventHandlers(eventTypeName);
+        List<IEventBusIntegrationEventHandler> eventHandlers = GetEventHandlers(eventTypeName);
         if (eventHandlers.Count == 0)
         {
             return;
         }
 
         // Execute all event handlers
-        foreach (IIntegrationEventHandler eventHandler in eventHandlers)
+        foreach (IEventBusIntegrationEventHandler eventHandler in eventHandlers)
         {
             await eventHandler.Handle(@event);
         }
     }
 
     /// <inheritdoc />
-    public void Subscribe<TEvent>(IIntegrationEventHandler eventHandler) where TEvent : IIntegrationEvent
+    public void Subscribe<TEvent>(IEventBusIntegrationEventHandler eventHandler) where TEvent : IIntegrationEvent
     {
         string eventTypeName = GetEventTypeName<TEvent>();
 
@@ -69,8 +70,8 @@ public class InMemoryEventBus : IEventBus
     /// </summary>
     /// <param name="key">The event type name.</param>
     /// <returns>The list of event handlers.</returns>
-    private List<IIntegrationEventHandler> GetEventHandlers(string key) =>
+    private List<IEventBusIntegrationEventHandler> GetEventHandlers(string key) =>
         _subscriptions.TryGetValue(key, out var handlers)
             ? handlers
-            : new List<IIntegrationEventHandler>();
+            : new List<IEventBusIntegrationEventHandler>();
 }

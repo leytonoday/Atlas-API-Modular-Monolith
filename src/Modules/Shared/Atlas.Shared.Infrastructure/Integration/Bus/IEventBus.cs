@@ -1,5 +1,5 @@
-﻿using Atlas.Shared.IntegrationEvents;
-using MediatR;
+﻿using Atlas.Shared.Application.Abstractions.Integration;
+using Atlas.Shared.IntegrationEvents;
 
 namespace Atlas.Shared.Infrastructure.Integration.Bus;
 
@@ -21,5 +21,5 @@ public interface IEventBus
     /// </summary>
     /// <typeparam name="TEvent">The type of the event to subscribe to.</typeparam>
     /// <param name="eventHandler">The event handler to be subscribed.</param>
-    void Subscribe<TEvent>(IIntegrationEventHandler eventHandler) where TEvent : IIntegrationEvent;
+    void Subscribe<TEvent>(IEventBusIntegrationEventHandler eventHandler) where TEvent : IIntegrationEvent;
 }

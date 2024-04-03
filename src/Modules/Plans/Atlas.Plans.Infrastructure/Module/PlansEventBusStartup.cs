@@ -24,6 +24,6 @@ internal class PlansEventBusStartup : IEventBusStartup
         where TIntegrationEvent : IIntegrationEvent
     {
         logger.LogInformation("Subscribe to {@IntegrationEvent}", typeof(TIntegrationEvent).FullName);
-        eventBus.Subscribe<TIntegrationEvent>(new GenericIntegrationEventHandler<PlansCompositionRoot, TIntegrationEvent>());
+        eventBus.Subscribe<TIntegrationEvent>(new InboxWriterIntegrationEventHandler<PlansCompositionRoot, TIntegrationEvent>());
     }
 }

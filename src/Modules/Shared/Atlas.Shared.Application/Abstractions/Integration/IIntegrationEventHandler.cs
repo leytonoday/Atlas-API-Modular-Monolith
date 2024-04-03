@@ -10,3 +10,4 @@ namespace Atlas.Shared.Infrastructure.Integration;
 /// <typeparam name="TEvent">The type of <see cref="IIntegrationEvent"/> to handle.</typeparam>
 public interface IIntegrationEventHandler<TEvent> : INotificationHandler<TEvent>
     where TEvent : IIntegrationEvent;
+

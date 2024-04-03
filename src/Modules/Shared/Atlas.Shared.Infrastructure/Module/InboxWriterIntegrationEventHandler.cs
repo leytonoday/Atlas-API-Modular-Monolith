@@ -1,12 +1,18 @@
 ﻿using Atlas.Shared.IntegrationEvents;
-using Atlas.Shared.Infrastructure.Integration;
 using Atlas.Shared.Domain;
 using Microsoft.Extensions.DependencyInjection;
 using Atlas.Shared.Application.Abstractions.Integration.Inbox;
+using Atlas.Shared.Application.Abstractions.Integration;
 
 namespace Atlas.Shared.Infrastructure.Module;
 
-public class GenericIntegrationEventHandler<TCompositionRoot, TIntegrationEvent> : IIntegrationEventHandler
+/// <summary>
+/// A handler for integration events that come straight from the <see cref="IEventBus"/>. It converts them to Inbox messages.
+/// adds them 
+/// </summary>
+/// <typeparam name="TCompositionRoot"></typeparam>
+/// <typeparam name="TIntegrationEvent"></typeparam>
+public class InboxWriterIntegrationEventHandler<TCompositionRoot, TIntegrationEvent> : IEventBusIntegrationEventHandler
     where TCompositionRoot : ICompositionRoot
     where TIntegrationEvent : IIntegrationEvent
 {
