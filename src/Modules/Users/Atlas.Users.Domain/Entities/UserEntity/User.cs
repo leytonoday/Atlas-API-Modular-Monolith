@@ -155,46 +155,32 @@ public sealed class User : IdentityUser<Guid>, IEntity<Guid>, IAuditableEntity, 
         await userManager.UpdateAsync(user);
     }
 
-    public static async Task<User> DeleteUserAsync(
+    public static async Task DeleteUserAsync(
         User currentUser,
-        Guid userId,
+        User userToBeDeleted,
         string password,
         UserManager<User> userManager)
     {
-        User userToBeDeleted = await userManager.FindByIdAsync(userId.ToString())
-            ?? throw new ErrorException(UsersDomainErrors.User.UserNotFound);
-
         // Is the user making the request the same user that is being requested to be deleted?
-        bool isDeletingSelf = userId == currentUser.Id;
+        bool isDeletingSelf = userToBeDeleted.Id == currentUser.Id;
 
         // Is the user making the request an Admin?
         bool isCurrentUserAdmin = await userManager.IsInRoleAsync(currentUser, RoleNames.Administrator);
 
         // Is the user that is being requested to be deleted an Admin?
-        bool isToDeleteUserAdmin = await userManager.IsInRoleAsync(userToBeDeleted, RoleNames.Administrator);
+        bool isToBeDeletedUserAdmin = await userManager.IsInRoleAsync(userToBeDeleted, RoleNames.Administrator);
 
         // If an Admin is trying to delete another Admin
-        if (!isDeletingSelf && isCurrentUserAdmin && isToDeleteUserAdmin)
-        {
-            throw new ErrorException(UsersDomainErrors.User.AdminCanNotDeleteOtherAdmins);
-        }
+        CheckBusinessRule(new AdminCanNotDeleteOtherAdminsBusinessRule(isDeletingSelf, isCurrentUserAdmin, isToBeDeletedUserAdmin));
+
         // If a NON-ADMIN user is trying to delete a user that is NOT themselves
-        else if (!isCurrentUserAdmin && !isDeletingSelf)
-        {
-            throw new ErrorException(UsersDomainErrors.User.NonAdminCanOnlyDeleteOwnAccount);
-        }
-        // If an Admin is trying to delete another NON-ADMIN user
-        else if (isCurrentUserAdmin && !isToDeleteUserAdmin && !isDeletingSelf)
-        {
-            // An admin can delete another non-admin user without a password, so proceed with deletion
-            await userManager.DeleteAsync(userToBeDeleted);
-        }
+        CheckBusinessRule(new NonAdminCanOnlyDeleteOwnAccountBusinessRule(isDeletingSelf, isCurrentUserAdmin));
+
         // If a user is deleting themselves, regardless of if they're an Admin or not, they have to provide their password
-        else if (isDeletingSelf)
+        if (isDeletingSelf)
         {
-            var passwordHasher = new PasswordHasher<User>();
             // Verify the password provided is correct. 
-            if (string.IsNullOrWhiteSpace(password) || passwordHasher.VerifyHashedPassword(currentUser, currentUser.PasswordHash, password) != PasswordVerificationResult.Success)
+            if (string.IsNullOrWhiteSpace(password) || userManager.PasswordHasher.VerifyHashedPassword(currentUser, currentUser.PasswordHash, password) != PasswordVerificationResult.Success)
             {
                 throw new ErrorException(UsersDomainErrors.User.InvalidCredentials);
             }
@@ -205,8 +191,6 @@ public sealed class User : IdentityUser<Guid>, IEntity<Guid>, IAuditableEntity, 
 
         // Add domain event to allow domain to react 
         userToBeDeleted.AddDomainEvent(new UserDeletedDomainEvent(userToBeDeleted.Id));
-
-        return userToBeDeleted;
     }
 
     public static void SetPlanId(User user, Guid? planId)
