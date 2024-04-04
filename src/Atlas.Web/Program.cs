@@ -20,7 +20,6 @@ void ConfigureServices(IServiceCollection services, ConfigureHostBuilder hostBui
     services.AddSingleton<IEventBus, InMemoryEventBus>();
 
     // Register Modules
-    // Register Modules
     services.AddSingleton<IUsersModule, UsersModule>();
     services.AddSingleton<IPlansModule, PlansModule>();
 }

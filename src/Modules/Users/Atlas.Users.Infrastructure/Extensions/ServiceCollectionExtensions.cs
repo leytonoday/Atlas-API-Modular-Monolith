@@ -16,9 +16,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
 
-namespace Atlas.Users.Infrastructure;
+namespace Atlas.Users.Infrastructure.Extensions;
 
 public static class ServiceCollectionExtensions
 {

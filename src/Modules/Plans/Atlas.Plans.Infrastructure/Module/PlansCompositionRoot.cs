@@ -1,5 +1,5 @@
 ﻿using Atlas.Shared.Infrastructure.Module;
-using Microsoft.Extensions.DependencyInjection;
+using Autofac;
 
 namespace Atlas.Plans.Module;
 
@@ -8,14 +8,14 @@ namespace Atlas.Plans.Module;
 /// </summary>
 public class PlansCompositionRoot : ICompositionRoot
 {
-    private static IServiceProvider? _provider;
+    private static IContainer? _container;
 
     /// <inheritdoc/>
-    public static IServiceScope BeginLifetimeScope() => _provider?.CreateScope() ?? throw new ServiceProviderNotSetException();
+    public static ILifetimeScope BeginLifetimeScope() => _container?.BeginLifetimeScope() ?? throw new ServiceProviderNotSetException();
 
     /// <inheritdoc/>
-    public static void SetProvider(IServiceProvider provider)
+    public static void SetContainer(IContainer container)
     {
-        _provider = provider;
+        _container = container;
     }
 }

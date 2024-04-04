@@ -5,7 +5,6 @@ using Quartz.Impl;
 using Quartz;
 using System.Collections.Specialized;
 using System.Reflection;
-using Atlas.Shared.Infrastructure;
 using Atlas.Plans.Infrastructure;
 using Microsoft.Extensions.Logging;
 using Atlas.Shared.Infrastructure.Module;
@@ -13,6 +12,11 @@ using Atlas.Shared.Infrastructure.Integration;
 using Atlas.Shared.Infrastructure.BackgroundJobs;
 using Atlas.Plans.Infrastructure.Persistance;
 using Atlas.Shared.Application.Abstractions;
+using Atlas.Shared.Infrastructure.Extensions;
+using Atlas.Users.Infrastructure.Persistance;
+using Atlas.Users.Module;
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
 
 namespace Atlas.Plans.Module;
 
@@ -68,9 +72,16 @@ public class PlansModuleStartup : IModuleStartup
             .AddCommon<PlansDatabaseContext, PlansCompositionRoot>(configuration)
             .AddServices(configuration)
             .AddSingleton(eventBus)
-            .AddSingleton(loggerFactory)
-            .BuildServiceProvider();
+            .AddSingleton(loggerFactory);
 
-        PlansCompositionRoot.SetProvider(serviceProvider);
+        var containerBuilder = new ContainerBuilder();
+
+        containerBuilder.Populate(serviceProvider);
+
+        containerBuilder.AddAutofacServices();
+
+        var container = containerBuilder.Build();
+
+        PlansCompositionRoot.SetContainer(container);
     }
 }

@@ -3,6 +3,7 @@ using Atlas.Shared.Domain;
 using Microsoft.Extensions.DependencyInjection;
 using Atlas.Shared.Application.Abstractions.Integration.Inbox;
 using Atlas.Shared.Application.Abstractions.Integration;
+using Autofac;
 
 namespace Atlas.Shared.Infrastructure.Module;
 
@@ -20,8 +21,8 @@ public class InboxWriterIntegrationEventHandler<TCompositionRoot, TIntegrationEv
     {
         using var scope = TCompositionRoot.BeginLifetimeScope();
 
-        var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-        var inbox = scope.ServiceProvider.GetRequiredService<IInboxWriter>();
+        var unitOfWork = scope.Resolve<IUnitOfWork>();
+        var inbox = scope.Resolve<IInboxWriter>();
 
         await inbox.WriteAsync(integrationEvent, default);
 

@@ -25,7 +25,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
-namespace Atlas.Shared.Infrastructure;
+namespace Atlas.Shared.Infrastructure.Extensions;
 
 public static class ServiceCollectionExtensions
 {

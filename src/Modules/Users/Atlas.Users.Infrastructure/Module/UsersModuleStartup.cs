@@ -5,8 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Quartz.Impl;
 using System.Collections.Specialized;
 using System.Reflection;
-using Atlas.Users.Infrastructure;
-using Atlas.Shared.Infrastructure;
 using Microsoft.Extensions.Logging;
 using Atlas.Shared.Infrastructure.Module;
 using Atlas.Shared.Infrastructure.BackgroundJobs;
@@ -14,6 +12,10 @@ using Atlas.Shared.Infrastructure.Integration;
 using Atlas.Users.Infrastructure.Persistance;
 using Microsoft.AspNetCore.Hosting;
 using Atlas.Shared.Application.Abstractions;
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
+using Atlas.Users.Infrastructure.Extensions;
+using Atlas.Shared.Infrastructure.Extensions;
 
 namespace Atlas.Users.Module;
 
@@ -69,9 +71,16 @@ public class UsersModuleStartup : IModuleStartup
             .AddCommon<UsersDatabaseContext, UsersCompositionRoot>(configuration)
             .AddServices(configuration)
             .AddSingleton(eventBus)
-            .AddSingleton(loggerFactory)
-            .BuildServiceProvider();
+            .AddSingleton(loggerFactory);
 
-        UsersCompositionRoot.SetProvider(serviceProvider);
+        var containerBuilder = new ContainerBuilder();
+
+        containerBuilder.Populate(serviceProvider);
+
+        containerBuilder.AddAutofacServices();
+
+        var container = containerBuilder.Build();
+
+        UsersCompositionRoot.SetContainer(container);
     }
 }

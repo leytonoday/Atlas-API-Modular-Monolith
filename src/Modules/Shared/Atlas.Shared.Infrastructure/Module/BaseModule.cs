@@ -2,6 +2,7 @@
 using Atlas.Shared.Application.Abstractions.Messaging.Query;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using Autofac;
 
 namespace Atlas.Shared.Infrastructure.Module;
 
@@ -17,7 +18,7 @@ public abstract class BaseModule<TCompositionRoot> : IModule
     public virtual async Task PublishNotification(INotification notification, CancellationToken cancellationToken = default)
     {
         using var scope = TCompositionRoot.BeginLifetimeScope();
-        IMediator dispatcher = scope.ServiceProvider.GetRequiredService<IMediator>();
+        IMediator dispatcher = scope.Resolve<IMediator>();
         await dispatcher.Publish(notification, cancellationToken);
     }
 
@@ -53,7 +54,7 @@ public abstract class BaseModule<TCompositionRoot> : IModule
     public virtual async Task<TResult> SendQuery<TResult>(IQuery<TResult> query, CancellationToken cancellationToken = default)
     {
         using var scope = TCompositionRoot.BeginLifetimeScope();
-        IMediator dispatcher = scope.ServiceProvider.GetRequiredService<IMediator>();
+        IMediator dispatcher = scope.Resolve<IMediator>();
         return await dispatcher.Send(query, cancellationToken);
     }
 }
