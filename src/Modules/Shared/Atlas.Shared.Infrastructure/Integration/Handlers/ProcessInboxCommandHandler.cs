@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Atlas.Shared.Infrastructure.Integration.Handlers;
 
-public class ProcessInboxHandler(IInboxReader inboxReader, IPublisher publisher, ILogger<ProcessInboxHandler> logger) : ICommandHandler<ProcessInboxCommand>
+public class ProcessInboxCommandHandler(IInboxReader inboxReader, IPublisher publisher, ILogger<ProcessInboxCommandHandler> logger) : ICommandHandler<ProcessInboxCommand>
 {
     public async Task Handle(ProcessInboxCommand command, CancellationToken cancellationToken)
     {

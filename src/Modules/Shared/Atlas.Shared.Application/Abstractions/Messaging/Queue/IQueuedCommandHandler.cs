@@ -1,5 +1,4 @@
-﻿using Atlas.Shared.Application.Queue;
-using MediatR;
+﻿using MediatR;
 
 namespace Atlas.Shared.Application.Abstractions.Messaging.Queue;
 
