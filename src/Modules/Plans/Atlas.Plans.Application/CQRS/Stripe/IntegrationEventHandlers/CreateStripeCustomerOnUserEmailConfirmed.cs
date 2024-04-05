@@ -13,9 +13,4 @@ public sealed class CreateStripeCustomerOnUserEmailConfirmed(IStripeService stri
         var stripeCustomer = await stripeService.CreateCustomerAsync(notification.UserId, notification.UserName, notification.Email, notification.PhoneNumber, cancellationToken);
         await stripeCustomerRepository.AddAsync(stripeCustomer, cancellationToken);
     }
-
-    public Task Handle(UserEmailConfirmedIntegrationEvent @event)
-    {
-        throw new NotImplementedException();
-    }
 }

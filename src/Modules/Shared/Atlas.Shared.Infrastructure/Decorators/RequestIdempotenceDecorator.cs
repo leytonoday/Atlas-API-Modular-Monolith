@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Atlas.Shared.Infrastructure.Decorators;
 
-class RequestIdempotenceDecorator<TRequest>(IRequestHandler<TRequest> decoratedHandler, IDecoratorContext context) : IRequestHandler<TRequest> where TRequest : class, IRequest
+class RequestIdempotenceDecorator<TRequest>(IRequestHandler<TRequest> decoratedHandler, IDecoratorContext context) : IIsDecorator, IRequestHandler<TRequest> where TRequest : class, IRequest
 {
     private readonly IQueueWriter _queueWriter = context.Resolve<IQueueWriter>();
 

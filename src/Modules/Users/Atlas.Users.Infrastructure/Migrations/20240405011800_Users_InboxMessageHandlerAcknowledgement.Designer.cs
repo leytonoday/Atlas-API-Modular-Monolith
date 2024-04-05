@@ -4,6 +4,7 @@ using Atlas.Users.Infrastructure.Persistance;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Atlas.Users.Infrastructure.Migrations
 {
     [DbContext(typeof(UsersDatabaseContext))]
-    partial class UsersDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20240405011800_Users_InboxMessageHandlerAcknowledgement")]
+    partial class Users_InboxMessageHandlerAcknowledgement
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -55,8 +55,8 @@ public class UsersModuleStartup : IModuleStartup
 
         var scheduler = await factory.GetScheduler();
 
-        //await scheduler.AddMessageboxJob<ProcessInboxJob<UsersCompositionRoot>>();
-        //await scheduler.AddMessageboxJob<ProcessOutboxJob<UsersCompositionRoot>>();
+        await scheduler.AddMessageboxJob<ProcessInboxJob<UsersCompositionRoot>>();
+        await scheduler.AddMessageboxJob<ProcessOutboxJob<UsersCompositionRoot>>();
         await scheduler.AddMessageboxJob<ProcessQueueJob<UsersCompositionRoot>>();
 
         await scheduler.Start();

@@ -11,7 +11,7 @@ public static class SchedulerExtensions
         var trigger = TriggerBuilder.Create()
             .StartNow()
             .WithIdentity(name)
-            .WithSimpleSchedule(x => x.WithIntervalInSeconds(20).RepeatForever())
+            .WithSimpleSchedule(x => x.WithIntervalInSeconds(2).RepeatForever())
             .Build();
         await scheduler.ScheduleJob(job, trigger);
     }

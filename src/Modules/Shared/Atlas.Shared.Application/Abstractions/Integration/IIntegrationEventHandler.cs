@@ -8,6 +8,6 @@ namespace Atlas.Shared.Infrastructure.Integration;
 /// Represents an event handler for a <see cref="IIntegrationEvent"/>.
 /// </summary>
 /// <typeparam name="TEvent">The type of <see cref="IIntegrationEvent"/> to handle.</typeparam>
-public interface IIntegrationEventHandler<TEvent> : INotificationHandler<TEvent>
+public interface IIntegrationEventHandler<in TEvent> : INotificationHandler<TEvent>
     where TEvent : IIntegrationEvent;
 
