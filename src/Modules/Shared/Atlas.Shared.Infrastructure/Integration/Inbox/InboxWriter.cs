@@ -17,4 +17,25 @@ internal class InboxWriter<TDatabaseContext>(TDatabaseContext databaseContext) :
 
         return Task.CompletedTask;
     }
+
+    public async Task<bool> IsInboxItemAlreadyHandledAsync(Guid id, string handlerName, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        return await databaseContext.Set<InboxMessageHandlerAcknowledgement>()
+            .AsNoTracking()
+            .AnyAsync(x => x.InboxMessageId == id && x.HandlerName == handlerName, cancellationToken);
+    }
+
+    public void MarkInboxItemAsHandled(Guid id, string handerName, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        databaseContext.Set<InboxMessageHandlerAcknowledgement>()
+            .Add(new()
+            {
+                InboxMessageId = id,
+                HandlerName = handerName,
+            });
+    }
 }

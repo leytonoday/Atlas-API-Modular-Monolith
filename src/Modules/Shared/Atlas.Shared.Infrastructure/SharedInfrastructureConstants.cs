@@ -29,7 +29,11 @@ public static class SharedInfrastructureConstants
         /// Represents the table name for <see cref="QueueMessageHandlerAcknowledgement"/> entities in the database.
         /// </summary>
         public const string QueueMessageHandlerAcknowledgements = nameof(QueueMessageHandlerAcknowledgements);
-        
+
+        /// <summary>
+        /// Represents the table name for <see cref="InboxMessageHandlerAcknowledgement"/> entities in the database.
+        /// </summary>
+        public const string InboxMessageHandlerAcknowledgements = nameof(InboxMessageHandlerAcknowledgements);
 
     }
 }

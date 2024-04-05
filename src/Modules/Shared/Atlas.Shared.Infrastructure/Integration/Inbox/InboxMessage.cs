@@ -45,6 +45,16 @@ public class InboxMessage
     }
 
     /// <summary>
+    /// Sets the error value on the <see cref="InboxMessage"/> indicating that this message could not be published for whatever reason. Think of setting this column to anything other than NULL the same as 
+    /// moving the message to a dead-letter-queue.
+    /// </summary>
+    /// <param name="error">The error message from the <see cref="Exception"/> that was thrown when attempting to run the integration event.</param>
+    public void SetPublishError(string error)
+    {
+        PublishError = error;
+    }
+
+    /// <summary>
     /// Creates an <see cref="InboxMesage"/> from an <see cref="IIntegrationEvent"/>
     /// </summary>
     /// <typeparam name="TEvent">The type of <see cref="IIntegrationEvent"/> to convert.</typeparam>

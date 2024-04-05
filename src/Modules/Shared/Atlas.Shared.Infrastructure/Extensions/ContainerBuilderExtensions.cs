@@ -13,5 +13,6 @@ public static class ContainerBuilderExtensions
     public static void AddAutofacServices(this ContainerBuilder containerBuilder)
     {
         containerBuilder.RegisterGenericDecorator(typeof(RequestIdempotenceDecorator<>), typeof(IRequestHandler<>));
+        containerBuilder.RegisterGenericDecorator(typeof(NotificationIdempotenceDecorator<>), typeof(INotificationHandler<>));
     }
 }

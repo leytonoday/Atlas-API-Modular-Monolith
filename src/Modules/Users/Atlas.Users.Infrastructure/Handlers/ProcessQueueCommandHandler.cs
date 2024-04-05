@@ -18,10 +18,10 @@ public sealed class ProcessQueueCommandHandler(IQueueReader queueReader, ILogger
     /// fails, with the time in-between each re-try increasing by 100 milliseconds. Basically a back-off algorithm
     /// </summary>
     private readonly static AsyncRetryPolicy _retryPolicy = Policy
-    .Handle<Exception>()
-    .WaitAndRetryAsync(
-        3,
-        attempt => TimeSpan.FromMilliseconds(100 * attempt)
+        .Handle<Exception>()
+        .WaitAndRetryAsync(
+            3,
+            attempt => TimeSpan.FromMilliseconds(100 * attempt)
     );
 
 
@@ -33,7 +33,7 @@ public sealed class ProcessQueueCommandHandler(IQueueReader queueReader, ILogger
 
         foreach (var message in messages)
         {
-            logger.LogInformation($"Processing outbox message: {message.Id} {message.Type} {message.Data}");
+            logger.LogInformation($"Processing queue message: {message.Id} {message.Type} {message.Data}");
 
             PolicyResult result = await _retryPolicy.ExecuteAndCaptureAsync(() => CommandsExecutor<UsersCompositionRoot>.SendCommand(QueueMessage.ToRequest(message), cancellationToken));
 
