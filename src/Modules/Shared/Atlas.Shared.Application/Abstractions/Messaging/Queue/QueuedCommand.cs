@@ -2,4 +2,7 @@
 
 namespace Atlas.Shared.Application.Abstractions.Messaging.Queue;
 
-public abstract record QueuedCommand(Guid Id) : ICommand;
+public abstract record QueuedCommand : ICommand
+{
+    public Guid Id { get; } = Guid.NewGuid();
+}

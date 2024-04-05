@@ -29,7 +29,7 @@ public static class ServiceCollectionExtensions
         var sharedInfrastructureAssembly = typeof(SharedInfrastructureAssemblyReference).Assembly;
 
         // Database related services
-        services.AddDatabaseServices(configuration);
+        services.AddUsersDatabaseServices(configuration);
 
         // MediatR
         var assemblies = new[] { infrastructureAssembly, applicationAssembly, sharedApplicationAssembly, sharedInfrastructureAssembly };
@@ -51,7 +51,7 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    public static IServiceCollection AddDatabaseServices(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddUsersDatabaseServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<IUnitOfWork, UsersUnitOfWork>();
         services.AddScoped<IUserRepository, UserRepository>();

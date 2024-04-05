@@ -1,6 +1,5 @@
 ﻿using Atlas.Shared.IntegrationEvents;
 using Atlas.Shared.Domain;
-using Microsoft.Extensions.DependencyInjection;
 using Atlas.Shared.Application.Abstractions.Integration.Inbox;
 using Atlas.Shared.Application.Abstractions.Integration;
 using Autofac;

@@ -2,7 +2,6 @@
 using Atlas.Plans.Domain.Entities.PlanEntity;
 using Atlas.Plans.Domain.Errors;
 using Atlas.Plans.Domain.Services;
-using Atlas.Shared.Application.Abstractions.Integration.Outbox;
 using Atlas.Shared.Application.Abstractions.Messaging.Command;
 using Atlas.Shared.Application.Queue;
 using Atlas.Shared.Domain.Exceptions;

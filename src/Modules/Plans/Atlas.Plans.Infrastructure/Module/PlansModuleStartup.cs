@@ -12,11 +12,10 @@ using Atlas.Shared.Infrastructure.BackgroundJobs;
 using Atlas.Plans.Infrastructure.Persistance;
 using Atlas.Shared.Application.Abstractions;
 using Atlas.Shared.Infrastructure.Extensions;
-using Atlas.Users.Infrastructure.Persistance;
-using Atlas.Users.Module;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Atlas.Plans.Infrastructure.Extensions;
+using Atlas.Shared.Application.ModuleBridge;
 
 namespace Atlas.Plans.Module;
 
@@ -25,9 +24,9 @@ public class PlansModuleStartup : IModuleStartup
     private static IScheduler? _scheduler;
 
     /// <inheritdoc />
-    public static async Task Start(IExecutionContextAccessor executionContextAccessor, IConfiguration configuration, IEventBus eventBus, ILoggerFactory loggerFactory, bool enableScheduler = true)
+    public static async Task Start(IModuleBridge moduleBridge, IExecutionContextAccessor executionContextAccessor, IConfiguration configuration, IEventBus eventBus, ILoggerFactory loggerFactory, bool enableScheduler = true)
     {
-        SetupCompositionRoot(executionContextAccessor, configuration, eventBus, loggerFactory);
+        SetupCompositionRoot(moduleBridge, executionContextAccessor, configuration, eventBus, loggerFactory);
 
         PlansEventBusStartup.Initialize(loggerFactory.CreateLogger<PlansEventBusStartup>(), eventBus);
 
@@ -65,10 +64,11 @@ public class PlansModuleStartup : IModuleStartup
         return scheduler;
     }
 
-    public static void SetupCompositionRoot(IExecutionContextAccessor executionContextAccessor, IConfiguration configuration, IEventBus eventBus, ILoggerFactory loggerFactory)
+    public static void SetupCompositionRoot(IModuleBridge moduleBridge, IExecutionContextAccessor executionContextAccessor, IConfiguration configuration, IEventBus eventBus, ILoggerFactory loggerFactory)
     {
         var serviceProvider = new ServiceCollection()
             .AddScoped<IExecutionContextAccessor>(_ => executionContextAccessor)
+            .AddScoped<IModuleBridge>(_ => moduleBridge)
             .AddCommon<PlansDatabaseContext, PlansCompositionRoot>(configuration)
             .AddServices(configuration)
             .AddSingleton(eventBus)

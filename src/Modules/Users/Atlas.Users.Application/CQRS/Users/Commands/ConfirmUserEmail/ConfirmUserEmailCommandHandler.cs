@@ -3,8 +3,6 @@ using Atlas.Shared.Application.Abstractions.Messaging.Command;
 using Atlas.Shared.Domain.Exceptions;
 using Atlas.Users.Domain.Entities.UserEntity;
 using Atlas.Users.Domain.Errors;
-using Atlas.Users.Domain.Extensions;
-using MediatR;
 using Microsoft.AspNetCore.Identity;
 using System.Web;
 using Atlas.Users.IntegrationEvents;

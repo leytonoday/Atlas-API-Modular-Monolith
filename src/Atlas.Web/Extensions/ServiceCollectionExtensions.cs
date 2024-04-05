@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.ResponseCompression;
 using System.IO.Compression;
+using Atlas.Plans.Infrastructure.Options.OptionSetup;
 
 namespace Atlas.Web.Extensions;
 
@@ -110,6 +111,8 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddConfigurations(this IServiceCollection services)
     {
+        services.ConfigureOptions<StripeOptionsSetup>();
+
         return services
             .AddPresentation()
             .ConfigureCookieAuthentication()

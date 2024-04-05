@@ -1,5 +1,4 @@
-﻿using Atlas.Shared.Application.Queue;
-using Atlas.Shared.Infrastructure.Integration.Outbox;
+﻿using Atlas.Shared.Infrastructure.Integration.Outbox;
 using Microsoft.EntityFrameworkCore;
 
 namespace Atlas.Shared.Infrastructure.Queue;

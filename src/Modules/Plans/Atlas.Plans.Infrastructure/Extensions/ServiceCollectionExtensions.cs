@@ -25,6 +25,7 @@ using Atlas.Shared.Infrastructure;
 using Atlas.Users.Domain.Entities.UserEntity;
 using Atlas.Users.Infrastructure.Persistance.Repositories;
 using Atlas.Shared.Infrastructure.Persistance.Interceptors;
+using Atlas.Users.Infrastructure.Extensions;
 
 namespace Atlas.Plans.Infrastructure.Extensions;
 
@@ -38,11 +39,12 @@ public static class ServiceCollectionExtensions
         var infrastructureAssembly = typeof(PlansInfrastructureAssemblyReference).Assembly;
         var sharedApplicationAssembly = typeof(SharedApplicationAssemblyReference).Assembly;
         var sharedInfrastructureAssembly = typeof(SharedInfrastructureAssemblyReference).Assembly;
+
         // Database related services
-        services.AddDatabaseServices(configuration);
+        services.AddPlansDatabaseServices(configuration);
 
         // MediatR
-        var assemblies = new[] { applicationAssembly, infrastructureAssembly, sharedApplicationAssembly, sharedInfrastructureAssembly };
+        var assemblies = new[] { infrastructureAssembly, applicationAssembly, sharedApplicationAssembly, sharedInfrastructureAssembly };
         services.AddMediatR(config =>
         {
             config.RegisterServicesFromAssemblies(assemblies);
@@ -64,11 +66,10 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddOptions(this IServiceCollection services)
     {
-        return services
-            .ConfigureOptions<StripeOptionsSetup>();
+        return services.ConfigureOptions<StripeOptionsSetup>();
     }
 
-    public static IServiceCollection AddDatabaseServices(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddPlansDatabaseServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<IUnitOfWork, PlansUnitOfWork>();
 
@@ -80,7 +81,7 @@ public static class ServiceCollectionExtensions
 
         // External repo dependencies
         // TODO - There are some use-cases in the Plans module that NEEDS data from the Users module. So we kinda have to register this here. There's probably some better way to do this. Figure it out.
-        services.AddScoped<IUserRepository, UserRepository>();
+        //services.AddUsersDatabaseServices(configuration);
 
         services.AddDbContext<PlansDatabaseContext>((provider, options) =>
         {

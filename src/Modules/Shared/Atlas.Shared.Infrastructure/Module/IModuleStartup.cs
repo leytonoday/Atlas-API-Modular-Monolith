@@ -1,4 +1,5 @@
 ﻿using Atlas.Shared.Application.Abstractions;
+using Atlas.Shared.Application.ModuleBridge;
 using Atlas.Shared.Infrastructure.Integration.Bus;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -19,7 +20,7 @@ public interface IModuleStartup
     /// <param name="eventBus">The event bus for publishing events.</param>
     /// <param name="loggerFactory">The logger factory used to create concrete instances of <see cref="ILogger"/>.</param>
     /// <param name="enableScheduler">Flag indicating whether to enable the scheduler.</param>
-    public static abstract Task Start(IExecutionContextAccessor executionContextAccessor,IConfiguration configuration, IEventBus eventBus, ILoggerFactory loggerFactory, bool enableScheduler = true);
+    public static abstract Task Start(IModuleBridge moduleBridge, IExecutionContextAccessor executionContextAccessor,IConfiguration configuration, IEventBus eventBus, ILoggerFactory loggerFactory, bool enableScheduler = true);
 
     /// <summary>
     /// Stops the module.
@@ -32,5 +33,5 @@ public interface IModuleStartup
     /// <returns>The scheduler instance.</returns>
     protected static abstract Task<IScheduler> SetupScheduledJobs();
 
-    protected static abstract void SetupCompositionRoot(IExecutionContextAccessor executionContextAccessor, IConfiguration configuration, IEventBus eventBus, ILoggerFactory loggerFactory);
+    protected static abstract void SetupCompositionRoot(IModuleBridge moduleBridge, IExecutionContextAccessor executionContextAccessor, IConfiguration configuration, IEventBus eventBus, ILoggerFactory loggerFactory);
 }

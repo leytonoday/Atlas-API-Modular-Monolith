@@ -16,6 +16,7 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Atlas.Users.Infrastructure.Extensions;
 using Atlas.Shared.Infrastructure.Extensions;
+using Atlas.Shared.Application.ModuleBridge;
 
 namespace Atlas.Users.Module;
 
@@ -24,9 +25,9 @@ public class UsersModuleStartup : IModuleStartup
     private static IScheduler? _scheduler;
 
     /// <inheritdoc />
-    public static async Task Start(IExecutionContextAccessor executionContextAccessor, IConfiguration configuration, IEventBus eventBus, ILoggerFactory loggerFactory, bool enableScheduler = true)
+    public static async Task Start(IModuleBridge moduleBridge, IExecutionContextAccessor executionContextAccessor, IConfiguration configuration, IEventBus eventBus, ILoggerFactory loggerFactory, bool enableScheduler = true)
     {
-        SetupCompositionRoot(executionContextAccessor, configuration, eventBus, loggerFactory);
+        SetupCompositionRoot(moduleBridge, executionContextAccessor, configuration, eventBus, loggerFactory);
 
         UsersEventBusStartup.Initialize(loggerFactory.CreateLogger<UsersEventBusStartup>(), eventBus);
 
@@ -64,10 +65,11 @@ public class UsersModuleStartup : IModuleStartup
         return scheduler;
     }
 
-    public static void SetupCompositionRoot(IExecutionContextAccessor executionContextAccessor, IConfiguration configuration, IEventBus eventBus, ILoggerFactory loggerFactory)
+    public static void SetupCompositionRoot(IModuleBridge moduleBridge, IExecutionContextAccessor executionContextAccessor, IConfiguration configuration, IEventBus eventBus, ILoggerFactory loggerFactory)
     {
         var serviceProvider = new ServiceCollection()
             .AddScoped<IExecutionContextAccessor>(_ => executionContextAccessor)
+            .AddScoped<IModuleBridge>(_ => moduleBridge)
             .AddCommon<UsersDatabaseContext, UsersCompositionRoot>(configuration)
             .AddServices(configuration)
             .AddSingleton(eventBus)

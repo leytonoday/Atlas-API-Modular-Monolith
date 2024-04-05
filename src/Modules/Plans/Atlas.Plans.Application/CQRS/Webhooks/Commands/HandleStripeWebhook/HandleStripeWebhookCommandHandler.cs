@@ -3,9 +3,8 @@ using Atlas.Plans.Domain.Entities.StripeCustomerEntity;
 using Atlas.Plans.Domain.Errors;
 using Atlas.Plans.Domain.Services;
 using Atlas.Shared.Application.Abstractions.Services;
+using Atlas.Shared.Application.ModuleBridge;
 using Atlas.Shared.Domain.Exceptions;
-using Atlas.Users.Domain.Entities.UserEntity;
-using Atlas.Users.Domain.Errors;
 using MediatR;
 using Stripe;
 
@@ -14,7 +13,7 @@ namespace Atlas.Plans.Application.CQRS.Webhooks.Commands.HandleStripeWebhook;
 internal sealed class HandleStripeWebhookCommandHandler(
     IStripeService stripeService,
     IStripeCustomerRepository stripeCustomerRepository,
-    IUserRepository userRepository,
+    IModuleBridge moduleBridge,
     ISupportNotifierService supportNotifierService,
     IStripeCardFingerprintRepository stripeCardFingerprintRepository) : IRequestHandler<HandleStripeWebhookCommand>
 {
@@ -67,16 +66,11 @@ internal sealed class HandleStripeWebhookCommandHandler(
         StripeCustomer? stripeCustomer = await stripeCustomerRepository.GetByStripeCustomerId(subscription.CustomerId, false, cancellationToken)
             ?? throw new ErrorException(PlansDomainErrors.StripeCustomer.StripeCustomerNotFound);
 
-        User user = await userRepository.GetByIdAsync(stripeCustomer.UserId, true, cancellationToken)
-          ?? throw new ErrorException(UsersDomainErrors.User.UserNotFound);
+        await AddCardFingerprintIfNewAsync(invoice, subscription, cancellationToken);
 
         // Set the user's planId to the planId that was specified in the subscription's metadata.
         // The result of this is that this user should have access to all of this Plan's features
-        User.SetPlanId(user, new Guid(planId));
-
-        await AddCardFingerprintIfNewAsync(invoice, subscription, cancellationToken);
-
-        await userRepository.UpdateAsync(user, cancellationToken);
+        await moduleBridge.SetUserPlanId(stripeCustomer.UserId, new Guid(planId), cancellationToken);
     }
 
     /// <summary>
@@ -139,15 +133,10 @@ internal sealed class HandleStripeWebhookCommandHandler(
         StripeCustomer? stripeCustomer = await stripeCustomerRepository.GetByStripeCustomerId(customer.Id, false, cancellationToken)
             ?? throw new ErrorException(PlansDomainErrors.StripeCustomer.StripeCustomerNotFound);
 
-        User user = await userRepository.GetByIdAsync(stripeCustomer.UserId, true, cancellationToken)
-          ?? throw new ErrorException(UsersDomainErrors.User.UserNotFound);
-
         // TODO - Send email to user, AND specify the reason for the failure.
 
         // Clear the user's planId. The result of clearing this planId means the user cannot access any of that Plan's features anymore
-        User.SetPlanId(user, null);
-
-        await userRepository.UpdateAsync(user, cancellationToken);
+        await moduleBridge.SetUserPlanId(stripeCustomer.UserId, null, cancellationToken);
     }
 
     /// <summary>
@@ -165,13 +154,8 @@ internal sealed class HandleStripeWebhookCommandHandler(
         StripeCustomer? stripeCustomer = await stripeCustomerRepository.GetByStripeCustomerId(subscription.CustomerId, false, cancellationToken)
             ?? throw new ErrorException(PlansDomainErrors.StripeCustomer.StripeCustomerNotFound);
 
-        User user = await userRepository.GetByIdAsync(stripeCustomer.UserId, true, cancellationToken)
-          ?? throw new ErrorException(UsersDomainErrors.User.UserNotFound);
-
         // Clear the user's planId
-        User.SetPlanId(user, null);
-
-        await userRepository.UpdateAsync(user, cancellationToken);
+        await moduleBridge.SetUserPlanId(stripeCustomer.UserId, null, cancellationToken);
 
         // If the user's subscription is cancelled automatically as a result of multiple failed payments, then we need to void all open invoices.
         await stripeService.VoidAllOpenInvoicesAsync(stripeCustomer.StripeCustomerId, cancellationToken);

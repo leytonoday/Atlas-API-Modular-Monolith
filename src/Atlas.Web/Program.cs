@@ -1,10 +1,12 @@
 using Atlas.Plans.Module;
 using Atlas.Shared.Application.Abstractions;
+using Atlas.Shared.Application.ModuleBridge;
 using Atlas.Shared.Infrastructure.Integration.Bus;
 using Atlas.Users.Module;
 using Atlas.Web.ExecutionContext;
 using Atlas.Web.Extensions;
 using Atlas.Web.Middleware;
+using Atlas.Web.Modules.Shared;
 
 void ConfigureServices(IServiceCollection services, ConfigureHostBuilder hostBuilder)
 {
@@ -18,6 +20,7 @@ void ConfigureServices(IServiceCollection services, ConfigureHostBuilder hostBui
     services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
     services.AddSingleton<IExecutionContextAccessor, ExecutionContextAccessor>();
     services.AddSingleton<IEventBus, InMemoryEventBus>();
+    services.AddSingleton<IModuleBridge, ModuleBridge>();
 
     // Register Modules
     services.AddSingleton<IUsersModule, UsersModule>();
@@ -31,9 +34,10 @@ async Task InitialiseModules(IServiceProvider serviceProvider, IConfiguration co
 
     var eventBus = serviceProvider.GetRequiredService<IEventBus>();
     var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
+    var moduleBridge = serviceProvider.GetRequiredService<IModuleBridge>();
 
-    await UsersModuleStartup.Start(executionContextAccessor, config, eventBus, loggerFactory);
-    await PlansModuleStartup.Start(executionContextAccessor, config, eventBus, loggerFactory);
+    await UsersModuleStartup.Start(moduleBridge, executionContextAccessor, config, eventBus, loggerFactory);
+    await PlansModuleStartup.Start(moduleBridge, executionContextAccessor, config, eventBus, loggerFactory);
 }
 
 void AddMiddleware(WebApplication app)

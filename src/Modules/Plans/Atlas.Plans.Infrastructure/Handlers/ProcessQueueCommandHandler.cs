@@ -8,7 +8,6 @@ using Atlas.Shared.Infrastructure.Queue;
 using Microsoft.Extensions.Logging;
 using Polly.Retry;
 using Polly;
-using Atlas.Users.Module;
 
 namespace Atlas.Plans.Infrastructure.Handlers;
 
@@ -35,7 +34,7 @@ public sealed class ProcessQueueCommandHandler(IQueueReader queueReader, ILogger
         {
             logger.LogInformation($"Processing queue message: {message.Id} {message.Type} {message.Data}");
 
-            PolicyResult result = await _retryPolicy.ExecuteAndCaptureAsync(() => CommandsExecutor<UsersCompositionRoot>.SendCommand(QueueMessage.ToRequest(message), cancellationToken));
+            PolicyResult result = await _retryPolicy.ExecuteAndCaptureAsync(() => CommandsExecutor<PlansCompositionRoot>.SendCommand(QueueMessage.ToRequest(message), cancellationToken));
 
             if (result.Outcome == OutcomeType.Failure)
             {

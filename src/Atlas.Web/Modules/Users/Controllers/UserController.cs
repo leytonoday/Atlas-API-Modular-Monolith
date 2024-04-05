@@ -15,6 +15,7 @@ using Atlas.Shared.Application.Abstractions;
 using Atlas.Users.Module;
 using Atlas.Web.Modules.Shared;
 using Atlas.Shared;
+using Atlas.Users.Application.CQRS.Users.Queries.GetUserById;
 
 namespace Atlas.Web.Modules.Users.Controllers;
 
