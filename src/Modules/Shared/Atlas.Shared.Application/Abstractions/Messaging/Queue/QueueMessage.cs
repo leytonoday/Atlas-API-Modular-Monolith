@@ -43,6 +43,16 @@ public class QueueMessage
         ProcessedOnUtc = DateTime.UtcNow; // TODO - Get date from IDateTimeProvider
     }
 
+    /// <summary>
+    /// Sets the error value on the <see cref="QueueMessage"/> indicating that this message could not be published for whatever reason. Think of setting this column to anything other than NULL the same as 
+    /// moving the message to a dead-letter-queue.
+    /// </summary>
+    /// <param name="error">The error message from the <see cref="Exception"/> that was thrown when attempting to run the command.</param>
+    public void SetError(string error)
+    {
+        Error = error;
+    }
+
     public static QueueMessage CreateFrom<TCommand>(TCommand command) where TCommand : QueuedCommand
     {
         return new()

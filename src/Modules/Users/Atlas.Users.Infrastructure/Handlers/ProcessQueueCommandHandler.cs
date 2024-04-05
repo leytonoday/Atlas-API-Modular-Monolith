@@ -5,11 +5,26 @@ using Atlas.Shared.Infrastructure.Module;
 using Atlas.Shared.Infrastructure.Queue;
 using Atlas.Users.Module;
 using Microsoft.Extensions.Logging;
+using Polly.Retry;
+using Polly;
+using Atlas.Shared.Application.Abstractions.Services;
 
 namespace Atlas.Users.Infrastructure.Handlers;
 
-public sealed class ProcessQueueCommandHandler(IQueueReader queueReader, ILogger<ProcessQueueCommandHandler> logger) : ICommandHandler<ProcessQueueCommand>
+public sealed class ProcessQueueCommandHandler(IQueueReader queueReader, ILogger<ProcessQueueCommandHandler> logger, ISupportNotifierService supportNotifierService) : ICommandHandler<ProcessQueueCommand>
 {
+    /// <summary>
+    /// A retry policy from the Polly library that will attempt to execute something and re-try 3 times if it 
+    /// fails, with the time in-between each re-try increasing by 100 milliseconds. Basically a back-off algorithm
+    /// </summary>
+    private readonly static AsyncRetryPolicy _retryPolicy = Policy
+    .Handle<Exception>()
+    .WaitAndRetryAsync(
+        3,
+        attempt => TimeSpan.FromMilliseconds(100 * attempt)
+    );
+
+
     public async Task Handle(ProcessQueueCommand request, CancellationToken cancellationToken)
     {
         List<QueueMessage> messages = await queueReader.ListPendingAsync(cancellationToken);
@@ -19,7 +34,17 @@ public sealed class ProcessQueueCommandHandler(IQueueReader queueReader, ILogger
         foreach (var message in messages)
         {
             logger.LogInformation($"Processing outbox message: {message.Id} {message.Type} {message.Data}");
-            await CommandsExecutor<UsersCompositionRoot>.SendCommand(QueueMessage.ToRequest(message), cancellationToken);
+
+            PolicyResult result = await _retryPolicy.ExecuteAndCaptureAsync(() => CommandsExecutor<UsersCompositionRoot>.SendCommand(QueueMessage.ToRequest(message), cancellationToken));
+
+            if (result.Outcome == OutcomeType.Failure)
+            {
+                // Log the final exception and mark the queue message with the exception details
+                logger.LogError(result.FinalException, "Cannot send the command for QueuedMessage with Id {messageId}", message.Id);
+                message.SetError(result.FinalException?.ToString() ?? "Unknwon error");
+                await supportNotifierService.AttemptNotifyAsync($"Cannot send the command for QueuedMessage with Id {message.Id}", cancellationToken);
+            }
+
             message.MarkProcessed();
             await queueReader.MarkProcessedAsync(message, cancellationToken);
         }
