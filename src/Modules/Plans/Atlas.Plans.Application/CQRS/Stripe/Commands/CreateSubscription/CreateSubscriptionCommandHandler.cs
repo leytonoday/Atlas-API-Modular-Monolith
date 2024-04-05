@@ -1,13 +1,8 @@
-﻿using MediatR;
-using Stripe;
-using Microsoft.AspNetCore.Identity;
-using Atlas.Plans.Domain;
-using Atlas.Users.Domain.Entities.UserEntity;
+﻿using Stripe;
 using Atlas.Plans.Domain.Services;
 using Atlas.Shared.Domain.Exceptions;
 using Atlas.Plans.Domain.Entities.StripeCustomerEntity;
 using Atlas.Plans.Domain.Errors;
-using Atlas.Users.Domain.Errors;
 using Atlas.Plans.Domain.Entities.PlanEntity;
 using Atlas.Shared.Application.Abstractions.Messaging.Command;
 using Atlas.Shared.Application.Abstractions;
@@ -35,7 +30,7 @@ internal sealed class CreateSubscriptionCommandHandler(IStripeCustomerRepository
         }
 
         var plan = await planRepository.GetByIdAsync(request.PlanId, false, cancellationToken)
-            ?? throw new ErrorException(UsersDomainErrors.User.UserNotFound);
+            ?? throw new ErrorException(PlansDomainErrors.Plan.PlanNotFound);
 
         // Get the promotion code, if one was specified, and ensure it is valid
         PromotionCode? promotionCode = null;

@@ -9,7 +9,6 @@ using Atlas.Plans.Application;
 using FluentValidation;
 using MediatR;
 using Atlas.Shared.Infrastructure.Behaviors;
-using Atlas.Users.Domain;
 using Atlas.Plans.Domain.Entities.PlanEntity;
 using Atlas.Plans.Infrastructure.Persistance.Repositories;
 using Atlas.Plans.Domain.Entities.FeatureEntity;
@@ -22,10 +21,7 @@ using System.Reflection;
 using Atlas.Shared.Infrastructure.Options;
 using Atlas.Plans.Infrastructure.Options.OptionSetup;
 using Atlas.Shared.Infrastructure;
-using Atlas.Users.Domain.Entities.UserEntity;
-using Atlas.Users.Infrastructure.Persistance.Repositories;
 using Atlas.Shared.Infrastructure.Persistance.Interceptors;
-using Atlas.Users.Infrastructure.Extensions;
 
 namespace Atlas.Plans.Infrastructure.Extensions;
 

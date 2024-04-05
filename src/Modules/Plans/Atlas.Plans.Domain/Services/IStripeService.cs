@@ -1,5 +1,4 @@
 ﻿using Atlas.Plans.Domain.Entities.StripeCustomerEntity;
-using Atlas.Users.Domain.Entities.UserEntity;
 using Stripe;
 
 namespace Atlas.Plans.Domain.Services;

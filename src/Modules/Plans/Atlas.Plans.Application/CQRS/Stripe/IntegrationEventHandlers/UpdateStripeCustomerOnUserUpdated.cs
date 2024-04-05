@@ -1,9 +1,4 @@
 ﻿using Atlas.Plans.Domain.Services;
-using Atlas.Shared.Domain.Exceptions;
-using Atlas.Users.Domain.Entities.UserEntity;
-using Atlas.Users.Domain.Errors;
-using Microsoft.AspNetCore.Identity;
-using MediatR;
 using Atlas.Users.IntegrationEvents;
 using Atlas.Shared.Infrastructure.Integration;
 

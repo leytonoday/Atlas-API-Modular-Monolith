@@ -5,10 +5,6 @@ using Atlas.Plans.Domain.Services;
 using Atlas.Shared.Application.Abstractions;
 using Atlas.Shared.Application.Abstractions.Messaging.Query;
 using Atlas.Shared.Domain.Exceptions;
-using Atlas.Users.Domain.Entities.UserEntity;
-using Atlas.Users.Domain.Errors;
-using MediatR;
-using Microsoft.AspNetCore.Identity;
 
 namespace Atlas.Plans.Application.CQRS.Stripe.Queries.GetCustomerPortalLink;
 

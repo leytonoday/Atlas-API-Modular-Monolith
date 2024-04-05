@@ -3,13 +3,10 @@ using Atlas.Shared.Domain.Exceptions;
 using Atlas.Shared;
 using Microsoft.Extensions.Options;
 using Stripe;
-using Atlas.Plans.Domain;
 using Atlas.Plans.Domain.Entities.StripeCustomerEntity;
-using Atlas.Users.Domain.Entities.UserEntity;
 using Atlas.Plans.Domain.Errors;
 using Atlas.Plans.Domain.Services;
 using Atlas.Plans.Infrastructure.Options;
-using Atlas.Plans.Infrastructure.Persistance.Repositories;
 
 namespace Atlas.Plans.Infrastructure.Services;
 

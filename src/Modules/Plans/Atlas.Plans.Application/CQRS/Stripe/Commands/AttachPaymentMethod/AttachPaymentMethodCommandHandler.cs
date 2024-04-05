@@ -1,10 +1,6 @@
 ﻿using MediatR;
 using Stripe;
-using Microsoft.AspNetCore.Identity;
-using Atlas.Plans.Domain;
-using Atlas.Users.Domain.Entities.UserEntity;
 using Atlas.Shared.Domain.Exceptions;
-using Atlas.Users.Domain.Errors;
 using Atlas.Plans.Domain.Entities.StripeCustomerEntity;
 using Atlas.Plans.Domain.Errors;
 using Atlas.Plans.Domain.Services;

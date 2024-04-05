@@ -1,13 +1,8 @@
-﻿using MediatR;
-using Stripe;
+﻿using Stripe;
 using Atlas.Plans.Application.CQRS.Stripe.Queries.GetSubscriptionQuoteInvoice;
-using Microsoft.AspNetCore.Identity;
-using Atlas.Plans.Domain;
 using Atlas.Plans.Domain.Services;
-using Atlas.Users.Domain.Entities.UserEntity;
 using Atlas.Shared.Domain.Exceptions;
 using Atlas.Plans.Domain.Entities.StripeCustomerEntity;
-using Atlas.Users.Domain.Errors;
 using Atlas.Plans.Domain.Errors;
 using Atlas.Plans.Domain.Entities.PlanEntity;
 using Atlas.Shared.Application.Abstractions.Messaging.Query;
