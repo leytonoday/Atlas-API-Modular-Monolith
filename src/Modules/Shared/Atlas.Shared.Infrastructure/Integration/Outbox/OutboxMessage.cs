@@ -32,6 +32,21 @@ public class OutboxMessage
     public DateTime? ProcessedOnUtc { get; private set; }
 
     /// <summary>
+    /// Indicates that there was a problem publishing to the <see cref="IEventBus"/>.
+    /// </summary>
+    public string? PublishError { get; private set; }
+
+    /// <summary>
+    /// Sets the error value on the <see cref="OutboxMessage"/> indicating that this message could not be published for whatever reason. Think of setting this column to anything other than NULL the same as 
+    /// moving the message to a dead-letter-queue.
+    /// </summary>
+    /// <param name="error">The error message from the <see cref="Exception"/> that was thrown when attempting to publish this to the event bus.</param>
+    public void SetPublishError(string error)
+    {
+        PublishError = error;
+    }
+
+    /// <summary>
     /// Marks the <see cref="OutboxMessage"/> as processed, indicating that the <see cref="IIntegrationEvent"/> that it stores has been successfully published.
     /// </summary>
     public void MarkProcessed()
