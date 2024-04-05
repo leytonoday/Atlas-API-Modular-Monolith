@@ -26,7 +26,7 @@ using Atlas.Users.Domain.Entities.UserEntity;
 using Atlas.Users.Infrastructure.Persistance.Repositories;
 using Atlas.Shared.Infrastructure.Persistance.Interceptors;
 
-namespace Atlas.Plans.Infrastructure;
+namespace Atlas.Plans.Infrastructure.Extensions;
 
 public static class ServiceCollectionExtensions
 {

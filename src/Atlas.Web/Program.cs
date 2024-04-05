@@ -33,7 +33,7 @@ async Task InitialiseModules(IServiceProvider serviceProvider, IConfiguration co
     var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
 
     await UsersModuleStartup.Start(executionContextAccessor, config, eventBus, loggerFactory);
-    await PlansModuleStartup.Start(executionContextAccessor, config, eventBus, loggerFactory);
+    //await PlansModuleStartup.Start(executionContextAccessor, config, eventBus, loggerFactory);
 }
 
 void AddMiddleware(WebApplication app)

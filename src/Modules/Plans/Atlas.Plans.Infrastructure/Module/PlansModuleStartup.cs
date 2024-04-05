@@ -5,7 +5,6 @@ using Quartz.Impl;
 using Quartz;
 using System.Collections.Specialized;
 using System.Reflection;
-using Atlas.Plans.Infrastructure;
 using Microsoft.Extensions.Logging;
 using Atlas.Shared.Infrastructure.Module;
 using Atlas.Shared.Infrastructure.Integration;
@@ -17,6 +16,7 @@ using Atlas.Users.Infrastructure.Persistance;
 using Atlas.Users.Module;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using Atlas.Plans.Infrastructure.Extensions;
 
 namespace Atlas.Plans.Module;
 

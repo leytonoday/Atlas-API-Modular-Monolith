@@ -1,4 +1,5 @@
-﻿using Autofac;
+﻿using Atlas.Shared.Infrastructure.Decorators;
+using Autofac;
 using MediatR;
 
 namespace Atlas.Shared.Infrastructure.Extensions;
@@ -11,6 +12,6 @@ public static class ContainerBuilderExtensions
     /// <param name="containerBuilder"></param>
     public static void AddAutofacServices(this ContainerBuilder containerBuilder)
     {
-        //containerBuilder.RegisterGenericDecorator(typeof(Decorator<>), typeof(IRequestHandler<>));
+        containerBuilder.RegisterGenericDecorator(typeof(RequestIdempotenceDecorator<>), typeof(IRequestHandler<>));
     }
 }

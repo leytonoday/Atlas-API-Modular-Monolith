@@ -14,6 +14,5 @@ public interface ICommandHandler<in TCommand> : IRequestHandler<TCommand>
 /// </summary>
 /// <typeparam name="TCommand">The type of command handled by this handler.</typeparam>
 /// <typeparam name="TResult">The type of result returned by the command.</typeparam>
-public interface ICommandHandler<in TCommand, TResult> :
-    IRequestHandler<TCommand, TResult>
+public interface ICommandHandler<in TCommand, TResult> : IRequestHandler<TCommand, TResult>
     where TCommand : ICommand<TResult>;
