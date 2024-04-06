@@ -109,10 +109,13 @@ public sealed class User : IdentityUser<Guid>, IEntity<Guid>, IAuditableEntity, 
 
     public static void ChangePassword(User user, string oldPassword, string newPassword, UserManager<User> userManager)
     {
-        var oldPasswordHashed = userManager.PasswordHasher.HashPassword(user, oldPassword);
-
         // Validation
-        CheckBusinessRule(new NewPasswordMustMatchOldPassword(oldPasswordHashed, user.PasswordHash!));
+        CheckBusinessRule(new OldPasswordMustBeProvidedCorrectlyBusinessRule(user.PasswordHash!, oldPassword, userManager.PasswordHasher, user));
+        CheckBusinessRule(new PasswordMustHaveDigitsBusinessRule(newPassword));
+        CheckBusinessRule(new PasswordMustHaveLowerCaseBusinessRule(newPassword));
+        CheckBusinessRule(new PasswordMustHaveUpperCaseBusinessRule(newPassword));
+        CheckBusinessRule(new PasswordMustHaveNonAlphanumericLettersBusinessRule(newPassword));
+        CheckBusinessRule(new PasswordMustBeMinimumLengthBusinessRule(newPassword));
 
         user.PasswordHash = userManager.PasswordHasher.HashPassword(user, newPassword);
         user.SecurityStamp = userManager.GenerateNewAuthenticatorKey();
