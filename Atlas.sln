@@ -35,11 +35,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Atlas.Plans.Application", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Atlas.Plans.Infrastructure", "src\Modules\Plans\Atlas.Plans.Infrastructure\Atlas.Plans.Infrastructure.csproj", "{C4A11FF7-2788-4D5B-917C-615BF06A2CF1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atlas.Shared.IntegrationEvents", "src\Shared\Atlas.Shared.IntegratinEvents\Atlas.Shared.IntegrationEvents.csproj", "{D3706D13-899E-4544-A75F-DEF3225D53CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Atlas.Shared.IntegrationEvents", "src\Shared\Atlas.Shared.IntegratinEvents\Atlas.Shared.IntegrationEvents.csproj", "{D3706D13-899E-4544-A75F-DEF3225D53CF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atlas.Users.IntegrationEvents", "src\Users\Atlas.Users.IntegrationEvents\Atlas.Users.IntegrationEvents.csproj", "{1FCB5CE7-876F-421D-81DF-506627A8EE54}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Atlas.Users.IntegrationEvents", "src\Users\Atlas.Users.IntegrationEvents\Atlas.Users.IntegrationEvents.csproj", "{1FCB5CE7-876F-421D-81DF-506627A8EE54}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atlas.Plans.IntegrationEvents", "src\Plans\Atlas.Plans.IntegrationEvents\Atlas.Plans.IntegrationEvents.csproj", "{10407725-E222-434E-99F9-26238440E154}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Atlas.Plans.IntegrationEvents", "src\Plans\Atlas.Plans.IntegrationEvents\Atlas.Plans.IntegrationEvents.csproj", "{10407725-E222-434E-99F9-26238440E154}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{CA2E7E6F-9743-483A-95F0-D0ECF99AC852}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchTests", "src\Tests\ArchTests\ArchTests.csproj", "{B9B1463F-A68E-4788-8E20-497BDF226D63}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -107,6 +111,10 @@ Global
 		{10407725-E222-434E-99F9-26238440E154}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{10407725-E222-434E-99F9-26238440E154}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{10407725-E222-434E-99F9-26238440E154}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9B1463F-A68E-4788-8E20-497BDF226D63}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9B1463F-A68E-4788-8E20-497BDF226D63}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9B1463F-A68E-4788-8E20-497BDF226D63}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9B1463F-A68E-4788-8E20-497BDF226D63}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -128,6 +136,7 @@ Global
 		{D3706D13-899E-4544-A75F-DEF3225D53CF} = {DC95E870-FC45-4C49-AEFC-8CB224E77C35}
 		{1FCB5CE7-876F-421D-81DF-506627A8EE54} = {67DD32D8-C7AC-4ECE-BD91-6DCCECB0991C}
 		{10407725-E222-434E-99F9-26238440E154} = {E68FD7F0-3DDD-46F6-B6DD-9AEBCC11A303}
+		{B9B1463F-A68E-4788-8E20-497BDF226D63} = {CA2E7E6F-9743-483A-95F0-D0ECF99AC852}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E2A61F92-13A0-4EE3-9E97-B512B3F339DD}

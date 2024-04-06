@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations.Schema;
-using PhoneNumbers;
 using Atlas.Users.Domain.Errors;
-using Atlas.Users.Domain.Extensions;
 using Atlas.Shared.Domain.Entities;
 using Atlas.Shared.Domain.AggregateRoot;
 using Atlas.Shared.Domain.Events;
@@ -11,8 +9,6 @@ using Atlas.Shared;
 using Atlas.Users.Domain.Entities.UserEntity.Events;
 using Atlas.Shared.Domain.BusinessRules;
 using Atlas.Users.Domain.Entities.UserEntity.BusinessRules;
-using System.Buffers.Text;
-using Microsoft.Extensions.Options;
 
 namespace Atlas.Users.Domain.Entities.UserEntity;
 
