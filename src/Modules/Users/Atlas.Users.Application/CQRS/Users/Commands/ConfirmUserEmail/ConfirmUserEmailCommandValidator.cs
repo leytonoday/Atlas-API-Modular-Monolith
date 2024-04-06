@@ -2,7 +2,7 @@
 
 namespace Atlas.Users.Application.CQRS.Users.Commands.ConfirmUserEmail;
 
-public sealed class ConfirmUserEmailCommandValidator
+internal sealed class ConfirmUserEmailCommandValidator
 : AbstractValidator<ConfirmUserEmailCommand>
 {
     public ConfirmUserEmailCommandValidator()

@@ -2,7 +2,7 @@
 
 namespace Atlas.Users.Application.CQRS.Users.Commands.ForgotPassword;
 
-public sealed class ForgotPasswordCommandValidator
+internal sealed class ForgotPasswordCommandValidator
     : AbstractValidator<ForgotPasswordCommand>
 {
     public ForgotPasswordCommandValidator()

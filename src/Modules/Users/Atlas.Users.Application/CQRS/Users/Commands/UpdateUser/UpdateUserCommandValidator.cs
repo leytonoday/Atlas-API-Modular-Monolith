@@ -2,7 +2,7 @@
 
 namespace Atlas.Users.Application.CQRS.Users.Commands.UpdateUser;
 
-public sealed class UpdateUserCommandValidator
+internal sealed class UpdateUserCommandValidator
     : AbstractValidator<UpdateUserCommand>
 {
     public UpdateUserCommandValidator()

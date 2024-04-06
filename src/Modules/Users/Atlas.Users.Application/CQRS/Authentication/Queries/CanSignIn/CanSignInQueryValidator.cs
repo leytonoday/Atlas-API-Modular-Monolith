@@ -2,7 +2,7 @@
 
 namespace Atlas.Users.Application.CQRS.Authentication.Queries.CanSignIn;
 
-public sealed class CanSignInQueryValidator
+internal sealed class CanSignInQueryValidator
 : AbstractValidator<CanSignInQuery>
 {
     public CanSignInQueryValidator()

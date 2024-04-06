@@ -2,7 +2,7 @@
 
 namespace Atlas.Users.Application.CQRS.Users.Commands.ChangePassword;
 
-public sealed class ChangePasswordCommandValidator
+internal sealed class ChangePasswordCommandValidator
     : AbstractValidator<ChangePasswordCommand>
 {
     public ChangePasswordCommandValidator()

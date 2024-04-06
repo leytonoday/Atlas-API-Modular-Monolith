@@ -2,7 +2,7 @@
 
 namespace Atlas.Users.Application.CQRS.Users.Commands.CreateUser;
 
-public sealed class CreateUserCommandValidator
+internal sealed class CreateUserCommandValidator
     : AbstractValidator<CreateUserCommand>
 {
     public CreateUserCommandValidator()

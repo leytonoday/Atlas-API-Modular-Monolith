@@ -2,7 +2,7 @@
 
 namespace Atlas.Users.Application.CQRS.Users.Commands.ResetPassword;
 
-public sealed class ResetPasswordCommandValidator
+internal sealed class ResetPasswordCommandValidator
     : AbstractValidator<ResetPasswordCommand>
 {
     public ResetPasswordCommandValidator()

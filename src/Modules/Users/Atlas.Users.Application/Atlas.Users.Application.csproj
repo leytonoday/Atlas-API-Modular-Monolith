@@ -7,13 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Shared\Atlas.Shared.Application\Atlas.Shared.Application.csproj" />
-    <ProjectReference Include="..\Atlas.Users.Domain\Atlas.Users.Domain.csproj" />
-    <ProjectReference Include="..\Atlas.Users.IntegrationEvents\Atlas.Users.IntegrationEvents.csproj" />
+    <Compile Remove="Abstractions\**" />
+    <EmbeddedResource Remove="Abstractions\**" />
+    <None Remove="Abstractions\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Abstractions\" />
+    <ProjectReference Include="..\..\Shared\Atlas.Shared.Application\Atlas.Shared.Application.csproj" />
+    <ProjectReference Include="..\Atlas.Users.Domain\Atlas.Users.Domain.csproj" />
+    <ProjectReference Include="..\Atlas.Users.IntegrationEvents\Atlas.Users.IntegrationEvents.csproj" />
   </ItemGroup>
 
 </Project>

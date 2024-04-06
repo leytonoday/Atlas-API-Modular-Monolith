@@ -49,7 +49,7 @@ public abstract class BaseApplicationTests(Assembly applicationAssembly)
     }
 
     /// <summary>
-    /// Ensures taht query and command handlers are internal. Only the command or query itself should be public (and therfore externally accessible), not the handler.
+    /// Ensures that query and command handlers are not public. Only the command or query itself should be public (and therfore externally accessible), not the handler.
     /// </summary>
     [Fact]
     public void Command_And_Query_Handlers_Should_Not_Be_Public()
@@ -63,6 +63,20 @@ public abstract class BaseApplicationTests(Assembly applicationAssembly)
                 .ImplementInterface(typeof(ICommandHandler<,>))
                     .Or()
                 .ImplementInterface(typeof(IQueuedCommandHandler<>))
+            .Should().NotBePublic().GetResult().FailingTypes;
+
+        TestUtils.AssertFailingTypes(types);
+    }
+
+    /// <summary>
+    /// Ensures that validators are not public. They are an Application concern only.
+    /// </summary>
+    [Fact]
+    public void Validators_Should_Not_Be_Public()
+    {
+        var types = Types.InAssembly(applicationAssembly)
+            .That()
+            .Inherit(typeof(AbstractValidator<>))
             .Should().NotBePublic().GetResult().FailingTypes;
 
         TestUtils.AssertFailingTypes(types);
