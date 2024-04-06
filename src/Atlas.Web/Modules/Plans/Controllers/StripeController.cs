@@ -2,6 +2,7 @@
 using Atlas.Plans.Application.CQRS.Stripe.Commands.CancelSubscription;
 using Atlas.Plans.Application.CQRS.Stripe.Commands.CreateSubscription;
 using Atlas.Plans.Application.CQRS.Stripe.Commands.ReactivateSubscription;
+using Atlas.Plans.Application.CQRS.Stripe.Commands.SetSubscriptionPaymentMethod;
 using Atlas.Plans.Application.CQRS.Stripe.Commands.UpdateSubscription;
 using Atlas.Plans.Application.CQRS.Stripe.Queries.CancelSubscription;
 using Atlas.Plans.Application.CQRS.Stripe.Queries.GetCustomerPortalLink;
@@ -52,6 +53,13 @@ public class StripeController(IExecutionContextAccessor executionContext, IPlans
     public async Task<IActionResult> AttachPaymentMethod([FromBody] AttachPaymentMethodCommand attachPaymentMethodCommand, CancellationToken cancellationToken)
     {
         await plansModule.SendCommand(attachPaymentMethodCommand, cancellationToken);
+        return Ok(Result.Success());
+    }
+
+    [HttpPut("my-subscription/payment-method/{paymentMethodId}")]
+    public async Task<IActionResult> SetSubscriptionPaymentMethod([FromRoute] string paymentMethodId, CancellationToken cancellationToken)
+    {
+        await plansModule.SendCommand(new SetSubscriptionPaymentMethodCommand(paymentMethodId, executionContext.UserId), cancellationToken);
         return Ok(Result.Success());
     }
 
