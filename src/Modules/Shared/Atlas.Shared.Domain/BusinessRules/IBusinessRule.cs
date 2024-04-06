@@ -11,10 +11,10 @@ public interface IBusinessRule
     public string Message { get; }
 
     /// <summary>
-    /// A unique error code associated with the business rule violation.
-    /// This can be used for identification and categorization of errors.
+    /// A unique error associated with the business rule violation.
+    /// This can be used for identification and categorization of this rule.
     /// </summary>
-    public string ErrorCode { get; }
+    public string Code { get; }
 
     /// <summary>
     /// Determines if the business rule has been broken.

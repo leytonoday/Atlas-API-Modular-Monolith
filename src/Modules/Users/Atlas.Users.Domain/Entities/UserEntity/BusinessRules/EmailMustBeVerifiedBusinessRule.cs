@@ -6,7 +6,7 @@ internal class EmailMustBeVerifiedBusinessRule(User user) : IBusinessRule
 {
     public string Message => "Email must be verified";
 
-    public string ErrorCode => $"User.{nameof(EmailMustBeVerifiedBusinessRule)}";
+    public string Code => $"User.{nameof(EmailMustBeVerifiedBusinessRule)}";
 
     public bool IsBroken()
     {

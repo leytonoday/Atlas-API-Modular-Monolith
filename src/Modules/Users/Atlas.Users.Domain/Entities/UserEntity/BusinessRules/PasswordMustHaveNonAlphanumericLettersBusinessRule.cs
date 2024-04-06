@@ -7,7 +7,7 @@ internal partial class PasswordMustHaveNonAlphanumericLettersBusinessRule(string
 {
     public string Message => "Password must include non-alphanumeric letters";
 
-    public string ErrorCode => $"User.{nameof(PasswordMustHaveNonAlphanumericLettersBusinessRule)}";
+    public string Code => $"User.{nameof(PasswordMustHaveNonAlphanumericLettersBusinessRule)}";
 
     public bool IsBroken()
     {

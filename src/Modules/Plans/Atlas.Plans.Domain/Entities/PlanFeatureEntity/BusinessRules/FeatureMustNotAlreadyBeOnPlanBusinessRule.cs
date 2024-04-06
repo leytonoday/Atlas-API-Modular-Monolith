@@ -7,7 +7,7 @@ internal class FeatureMustNotAlreadyBeOnPlanBusinessRule(Plan plan, Guid feature
 {
     public string Message => "The specified Feature already exists on the specified Plan.";
 
-    public string ErrorCode => $"PlanFeature.{nameof(FeatureMustNotAlreadyBeOnPlanBusinessRule)}";
+    public string Code => $"PlanFeature.{nameof(FeatureMustNotAlreadyBeOnPlanBusinessRule)}";
 
     public bool IsBroken()
     {

@@ -6,7 +6,7 @@ internal class EmailMustNotBeAlreadyVerifiedBusinessRule(User user) : IBusinessR
 {
     public string Message => "User's email cannot already be confirmed";
 
-    public string ErrorCode => $"User.{nameof(EmailMustNotBeAlreadyVerifiedBusinessRule)}";
+    public string Code => $"User.{nameof(EmailMustNotBeAlreadyVerifiedBusinessRule)}";
 
     public bool IsBroken()
     {

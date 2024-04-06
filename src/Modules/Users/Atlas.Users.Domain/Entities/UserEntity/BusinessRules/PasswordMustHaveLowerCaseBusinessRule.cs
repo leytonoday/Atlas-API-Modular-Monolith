@@ -7,7 +7,7 @@ internal partial class PasswordMustHaveLowerCaseBusinessRule(string password) : 
 {
     public string Message => "Password must include lowercase letters";
 
-    public string ErrorCode => $"User.{nameof(PasswordMustHaveLowerCaseBusinessRule)}";
+    public string Code => $"User.{nameof(PasswordMustHaveLowerCaseBusinessRule)}";
 
     public bool IsBroken()
     {

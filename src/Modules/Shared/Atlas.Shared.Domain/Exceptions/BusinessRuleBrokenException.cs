@@ -4,8 +4,8 @@
 /// Indicates that a business rule has been broken.
 /// </summary>
 /// <param name="message">Details of the broken business rule.</param>
-/// <param name="errorCode">A code used to identify the error.</param>
-public class BusinessRuleBrokenException(string message, string errorCode) : Exception(message)
+/// <param name="code">A code used to identify the rule.</param>
+public class BusinessRuleBrokenException(string message, string code) : Exception(message)
 {
-    public string ErrorCode { get; init; } = errorCode;
+    public string Code { get; init; } = code;
 }

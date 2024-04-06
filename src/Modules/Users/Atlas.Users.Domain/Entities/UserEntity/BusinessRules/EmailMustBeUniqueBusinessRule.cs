@@ -7,7 +7,7 @@ internal class EmailMustBeUniqueBusinessRule(string email, UserManager<User> use
 {
     public string Message => "Email must be unique";
 
-    public string ErrorCode => $"User.{nameof(EmailMustBeUniqueBusinessRule)}";
+    public string Code => $"User.{nameof(EmailMustBeUniqueBusinessRule)}";
 
     public async Task<bool> IsBrokenAsync(CancellationToken cancellationToken = default)
     {

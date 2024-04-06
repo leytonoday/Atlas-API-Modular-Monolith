@@ -7,7 +7,7 @@ internal class PhoneNumberMustBeValidBusinessRule(string phoneNumber) : IBusines
 {
     public string Message => "The phone number provided is invalid.";
 
-    public string ErrorCode => $"User.{nameof(PhoneNumberMustBeValidBusinessRule)}";
+    public string Code => $"User.{nameof(PhoneNumberMustBeValidBusinessRule)}";
 
     public bool IsBroken()
     {

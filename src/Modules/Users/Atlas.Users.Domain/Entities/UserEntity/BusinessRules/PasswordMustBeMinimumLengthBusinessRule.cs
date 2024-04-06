@@ -8,7 +8,7 @@ internal partial class PasswordMustBeMinimumLengthBusinessRule(string password) 
 
     public string Message => $"Password must be at least {MinimumLength} characters long";
 
-    public string ErrorCode => $"User.{nameof(PasswordMustBeMinimumLengthBusinessRule)}";
+    public string Code => $"User.{nameof(PasswordMustBeMinimumLengthBusinessRule)}";
 
     public bool IsBroken()
     {

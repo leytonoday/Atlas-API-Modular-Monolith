@@ -6,7 +6,7 @@ internal class UserNameMustBeUniqueBusinessRule(string userName, IUserRepository
 {
     public string Message => "UserName must be unique";
 
-    public string ErrorCode => $"User.{nameof(UserNameMustBeUniqueBusinessRule)}";
+    public string Code => $"User.{nameof(UserNameMustBeUniqueBusinessRule)}";
 
     public async Task<bool> IsBrokenAsync(CancellationToken cancellationToken = default)
     {

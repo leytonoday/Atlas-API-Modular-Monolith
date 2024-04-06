@@ -7,7 +7,7 @@ internal sealed class PlanMustNotHaveCircularDependenciesBusinessRule(PlanServic
 {
     public string Message => "The InheritsFromId value provided causes a circular dependence.";
 
-    public string ErrorCode => $"Plan.{nameof(PlanMustNotHaveCircularDependenciesBusinessRule)}";
+    public string Code => $"Plan.{nameof(PlanMustNotHaveCircularDependenciesBusinessRule)}";
 
     public async Task<bool> IsBrokenAsync(CancellationToken cancellationToken = default)
     {
