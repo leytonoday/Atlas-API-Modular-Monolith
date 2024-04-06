@@ -8,6 +8,8 @@ public sealed class UserDto : BaseDto<Guid>
 
     public string Email { get; set; } = null!;
 
+    public string PhoneNumber { get; set; } = null!;
+
     public IEnumerable<string>? Roles { get; set; }
 
     public DateTime CreatedOnUtc { get; set; }

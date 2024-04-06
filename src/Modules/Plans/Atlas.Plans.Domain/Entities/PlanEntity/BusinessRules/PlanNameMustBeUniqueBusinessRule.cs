@@ -6,6 +6,8 @@ internal class PlanNameMustBeUniqueBusinessRule(string name, IPlanRepository pla
 {
     public string Message => "The Plan name must be unique";
 
+    public string ErrorCode => $"Plan.{nameof(PlanNameMustBeUniqueBusinessRule)}";
+
     public async Task<bool> IsBrokenAsync(CancellationToken cancellationToken = default)
     {
         return await planRepository.IsNameTakenAsync(name, cancellationToken);

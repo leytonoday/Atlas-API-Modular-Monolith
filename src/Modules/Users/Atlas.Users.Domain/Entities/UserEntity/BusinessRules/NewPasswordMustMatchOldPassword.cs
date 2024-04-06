@@ -6,6 +6,8 @@ internal class NewPasswordMustMatchOldPassword(string proposedOldPassword, strin
 {
     public string Message => "Invalid credentials";
 
+    public string ErrorCode => $"User.{nameof(NewPasswordMustMatchOldPassword)}";
+
     public bool IsBroken()
     {
         return proposedOldPassword != actualOldPassword;

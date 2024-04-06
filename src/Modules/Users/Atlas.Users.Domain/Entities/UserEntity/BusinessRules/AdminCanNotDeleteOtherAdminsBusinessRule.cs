@@ -12,6 +12,8 @@ internal class AdminCanNotDeleteOtherAdminsBusinessRule(bool isDeletingSelf, boo
 {
     public string Message => "Administrators can not delete other Administrators.";
 
+    public string ErrorCode => $"User.{nameof(AdminCanNotDeleteOtherAdminsBusinessRule)}";
+
     public bool IsBroken()
     {
         return !isDeletingSelf && isCurrentUserAdmin && isToBeDeletedUserAdmin;

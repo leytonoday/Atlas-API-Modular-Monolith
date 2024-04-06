@@ -42,7 +42,7 @@ public static class ExceptionMiddleware
                 else if (contextFeature.Error is BusinessRuleBrokenException businessRuleBrokenExeption)
                 {
                     context.Response.StatusCode = StatusCodes.Status400BadRequest;
-                    result = Result.Failure(new Error("BusinesRuleError", businessRuleBrokenExeption.Message));
+                    result = Result.Failure(new Error(businessRuleBrokenExeption.ErrorCode, businessRuleBrokenExeption.Message));
                 }
                 else
                 {

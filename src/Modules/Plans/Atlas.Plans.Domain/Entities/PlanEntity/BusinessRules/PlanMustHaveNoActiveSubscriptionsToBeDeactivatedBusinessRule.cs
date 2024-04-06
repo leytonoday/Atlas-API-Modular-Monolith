@@ -13,6 +13,8 @@ internal class PlanMustHaveNoActiveSubscriptionsToBeDeactivatedBusinessRule(bool
 {
     public string Message => "A Plan cannot be deactivated when it has active Subscribers.";
 
+    public string ErrorCode => $"Plan.{nameof(PlanMustHaveNoActiveSubscriptionsToBeDeactivatedBusinessRule)}";
+
     public async Task<bool> IsBrokenAsync(CancellationToken cancellationToken = default)
     {
         if (!hasBeenDeactivated)

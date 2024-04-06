@@ -7,6 +7,8 @@ internal partial class PasswordMustHaveDigitsBusinessRule(string password) : IBu
 {
     public string Message => "Password must include digits";
 
+    public string ErrorCode => $"User.{nameof(PasswordMustHaveDigitsBusinessRule)}";
+
     public bool IsBroken()
     {
         return !HasDigitsRegex().IsMatch(password);

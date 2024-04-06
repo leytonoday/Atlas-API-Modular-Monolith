@@ -11,6 +11,8 @@ internal class NonAdminCanOnlyDeleteOwnAccountBusinessRule(bool isDeletingSelf, 
 {
     public string Message => "Non-Administrators can only delete their own accounts.";
 
+    public string ErrorCode => $"User.{nameof(NonAdminCanOnlyDeleteOwnAccountBusinessRule)}";
+
     public bool IsBroken()
     {
         return !isCurrentUserAdmin && !isDeletingSelf;

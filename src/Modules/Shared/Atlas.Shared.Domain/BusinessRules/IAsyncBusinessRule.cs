@@ -11,6 +11,12 @@ public interface IAsyncBusinessRule
     public string Message { get; }
 
     /// <summary>
+    /// A unique error code associated with the business rule violation.
+    /// This can be used for identification and categorization of errors.
+    /// </summary>
+    public string ErrorCode { get; }
+
+    /// <summary>
     /// Determines if the business rule has been broken.
     /// </summary>
     /// <param name="cancellationToken">Propogates notification that operations should be cancelled.</param>

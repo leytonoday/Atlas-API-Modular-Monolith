@@ -6,6 +6,8 @@ internal class FeatureNameMustBeUniqueBusinessRule(string name, IFeatureReposito
 {
     public string Message => "The Feature name must be unique.";
 
+    public string ErrorCode => $"Feature.{nameof(FeatureNameMustBeUniqueBusinessRule)}";
+
     public async Task<bool> IsBrokenAsync(CancellationToken cancellationToken = default)
     {
         Feature? existingFeature = await featureRepository.GetByNameAsync(name, false, cancellationToken);

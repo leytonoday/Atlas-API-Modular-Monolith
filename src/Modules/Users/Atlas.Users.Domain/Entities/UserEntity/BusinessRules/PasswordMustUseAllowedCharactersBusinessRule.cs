@@ -8,6 +8,8 @@ internal partial class UserNameMustUseAllowedCharactersBusinessRule(string userN
 
     public string Message => "UserName must use only allowed characters: " + AllowedCharacters;
 
+    public string ErrorCode => $"User.{nameof(UserNameMustUseAllowedCharactersBusinessRule)}";
+
     public bool IsBroken()
     {
         return !IsUsingAllowedCharacters();

@@ -38,7 +38,7 @@ public abstract class Entity : IEntity, IAuditableEntity
     /// <exception cref="BusinessRuleBrokenException" />
     protected static void CheckBusinessRule(IBusinessRule rule)
     {
-        if (rule.IsBroken()) throw new BusinessRuleBrokenException(rule.Message);
+        if (rule.IsBroken()) throw new BusinessRuleBrokenException(rule.Message, rule.ErrorCode);
     }
 
     /// <summary>
@@ -48,7 +48,7 @@ public abstract class Entity : IEntity, IAuditableEntity
     /// <exception cref="BusinessRuleBrokenException" />
     protected static async Task CheckAsyncBusinessRule(IAsyncBusinessRule rule, CancellationToken cancellationToken = default)
     {
-        if (await rule.IsBrokenAsync(cancellationToken)) throw new BusinessRuleBrokenException(rule.Message);
+        if (await rule.IsBrokenAsync(cancellationToken)) throw new BusinessRuleBrokenException(rule.Message, rule.ErrorCode);
     }
 }
 
