@@ -2,10 +2,11 @@
 using NetArchTest.Rules;
 using Atlas.Web;
 using System.Reflection;
+using Atlas.Tests.Shared;
 
 namespace ArchTests.Api;
 
-public class ApiTests : BaseTest
+public class ApiTests 
 {
     protected static Assembly ApiAssembly => typeof(ApiAssemblyReference).Assembly;
 
@@ -17,7 +18,7 @@ public class ApiTests : BaseTest
     public void UsersApi_DoesNotHaveDependency_ToOtherModules()
     {
         // Arrange
-        List<string> otherModules = [PlansNamespace];
+        List<string> otherModules = [Namespaces.PlansNamespace];
 
         // Act
         var result = Types.InAssembly(ApiAssembly)
@@ -28,7 +29,7 @@ public class ApiTests : BaseTest
             .GetResult();
 
         // Assert
-        EnsureSuccess(result);
+        TestUtils.AssertSuccess(result);
     }
 
     /// <summary>
@@ -39,7 +40,7 @@ public class ApiTests : BaseTest
     public void PlansApi_DoesNotHaveDependency_ToOtherModules()
     {
         // Arrange
-        List<string> otherModules = [UsersNamespace];
+        List<string> otherModules = [Namespaces.UsersNamespace];
 
         // Act
         var result = Types.InAssembly(ApiAssembly)
@@ -50,6 +51,6 @@ public class ApiTests : BaseTest
             .GetResult();
 
         // Assert
-        EnsureSuccess(result);
+        TestUtils.AssertSuccess(result);
     }
 }

@@ -34,19 +34,17 @@ internal sealed class UserConfiguration : IEntityTypeConfiguration<User>
     private static void SeedData(EntityTypeBuilder<User> builder)
     {
         // Make the default support user.
-        var user = new User()
-        {
-            Id = UsersConstants.SeedData.SupportUserId,
-            Email = UsersConstants.SeedData.SupportUserEmail,
-            NormalizedEmail = UsersConstants.SeedData.SupportUserEmail.ToUpperInvariant(),
-            UserName = UsersConstants.SeedData.SupportUserUserName,
-            NormalizedUserName = UsersConstants.SeedData.SupportUserUserName.ToUpperInvariant(),
-            SecurityStamp = new Guid("009e1404-ca20-43b8-a1f3-85371b12cf28").ToString(),
-            ConcurrencyStamp = new Guid("33aa46c4-830b-4d60-9543-34276d5525a2").ToString(),
-            EmailConfirmed = true,
-            CreatedOnUtc = new DateTime(2023, 7, 22, 1, 36, 36, 564, DateTimeKind.Unspecified).AddTicks(0), // Must be specified directly. See https://github.com/dotnet/efcore/issues/12346
-            PasswordHash = "AQAAAAIAAYagAAAAEFqB4xPd70Vo/tTAV3CHqe4BXXfDt+iYaTjkuZA7SB+FBqo2al/PkOIJ22v7DEq0jA==" // Hash for 'Password12!'
-        };
+        User user = User.Create(
+            UsersConstants.SeedData.SupportUserId,
+            UsersConstants.SeedData.SupportUserEmail,
+            UsersConstants.SeedData.SupportUserEmail.ToUpperInvariant(),
+            UsersConstants.SeedData.SupportUserUserName,
+            UsersConstants.SeedData.SupportUserUserName.ToUpperInvariant(),
+            new Guid("009e1404-ca20-43b8-a1f3-85371b12cf28").ToString(),
+            new Guid("33aa46c4-830b-4d60-9543-34276d5525a2").ToString(),
+            true,
+            new DateTime(2023, 7, 22, 1, 36, 36, 564, DateTimeKind.Unspecified).AddTicks(0),
+            "AQAAAAIAAYagAAAAEFqB4xPd70Vo/tTAV3CHqe4BXXfDt+iYaTjkuZA7SB+FBqo2al/PkOIJ22v7DEq0jA==");
 
         builder.HasData(user);
     }

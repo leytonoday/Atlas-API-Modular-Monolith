@@ -10,9 +10,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-	  <PackageReference Include="FluentAssertions" Version="6.12.0" />
-	  <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0" />
     <PackageReference Include="NetArchTest.Rules" Version="1.3.2" />
+	  <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0" />
     <PackageReference Include="xunit" Version="2.4.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -32,6 +31,7 @@
     <ProjectReference Include="..\..\Modules\Users\Atlas.Users.Application\Atlas.Users.Application.csproj" />
     <ProjectReference Include="..\..\Modules\Users\Atlas.Users.Domain\Atlas.Users.Domain.csproj" />
     <ProjectReference Include="..\..\Modules\Users\Atlas.Users.Infrastructure\Atlas.Users.Infrastructure.csproj" />
+    <ProjectReference Include="..\Atlas.Tests.Shared\Atlas.Tests.Shared.csproj" />
   </ItemGroup>
 
 </Project>

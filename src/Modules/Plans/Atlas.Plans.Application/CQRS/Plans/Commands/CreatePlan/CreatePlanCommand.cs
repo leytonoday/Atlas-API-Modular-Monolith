@@ -4,17 +4,17 @@ namespace Atlas.Plans.Application.CQRS.Plans.Commands.CreatePlan;
 
 public record CreatePlanCommand : ICommand<Guid>
 {
-    public string Name { get; set; } = null!;
-    public string Description { get; set; } = null!;
-    public string IsoCurrencyCode { get; set; } = null!;
-    public int MonthlyPrice { get; set; }
-    public int AnnualPrice { get; set; }
-    public int TrialPeriodDays { get; set; }
-    public string? Tag { get; set; }
-    public string Icon { get; set; } = null!;
-    public string IconColour { get; set; } = null!;
-    public string? BackgroundColour { get; set; }
-    public string? TextColour { get; set; }
-    public bool Active { get; set; }
-    public Guid? InheritsFromId { get; set; }
+    public string Name { get; init; } = null!;
+    public string Description { get; init; } = null!;
+    public string IsoCurrencyCode { get; init; } = null!;
+    public int MonthlyPrice { get; init; }
+    public int AnnualPrice { get; init; }
+    public int TrialPeriodDays { get; init; }
+    public string? Tag { get; init; }
+    public string Icon { get; init; } = null!;
+    public string IconColour { get; init; } = null!;
+    public string? BackgroundColour { get; init; }
+    public string? TextColour { get; init; }
+    public bool Active { get; init; }
+    public Guid? InheritsFromId { get; init; }
 }

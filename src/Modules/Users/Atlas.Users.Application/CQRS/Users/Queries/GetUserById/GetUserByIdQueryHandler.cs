@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Atlas.Users.Application.CQRS.Users.Queries.GetUserById;
 
-public sealed class GetUserByIdQueryHandler(UserManager<User> userManager, IMapper mapper) : IQueryHandler<GetUserByIdQuery, UserDto>
+internal sealed class GetUserByIdQueryHandler(UserManager<User> userManager, IMapper mapper) : IQueryHandler<GetUserByIdQuery, UserDto>
 {
     public async Task<UserDto> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
     {

@@ -16,6 +16,8 @@ public sealed class User : IdentityUser<Guid>, IEntity<Guid>, IAuditableEntity, 
 {
     private readonly List<IDomainEvent> _domainEvents = [];
 
+    private User() { }
+
     /// <inheritdoc />
     [NotMapped]
     public IReadOnlyCollection<IDomainEvent> DomainEvents => _domainEvents.ToList();
@@ -194,5 +196,23 @@ public sealed class User : IdentityUser<Guid>, IEntity<Guid>, IAuditableEntity, 
     public static void SetPlanId(User user, Guid? planId)
     {
         user.PlanId = planId;
+    }
+
+    public static User Create(Guid id, string email, string normalizedEmail, string userName, string normalizedUserName, string securityStamp, string concurrencyStamp, bool emailConfirmed, DateTime createdOnUtc, string passwordHash)
+    {
+        var user = new User()
+        {
+            Id = id,
+            Email = email,
+            NormalizedEmail = normalizedEmail,
+            UserName = userName,
+            NormalizedUserName = normalizedUserName,
+            SecurityStamp = securityStamp,
+            ConcurrencyStamp = concurrencyStamp,
+            EmailConfirmed = emailConfirmed,
+            CreatedOnUtc = createdOnUtc,
+            PasswordHash = passwordHash,
+        };
+        return user;
     }
 }

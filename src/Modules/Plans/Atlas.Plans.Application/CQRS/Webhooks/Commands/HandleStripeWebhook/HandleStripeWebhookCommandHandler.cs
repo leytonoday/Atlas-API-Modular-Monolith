@@ -2,10 +2,10 @@
 using Atlas.Plans.Domain.Entities.StripeCustomerEntity;
 using Atlas.Plans.Domain.Errors;
 using Atlas.Plans.Domain.Services;
+using Atlas.Shared.Application.Abstractions.Messaging.Command;
 using Atlas.Shared.Application.Abstractions.Services;
 using Atlas.Shared.Application.ModuleBridge;
 using Atlas.Shared.Domain.Exceptions;
-using MediatR;
 using Stripe;
 
 namespace Atlas.Plans.Application.CQRS.Webhooks.Commands.HandleStripeWebhook;
@@ -15,7 +15,7 @@ internal sealed class HandleStripeWebhookCommandHandler(
     IStripeCustomerRepository stripeCustomerRepository,
     IModuleBridge moduleBridge,
     ISupportNotifierService supportNotifierService,
-    IStripeCardFingerprintRepository stripeCardFingerprintRepository) : IRequestHandler<HandleStripeWebhookCommand>
+    IStripeCardFingerprintRepository stripeCardFingerprintRepository) : ICommandHandler<HandleStripeWebhookCommand>
 {
     public async Task Handle(HandleStripeWebhookCommand request, CancellationToken cancellationToken)
     {
