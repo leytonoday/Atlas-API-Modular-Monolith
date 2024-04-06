@@ -14,19 +14,4 @@ public static class TestUtils
     {
         types.Should().BeNullOrEmpty();
     }
-
-    //public static void AssertAreImmutable(IEnumerable<Type> types)
-    //{
-    //    List<Type> failingTypes = [];
-    //    foreach (var type in types)
-    //    {
-    //        if (type.GetFields().Any(x => !x.IsInitOnly) || type.GetProperties().Any(x => x.CanWrite))
-    //        {
-    //            failingTypes.Add(type);
-    //            break;
-    //        }
-    //    }
-
-    //    failingTypes.Should().BeEmpty("because all types should be immutable.");
-    //}
 }

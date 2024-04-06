@@ -7,7 +7,7 @@ using Atlas.Plans.Domain.Errors;
 using Atlas.Shared.Application.Abstractions.Messaging.Query;
 using Atlas.Shared.Application.Abstractions;
 
-namespace Atlas.Plans.Application.CQRS.Stripe.Queries.CancelSubscription;
+namespace Atlas.Plans.Application.CQRS.Stripe.Queries.GetUserSubscription;
 
 internal sealed class GetUserSubscriptionQueryHandler(IStripeCustomerRepository stripeCustomerRepository, IStripeService stripeService, IExecutionContextAccessor executionContext) : IQueryHandler<GetUserSubscriptionQuery, Subscription?>
 {

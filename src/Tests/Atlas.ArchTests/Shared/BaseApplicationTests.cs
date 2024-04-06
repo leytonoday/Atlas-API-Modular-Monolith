@@ -4,7 +4,6 @@ using Atlas.Shared.Application.Abstractions.Messaging.Queue;
 using Atlas.Tests.Shared;
 using FluentValidation;
 using MediatR;
-using Microsoft.AspNetCore.Routing;
 using NetArchTest.Rules;
 using System.Reflection;
 
