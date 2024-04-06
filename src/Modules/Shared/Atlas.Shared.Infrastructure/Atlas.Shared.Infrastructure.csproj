@@ -7,7 +7,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\..\Shared\Atlas.Shared.IntegratinEvents\Atlas.Shared.IntegrationEvents.csproj" />
 		<ProjectReference Include="..\Atlas.Shared.Application\Atlas.Shared.Application.csproj" />
 		<ProjectReference Include="..\Atlas.Shared.Domain\Atlas.Shared.Domain.csproj" />
 		<ProjectReference Include="..\Atlas.Shared.Infrastructure.Razor\Atlas.Shared.Infrastructure.Razor.csproj" />

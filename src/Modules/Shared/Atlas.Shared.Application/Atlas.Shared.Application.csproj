@@ -15,8 +15,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Shared\Atlas.Shared.IntegratinEvents\Atlas.Shared.IntegrationEvents.csproj" />
     <ProjectReference Include="..\Atlas.Shared.Domain\Atlas.Shared.Domain.csproj" />
+    <ProjectReference Include="..\Atlas.Shared.IntegratinEvents\Atlas.Shared.IntegrationEvents.csproj" />
   </ItemGroup>
 
 </Project>
