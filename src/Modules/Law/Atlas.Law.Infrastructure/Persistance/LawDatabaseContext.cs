@@ -4,6 +4,7 @@ using Atlas.Shared.Infrastructure.Integration.Outbox;
 using Atlas.Shared.Infrastructure.CommandQueue;
 using Atlas.Law.Domain.Entities.LegalDocumentEntity;
 using Atlas.Law.Domain.Entities.EurLexSumDocumentEntity;
+using Atlas.Law.Domain.Entities.LegalDocumentSummaryEntity;
 
 namespace Atlas.Law.Infrastructure.Persistance;
 
@@ -33,6 +34,10 @@ public sealed class LawDatabaseContext : DbContext
     /// </summary>
     public DbSet<LegalDocument> LegalDocuments { get; set; }
 
+    /// <summary>
+    /// Represents a collection of <see cref="LegalDocumentSummary"/> in the context, or that can be queried from the database.
+    /// </summary>
+    public DbSet<LegalDocumentSummary> LegalDocumentSummaries { get; set; }
 
     /// <summary>
     /// Represents a collection of <see cref="EurLexSumDocument"/> in the context, or that can be queried from the database.

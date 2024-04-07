@@ -1,4 +1,6 @@
-﻿namespace Atlas.Law.Infrastructure;
+﻿using Atlas.Law.Domain.Entities.LegalDocumentSummaryEntity;
+
+namespace Atlas.Law.Infrastructure;
 
 internal static class LawConstants
 {
@@ -21,6 +23,11 @@ internal static class LawConstants
         /// Represents the table name for <see cref="EurLexSumDocument"/> entities in the database.
         /// </summary>
         internal const string EurLexSumDocuments = nameof(EurLexSumDocuments);
+
+        /// <summary>
+        /// Represents the table name for <see cref="LegalDocumentSummary"/> entities in the database.
+        /// </summary>
+        internal const string LegalDocumentSummaries = nameof(LegalDocumentSummaries);
     }
 }
 

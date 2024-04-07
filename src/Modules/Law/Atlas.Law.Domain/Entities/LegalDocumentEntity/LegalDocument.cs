@@ -5,17 +5,11 @@ namespace Atlas.Law.Domain.Entities.LegalDocumentEntity;
 
 public sealed class LegalDocument : AggregateRoot<Guid>
 {
+    private LegalDocument() { } 
+
     public string FullText { get; private set; } = null!;
 
     public string Language { get; private set; } = null!;
-
-    public string? SummarisedText { get; private set; }
-
-    public string? SummarizedTitle { get; private set; }
-
-    public string? Keywords { get; private set; }
-
-    public LegalDocumentProcessingStatus ProcessingStatus { get; private set; } = LegalDocumentProcessingStatus.NOT_STARTED;
 
     public Guid UserId { get; private set; }
 
@@ -32,17 +26,5 @@ public sealed class LegalDocument : AggregateRoot<Guid>
         };
 
         return legalDocument;
-    }
-
-    public static void SetSummary(LegalDocument legalDocument, string summarisedText, string summarisedKeywords)
-    {
-        legalDocument.SummarisedText = summarisedText;
-        legalDocument.Keywords = summarisedKeywords;
-        legalDocument.ProcessingStatus = LegalDocumentProcessingStatus.COMPLETE;
-    }
-
-    public static void SetAsProcessing(LegalDocument legalDocument)
-    {
-        legalDocument.ProcessingStatus = LegalDocumentProcessingStatus.PROCESSING;
     }
 }
