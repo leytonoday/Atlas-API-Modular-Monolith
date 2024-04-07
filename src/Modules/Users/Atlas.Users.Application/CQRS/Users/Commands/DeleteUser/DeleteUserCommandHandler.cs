@@ -11,7 +11,7 @@ internal sealed class DeleteUserCommandHandler(UserManager<User> userManager, IU
 {
     public async Task Handle(DeleteUserCommand request, CancellationToken cancellationToken)
     {
-        User currentUser = await userRepository.GetByIdAsync(executionContext.UserId, true, cancellationToken)
+        User currentUser = await userRepository.GetByIdAsync(executionContext.UserId, false, cancellationToken)
             ?? throw new ErrorException(UsersDomainErrors.User.UserNotFound);
 
         User userToBeDeleted = await userRepository.GetByIdAsync(request.UserId, true, cancellationToken)
@@ -20,8 +20,5 @@ internal sealed class DeleteUserCommandHandler(UserManager<User> userManager, IU
         await User.DeleteUserAsync(currentUser, userToBeDeleted, request.Password, userManager);
 
         await userRepository.RemoveAsync(userToBeDeleted, cancellationToken);
-
-        // After the user has been deleted, sign then out manually.
-        await userManager.UpdateSecurityStampAsync(userToBeDeleted);
     }
 }

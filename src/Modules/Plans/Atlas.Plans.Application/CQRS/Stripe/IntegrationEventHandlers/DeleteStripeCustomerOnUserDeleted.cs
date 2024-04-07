@@ -11,9 +11,11 @@ public sealed class DeleteStripeCustomerOnUserDeleted(IStripeService stripeServi
 {
     public async Task Handle(UserDeletedIntegrationEvent notification, CancellationToken cancellationToken)
     {
-        StripeCustomer stripeCustomer = await stripeCustomerRepository.GetByUserId(notification.UserId, false, cancellationToken)
+        StripeCustomer stripeCustomer = await stripeCustomerRepository.GetByUserId(notification.UserId, true, cancellationToken)
             ?? throw new ErrorException(PlansDomainErrors.StripeCustomer.StripeCustomerNotFound);
 
         await stripeService.DeleteCustomerAsync(stripeCustomer.StripeCustomerId, cancellationToken);
+
+        await stripeCustomerRepository.RemoveAsync(stripeCustomer, cancellationToken);
     }
 }

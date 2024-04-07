@@ -29,16 +29,6 @@ public abstract class BaseUnitOfWork<TDatabaseContext, IUnitOfWorkLogger>(TDatab
         }
     }
 
-    public Task<bool> HasDomainEventBeenHandledAsync(string eventHandlerName, Guid domainEventId, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void MarkDomainEventAsHandled(string eventHandlerName, Guid domainEventId, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
     public bool HasUnsavedChanges()
     {
         return databaseContext.ChangeTracker.Entries().Any(e => e.State == EntityState.Added || e.State == EntityState.Modified || e.State == EntityState.Deleted);

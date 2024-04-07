@@ -184,9 +184,6 @@ public sealed class User : IdentityUser<Guid>, IEntity<Guid>, IAuditableEntity, 
             {
                 throw new ErrorException(UsersDomainErrors.User.InvalidCredentials);
             }
-
-            // Password has been provided successfully, so proceed with deletion
-            await userManager.DeleteAsync(userToBeDeleted);
         }
 
         // Add domain event to allow domain to react 
