@@ -3,6 +3,7 @@ using Atlas.Shared.Application;
 using Atlas.Shared.Domain;
 using Atlas.Shared.Infrastructure;
 using Atlas.Shared.Infrastructure.Behaviors;
+using Atlas.Shared.Infrastructure.Module;
 using Atlas.Shared.Infrastructure.Options;
 using Atlas.Shared.Infrastructure.Persistance.Interceptors;
 using Atlas.Users.Application;
@@ -10,6 +11,7 @@ using Atlas.Users.Domain;
 using Atlas.Users.Domain.Entities.UserEntity;
 using Atlas.Users.Infrastructure.Persistance;
 using Atlas.Users.Infrastructure.Persistance.Repositories;
+using Atlas.Users.Module;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -27,6 +29,9 @@ public static class ServiceCollectionExtensions
         var infrastructureAssembly = typeof(UsersInfrastructureAssemblyReference).Assembly;
         var sharedApplicationAssembly = typeof(SharedApplicationAssemblyReference).Assembly;
         var sharedInfrastructureAssembly = typeof(SharedInfrastructureAssemblyReference).Assembly;
+
+        // Commands Executor
+        services.AddSingleton<ICommandsExecutor, CommandsExecutor<UsersCompositionRoot>>();
 
         // Database related services
         services.AddUsersDatabaseServices(configuration);

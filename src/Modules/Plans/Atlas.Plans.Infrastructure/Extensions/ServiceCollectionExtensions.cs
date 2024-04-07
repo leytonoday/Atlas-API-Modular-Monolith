@@ -17,11 +17,12 @@ using Atlas.Plans.Domain.Entities.StripeCustomerEntity;
 using Atlas.Plans.Domain.Entities.StripeCardFingerprintEntity;
 using Atlas.Shared.Domain;
 using Atlas.Shared.Application;
-using System.Reflection;
 using Atlas.Shared.Infrastructure.Options;
 using Atlas.Plans.Infrastructure.Options.OptionSetup;
 using Atlas.Shared.Infrastructure;
 using Atlas.Shared.Infrastructure.Persistance.Interceptors;
+using Atlas.Shared.Infrastructure.Module;
+using Atlas.Plans.Module;
 
 namespace Atlas.Plans.Infrastructure.Extensions;
 
@@ -35,6 +36,9 @@ public static class ServiceCollectionExtensions
         var infrastructureAssembly = typeof(PlansInfrastructureAssemblyReference).Assembly;
         var sharedApplicationAssembly = typeof(SharedApplicationAssemblyReference).Assembly;
         var sharedInfrastructureAssembly = typeof(SharedInfrastructureAssemblyReference).Assembly;
+
+        // Commands Executor
+        services.AddSingleton<ICommandsExecutor, CommandsExecutor<PlansCompositionRoot>>();
 
         // Database related services
         services.AddPlansDatabaseServices(configuration);

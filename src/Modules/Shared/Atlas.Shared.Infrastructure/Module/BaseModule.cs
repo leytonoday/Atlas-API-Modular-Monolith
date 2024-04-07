@@ -1,7 +1,6 @@
 ﻿using Atlas.Shared.Application.Abstractions.Messaging.Command;
 using Atlas.Shared.Application.Abstractions.Messaging.Query;
 using MediatR;
-using Microsoft.Extensions.DependencyInjection;
 using Autofac;
 
 namespace Atlas.Shared.Infrastructure.Module;
@@ -9,6 +8,8 @@ namespace Atlas.Shared.Infrastructure.Module;
 public abstract class BaseModule<TCompositionRoot> : IModule 
     where TCompositionRoot : ICompositionRoot
 {
+    private readonly CommandsExecutor<TCompositionRoot> commandsExecutor = new();
+
     /// <summary>
     /// Sends a command to the module, and doesn't return any data.
     /// </summary>
@@ -30,7 +31,7 @@ public abstract class BaseModule<TCompositionRoot> : IModule
     /// <param name="cancellationToken">Propogates notification that operations should be cancelled.</param>
     public virtual async Task SendCommand(ICommand command, CancellationToken cancellationToken = default)
     {
-        await CommandsExecutor<TCompositionRoot>.SendCommand(command, cancellationToken);
+        await commandsExecutor.SendCommand(command, cancellationToken);
     }
 
     /// <summary>
@@ -42,7 +43,7 @@ public abstract class BaseModule<TCompositionRoot> : IModule
     /// <returns>Data of type <typeparamref name="TResult"/> that was returned from the query.</returns>
     public virtual async Task<TResult> SendCommand<TResult>(ICommand<TResult> command, CancellationToken cancellationToken = default)
     {
-        return await CommandsExecutor<TCompositionRoot>.SendCommand(command, cancellationToken);
+        return await commandsExecutor.SendCommand(command, cancellationToken);
     }
 
     /// <summary>

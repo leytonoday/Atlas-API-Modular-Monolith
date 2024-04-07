@@ -20,11 +20,13 @@ void ConfigureServices(IServiceCollection services, ConfigureHostBuilder hostBui
     services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
     services.AddSingleton<IExecutionContextAccessor, ExecutionContextAccessor>();
     services.AddSingleton<IEventBus, InMemoryEventBus>();
-    services.AddSingleton<IModuleBridge, ModuleBridge>();
 
     // Register Modules
     services.AddSingleton<IUsersModule, UsersModule>();
     services.AddSingleton<IPlansModule, PlansModule>();
+
+    // Module Bridge (for synchronous communication between modules)
+    services.AddSingleton<IModuleBridge, ModuleBridge>();
 }
 
 async Task InitialiseModules(IServiceProvider serviceProvider, IConfiguration config)

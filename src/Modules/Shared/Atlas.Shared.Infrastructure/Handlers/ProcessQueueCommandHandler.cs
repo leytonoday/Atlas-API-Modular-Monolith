@@ -1,5 +1,4 @@
-﻿using Atlas.Plans.Module;
-using Atlas.Shared.Application.Abstractions.Messaging.Command;
+﻿using Atlas.Shared.Application.Abstractions.Messaging.Command;
 using Atlas.Shared.Application.Abstractions.Services;
 using Atlas.Shared.Application.Commands;
 using Atlas.Shared.Application.Queue;
@@ -9,9 +8,9 @@ using Microsoft.Extensions.Logging;
 using Polly.Retry;
 using Polly;
 
-namespace Atlas.Plans.Infrastructure.Handlers;
+namespace Atlas.Shared.Infrastructure.Handlers;
 
-public sealed class ProcessQueueCommandHandler(IQueueReader queueReader, ILogger<ProcessQueueCommandHandler> logger, ISupportNotifierService supportNotifierService) : ICommandHandler<ProcessQueueCommand>
+public sealed class ProcessQueueCommandHandler(ICommandsExecutor commandsExecutor, IQueueReader queueReader, ILogger<ProcessQueueCommandHandler> logger, ISupportNotifierService supportNotifierService) : ICommandHandler<ProcessQueueCommand>
 {
     /// <summary>
     /// A retry policy from the Polly library that will attempt to execute something and re-try 3 times if it 
@@ -34,7 +33,7 @@ public sealed class ProcessQueueCommandHandler(IQueueReader queueReader, ILogger
         {
             logger.LogInformation($"Processing queue message: {message.Id} {message.Type} {message.Data}");
 
-            PolicyResult result = await _retryPolicy.ExecuteAndCaptureAsync(() => CommandsExecutor<PlansCompositionRoot>.SendCommand(QueueMessage.ToRequest(message), cancellationToken));
+            PolicyResult result = await _retryPolicy.ExecuteAndCaptureAsync(() => commandsExecutor.SendCommand(QueueMessage.ToRequest(message), cancellationToken));
 
             if (result.Outcome == OutcomeType.Failure)
             {

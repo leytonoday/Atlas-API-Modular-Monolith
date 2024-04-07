@@ -8,8 +8,10 @@ namespace Atlas.Shared.Infrastructure.BackgroundJobs;
 public class ProcessOutboxJob<TCompositionRoot> : IJob
     where TCompositionRoot : ICompositionRoot
 {
+    private static readonly CommandsExecutor<TCompositionRoot> _commandsExecutor = new();
+
     public async Task Execute(IJobExecutionContext context)
     {
-        await CommandsExecutor<TCompositionRoot>.SendCommand(new ProcessOutboxCommand());
+        await _commandsExecutor.SendCommand(new ProcessOutboxCommand());
     }
 }
