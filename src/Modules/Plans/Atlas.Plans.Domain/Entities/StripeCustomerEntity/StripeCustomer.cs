@@ -7,6 +7,8 @@ namespace Atlas.Plans.Domain.Entities.StripeCustomerEntity;
 /// </summary>
 public sealed class StripeCustomer : Entity
 {
+    private StripeCustomer() { }
+
     public Guid UserId { get; private set; }
 
     public string StripeCustomerId { get; private set; } = null!;

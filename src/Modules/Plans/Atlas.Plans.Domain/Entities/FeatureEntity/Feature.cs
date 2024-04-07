@@ -7,6 +7,8 @@ namespace Atlas.Plans.Domain.Entities.FeatureEntity;
 
 public class Feature : AggregateRoot<Guid>
 {
+    private Feature() { }
+
     /// <summary>
     /// Gets or sets the name of the <see cref="Feature"/>.
     /// </summary>

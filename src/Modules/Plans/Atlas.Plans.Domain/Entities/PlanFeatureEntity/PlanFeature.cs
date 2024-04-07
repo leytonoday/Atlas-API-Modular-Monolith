@@ -9,6 +9,8 @@ namespace Atlas.Plans.Domain.Entities.PlanFeatureEntity;
 
 public class PlanFeature : Entity
 {
+    private PlanFeature() { }
+
     /// <summary>
     /// Gets or sets the Id of the <see cref="Plan"/> associated with this <see cref="PlanFeature"/>.
     /// </summary>

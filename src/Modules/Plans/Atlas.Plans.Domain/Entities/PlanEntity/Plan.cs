@@ -1,15 +1,15 @@
 ﻿using Atlas.Plans.Domain.Entities.FeatureEntity;
 using Atlas.Plans.Domain.Entities.PlanEntity.BusinessRules;
 using Atlas.Plans.Domain.Entities.PlanFeatureEntity;
-using Atlas.Plans.Domain.Errors;
 using Atlas.Plans.Domain.Services;
 using Atlas.Shared.Domain.AggregateRoot;
-using Atlas.Shared.Domain.Exceptions;
 
 namespace Atlas.Plans.Domain.Entities.PlanEntity;
 
 public class Plan : AggregateRoot<Guid>
 {
+    private Plan() { }
+
     /// <summary>
     /// Gets or sets the name of this <see cref="Plan"/>.
     /// </summary>

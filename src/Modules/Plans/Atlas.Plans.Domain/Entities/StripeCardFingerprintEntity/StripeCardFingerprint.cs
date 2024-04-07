@@ -9,6 +9,8 @@ namespace Atlas.Plans.Domain.Entities.StripeCardFingerprintEntity;
 /// trial. When the user provides a card, if it's fingerprint is in the database, then the user cannot claim a free trial with that card.</remarks>
 public class StripeCardFingerprint : Entity
 {
+    private StripeCardFingerprint() { }
+
     /// <summary>
     /// Gets or sets a fingerprint, which uniquely identifies a single card payment method.
     /// </summary>
