@@ -15,6 +15,9 @@ using Atlas.Infrastructure.Persistance.Interceptors;
 using Atlas.Shared.Infrastructure.Persistance.Interceptors;
 using Atlas.Law.Application;
 using Atlas.Law.Infrastructure.Options;
+using Atlas.Law.Application.Services;
+using Atlas.Law.Infrastructure.Services.PineconeService;
+using Atlas.Law.Infrastructure.Services.LargeLanguageModelService;
 
 namespace Atlas.Law.Infrastructure.Extensions;
 
@@ -49,12 +52,18 @@ public static class ServiceCollectionExtensions
         // Auto-mapper
         services.AddAutoMapper(infrastructureAssembly);
 
+        // Services
+        services.AddScoped<IVectorDatabaseService, PineconeService>();
+        services.AddScoped<ILargeLanguageModelService, LargeLanguageModelService>();
+
         return services;
     }
 
-    public static IServiceCollection AddOptions(this IServiceCollection services, IConfiguration configuration) 
+    public static IServiceCollection AddOptions(this IServiceCollection services) 
     {
         services.ConfigureOptions<PineconeOptionsSetup>();
+        services.ConfigureOptions<OpenAiOptionsSetup>();
+        services.ConfigureOptions<AnthropicOptionsSetup>();
         return services;
     }
 
