@@ -1,8 +1,9 @@
-using Atlas.Plans.Module;
+using Atlas.Law.Infrastructure.Module;
+using Atlas.Plans.Infrastructure.Module;
 using Atlas.Shared.Application.Abstractions;
 using Atlas.Shared.Application.ModuleBridge;
 using Atlas.Shared.Infrastructure.Integration.Bus;
-using Atlas.Users.Module;
+using Atlas.Users.Infrastructure.Module;
 using Atlas.Web.ExecutionContext;
 using Atlas.Web.Extensions;
 using Atlas.Web.Middleware;
@@ -24,6 +25,7 @@ void ConfigureServices(IServiceCollection services, ConfigureHostBuilder hostBui
     // Register Modules
     services.AddSingleton<IUsersModule, UsersModule>();
     services.AddSingleton<IPlansModule, PlansModule>();
+    services.AddSingleton<ILawModule, LawModule>();
 
     // Module Bridge (for synchronous communication between modules)
     services.AddSingleton<IModuleBridge, ModuleBridge>();
@@ -40,6 +42,7 @@ async Task InitialiseModules(IServiceProvider serviceProvider, IConfiguration co
 
     await UsersModuleStartup.Start(moduleBridge, executionContextAccessor, config, eventBus, loggerFactory);
     await PlansModuleStartup.Start(moduleBridge, executionContextAccessor, config, eventBus, loggerFactory);
+    await LawModuleStartup.Start(moduleBridge, executionContextAccessor, config, eventBus, loggerFactory);
 }
 
 void AddMiddleware(WebApplication app)

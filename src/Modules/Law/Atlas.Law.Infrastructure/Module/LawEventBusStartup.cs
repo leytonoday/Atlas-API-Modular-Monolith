@@ -3,9 +3,9 @@ using Atlas.Shared.Infrastructure.Module;
 using Atlas.Shared.IntegrationEvents;
 using Microsoft.Extensions.Logging;
 
-namespace Atlas.Users.Infrastructure.Module;
+namespace Atlas.Law.Infrastructure.Module;
 
-internal class UsersEventBusStartup : IEventBusStartup
+internal class LawEventBusStartup : IEventBusStartup
 {
     public static void Initialize(ILogger logger, IEventBus eventBus)
     {
@@ -14,13 +14,12 @@ internal class UsersEventBusStartup : IEventBusStartup
 
     public static void SubscribeToIntegrationEvents(ILogger logger, IEventBus eventBus)
     {
-
     }
 
     private static void SubscribeToIntegrationEvent<TIntegrationEvent>(ILogger logger, IEventBus eventBus)
         where TIntegrationEvent : IIntegrationEvent
     {
         logger.LogInformation("Subscribe to {@IntegrationEvent}", typeof(TIntegrationEvent).FullName);
-        eventBus.Subscribe<TIntegrationEvent>(new InboxWriterIntegrationEventHandler<UsersCompositionRoot, TIntegrationEvent>());
+        eventBus.Subscribe<TIntegrationEvent>(new InboxWriterIntegrationEventHandler<LawCompositionRoot, TIntegrationEvent>());
     }
 }

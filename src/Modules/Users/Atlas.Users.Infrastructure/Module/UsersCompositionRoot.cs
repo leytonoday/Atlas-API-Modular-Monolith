@@ -1,7 +1,7 @@
 ﻿using Atlas.Shared.Infrastructure.Module;
 using Autofac;
 
-namespace Atlas.Users.Module;
+namespace Atlas.Users.Infrastructure.Module;
 
 /// <summary>
 /// Responsible for configuring the Users module's object graph. I.e., it's just the DI container for the module.

@@ -4,7 +4,7 @@ using Atlas.Shared.IntegrationEvents;
 using Atlas.Users.IntegrationEvents;
 using Microsoft.Extensions.Logging;
 
-namespace Atlas.Plans.Module;
+namespace Atlas.Plans.Infrastructure.Module;
 
 internal class PlansEventBusStartup : IEventBusStartup
 {

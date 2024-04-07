@@ -22,7 +22,7 @@ using Atlas.Plans.Infrastructure.Options.OptionSetup;
 using Atlas.Shared.Infrastructure;
 using Atlas.Shared.Infrastructure.Persistance.Interceptors;
 using Atlas.Shared.Infrastructure.Module;
-using Atlas.Plans.Module;
+using Atlas.Plans.Infrastructure.Module;
 
 namespace Atlas.Plans.Infrastructure.Extensions;
 
@@ -78,10 +78,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IPlanFeatureRepository, PlanFeatureRepository>();
         services.AddScoped<IStripeCustomerRepository, StripeCustomerRepository>();
         services.AddScoped<IStripeCardFingerprintRepository, StripeCardFingerprintRepository>();
-
-        // External repo dependencies
-        // TODO - There are some use-cases in the Plans module that NEEDS data from the Users module. So we kinda have to register this here. There's probably some better way to do this. Figure it out.
-        //services.AddUsersDatabaseServices(configuration);
 
         services.AddDbContext<PlansDatabaseContext>((provider, options) =>
         {

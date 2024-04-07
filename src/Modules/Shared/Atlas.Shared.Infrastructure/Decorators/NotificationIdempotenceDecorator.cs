@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Atlas.Shared.Infrastructure.Decorators;
 
-class NotificationIdempotenceDecorator<TNotification>(INotificationHandler<TNotification> decoratedHandler, IInboxWriter inboxWriter, IUnitOfWork unitOfWork) : IIsDecorator, INotificationHandler<TNotification> where TNotification : class, INotification
+class NotificationIdempotenceDecorator<TNotification>(INotificationHandler<TNotification> decoratedHandler, IInboxWriter inboxWriter) : IIsDecorator, INotificationHandler<TNotification> where TNotification : class, INotification
 {
     public async Task Handle(TNotification request, CancellationToken cancellationToken)
     {

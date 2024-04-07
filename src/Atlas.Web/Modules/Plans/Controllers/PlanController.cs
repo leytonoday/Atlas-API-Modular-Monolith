@@ -6,7 +6,7 @@ using Atlas.Plans.Application.CQRS.Plans.Queries.GetAllPlans;
 using Atlas.Plans.Application.CQRS.Plans.Queries.GetPlanById;
 using Atlas.Plans.Application.CQRS.Plans.Queries.GetPlanByUserId;
 using Atlas.Plans.Application.CQRS.Plans.Queries.GetPlanFeaturesByPlanId;
-using Atlas.Plans.Module;
+using Atlas.Plans.Infrastructure.Module;
 using Atlas.Shared;
 using Atlas.Shared.Application.Abstractions;
 using Atlas.Shared.Domain.Results;

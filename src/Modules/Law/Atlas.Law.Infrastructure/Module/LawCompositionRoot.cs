@@ -1,12 +1,12 @@
 ﻿using Atlas.Shared.Infrastructure.Module;
 using Autofac;
 
-namespace Atlas.Plans.Infrastructure.Module;
+namespace Atlas.Law.Infrastructure.Module;
 
 /// <summary>
-/// Responsible for configuring the Plan module's object graph. I.e., it's just the DI container for the module.
+/// Responsible for configuring the Law module's object graph. I.e., it's just the DI container for the module.
 /// </summary>
-public class PlansCompositionRoot : ICompositionRoot
+public class LawCompositionRoot : ICompositionRoot
 {
     private static IContainer? _container;
 

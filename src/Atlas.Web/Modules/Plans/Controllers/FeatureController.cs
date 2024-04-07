@@ -6,8 +6,8 @@ using Atlas.Shared.Domain.Results;
 using Atlas.Plans.Application.CQRS.Features.Commands.CreateFeature;
 using Atlas.Plans.Application.CQRS.Features.Commands.UpdateFeature;
 using Atlas.Plans.Application.CQRS.Features.Commands.DeleteFeature;
-using Atlas.Plans.Module;
 using Atlas.Web.Modules.Shared;
+using Atlas.Plans.Infrastructure.Module;
 
 namespace Atlas.Web.Modules.Plans.Controllers;
 

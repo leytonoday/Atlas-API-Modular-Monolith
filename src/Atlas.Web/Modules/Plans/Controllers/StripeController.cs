@@ -14,7 +14,7 @@ using Atlas.Plans.Application.CQRS.Stripe.Queries.GetUpcomingInvoice;
 using Atlas.Plans.Application.CQRS.Stripe.Queries.GetUserDefaultPaymentMethod;
 using Atlas.Plans.Application.CQRS.Stripe.Queries.GetUserPaymentMethodsQuery;
 using Atlas.Plans.Application.CQRS.Stripe.Queries.GetUserSubscription;
-using Atlas.Plans.Module;
+using Atlas.Plans.Infrastructure.Module;
 using Atlas.Shared.Application.Abstractions;
 using Atlas.Shared.Domain.Results;
 using Atlas.Web.Modules.Shared;

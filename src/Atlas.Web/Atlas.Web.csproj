@@ -20,6 +20,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Atlas.Shared\Atlas.Shared.csproj" />
+      <ProjectReference Include="..\Modules\Law\Atlas.Law.Infrastructure\Atlas.Law.Infrastructure.csproj" />
       <ProjectReference Include="..\Modules\Plans\Atlas.Plans.Application\Atlas.Plans.Application.csproj" />
       <ProjectReference Include="..\Modules\Plans\Atlas.Plans.Domain\Atlas.Plans.Domain.csproj" />
       <ProjectReference Include="..\Modules\Plans\Atlas.Plans.Infrastructure\Atlas.Plans.Infrastructure.csproj" />

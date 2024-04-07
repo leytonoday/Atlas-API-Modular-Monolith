@@ -38,15 +38,5 @@ internal static class UsersConstants
         /// Represents the table name for <see cref="IdentityUserRole"/> entities in the database.
         /// </summary>
         internal const string UserRoles = nameof(UserRoles);
-
-        /// <summary>
-        /// Represents the table name for <see cref="UsersOutboxMessage"/> entities in the database.
-        /// </summary>
-        internal const string UsersOutboxMessages = nameof(UsersOutboxMessages);
-
-        /// <summary>
-        /// Represents the table name for <see cref="UsersOutboxMessageConsumerAcknowledgement"/> entities in the database.
-        /// </summary>
-        internal const string UsersOutboxMessageConsumerAcknowledgements = nameof(UsersOutboxMessageConsumerAcknowledgements);
     }
 }

@@ -17,7 +17,7 @@ using Autofac.Extensions.DependencyInjection;
 using Atlas.Plans.Infrastructure.Extensions;
 using Atlas.Shared.Application.ModuleBridge;
 
-namespace Atlas.Plans.Module;
+namespace Atlas.Plans.Infrastructure.Module;
 
 public class PlansModuleStartup : IModuleStartup
 {

@@ -1,35 +1,33 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Atlas.Shared.Application.Abstractions;
+using Atlas.Shared.Application.ModuleBridge;
+using Atlas.Shared.Infrastructure.BackgroundJobs;
 using Atlas.Shared.Infrastructure.Integration.Bus;
+using Atlas.Shared.Infrastructure.Module;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Quartz;
-using Microsoft.Extensions.DependencyInjection;
 using Quartz.Impl;
 using System.Collections.Specialized;
 using System.Reflection;
-using Microsoft.Extensions.Logging;
-using Atlas.Shared.Infrastructure.Module;
-using Atlas.Shared.Infrastructure.BackgroundJobs;
 using Atlas.Shared.Infrastructure.Integration;
-using Atlas.Users.Infrastructure.Persistance;
-using Microsoft.AspNetCore.Hosting;
-using Atlas.Shared.Application.Abstractions;
 using Autofac;
+using Microsoft.Extensions.DependencyInjection;
 using Autofac.Extensions.DependencyInjection;
-using Atlas.Users.Infrastructure.Extensions;
 using Atlas.Shared.Infrastructure.Extensions;
-using Atlas.Shared.Application.ModuleBridge;
+using Atlas.Law.Infrastructure.Persistance;
+using Atlas.Law.Infrastructure.Extensions;
 
-namespace Atlas.Users.Infrastructure.Module;
+namespace Atlas.Law.Infrastructure.Module;
 
-public class UsersModuleStartup : IModuleStartup
+public class LawModuleStartup : IModuleStartup
 {
     private static IScheduler? _scheduler;
 
-    /// <inheritdoc />
     public static async Task Start(IModuleBridge moduleBridge, IExecutionContextAccessor executionContextAccessor, IConfiguration configuration, IEventBus eventBus, ILoggerFactory loggerFactory, bool enableScheduler = true)
     {
         SetupCompositionRoot(moduleBridge, executionContextAccessor, configuration, eventBus, loggerFactory);
 
-        UsersEventBusStartup.Initialize(loggerFactory.CreateLogger<UsersEventBusStartup>(), eventBus);
+        LawEventBusStartup.Initialize(loggerFactory.CreateLogger<LawEventBusStartup>(), eventBus);
 
         if (enableScheduler)
         {
@@ -46,31 +44,12 @@ public class UsersModuleStartup : IModuleStartup
         }
     }
 
-    /// <inheritdoc />
-    public static async Task<IScheduler> SetupScheduledJobs()
-    {
-        var factory = new StdSchedulerFactory(new NameValueCollection
-        {
-            { "quartz.scheduler.instanceName", Assembly.GetExecutingAssembly().GetName().Name }
-        });
-
-        var scheduler = await factory.GetScheduler();
-
-        await scheduler.AddMessageboxJob<ProcessInboxJob<UsersCompositionRoot>>();
-        await scheduler.AddMessageboxJob<ProcessOutboxJob<UsersCompositionRoot>>();
-        await scheduler.AddMessageboxJob<ProcessQueueJob<UsersCompositionRoot>>();
-
-        await scheduler.Start();
-
-        return scheduler;
-    }
-
     public static void SetupCompositionRoot(IModuleBridge moduleBridge, IExecutionContextAccessor executionContextAccessor, IConfiguration configuration, IEventBus eventBus, ILoggerFactory loggerFactory)
     {
         var serviceProvider = new ServiceCollection()
             .AddScoped<IExecutionContextAccessor>(_ => executionContextAccessor)
             .AddScoped<IModuleBridge>(_ => moduleBridge)
-            .AddCommon<UsersDatabaseContext, UsersCompositionRoot>(configuration)
+            .AddCommon<LawDatabaseContext, LawCompositionRoot>(configuration)
             .AddServices(configuration)
             .AddSingleton(eventBus)
             .AddSingleton(loggerFactory);
@@ -83,6 +62,26 @@ public class UsersModuleStartup : IModuleStartup
 
         var container = containerBuilder.Build();
 
-        UsersCompositionRoot.SetContainer(container);
+        LawCompositionRoot.SetContainer(container);
+    }
+
+
+    /// <inheritdoc />
+    public static async Task<IScheduler> SetupScheduledJobs()
+    {
+        var factory = new StdSchedulerFactory(new NameValueCollection
+        {
+            { "quartz.scheduler.instanceName", Assembly.GetExecutingAssembly().GetName().Name }
+        });
+
+        var scheduler = await factory.GetScheduler();
+
+        await scheduler.AddMessageboxJob<ProcessInboxJob<LawCompositionRoot>>();
+        await scheduler.AddMessageboxJob<ProcessOutboxJob<LawCompositionRoot>>();
+        await scheduler.AddMessageboxJob<ProcessQueueJob<LawCompositionRoot>>();
+
+        await scheduler.Start();
+
+        return scheduler;
     }
 }

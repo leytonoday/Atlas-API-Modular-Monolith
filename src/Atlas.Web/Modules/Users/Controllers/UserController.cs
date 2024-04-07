@@ -12,10 +12,9 @@ using Atlas.Users.Application.CQRS.Users.Commands.ForgotPassword;
 using Atlas.Users.Application.CQRS.Users.Commands.ResetPassword;
 using Atlas.Users.Application.CQRS.Users.Commands.ChangePassword;
 using Atlas.Shared.Application.Abstractions;
-using Atlas.Users.Module;
 using Atlas.Web.Modules.Shared;
 using Atlas.Shared;
-using Atlas.Users.Application.CQRS.Users.Queries.GetUserById;
+using Atlas.Users.Infrastructure.Module;
 
 namespace Atlas.Web.Modules.Users.Controllers;
 

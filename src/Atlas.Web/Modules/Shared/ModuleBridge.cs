@@ -2,7 +2,7 @@
 using Atlas.Users.Application.CQRS.Users.Commands.SetUserPlanId;
 using Atlas.Users.Application.CQRS.Users.Queries.GetUserById;
 using Atlas.Users.Application.CQRS.Users.Shared;
-using Atlas.Users.Module;
+using Atlas.Users.Infrastructure.Module;
 
 namespace Atlas.Web.Modules.Shared;
 
