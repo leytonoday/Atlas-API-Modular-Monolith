@@ -12,6 +12,15 @@ internal static class LawConstants
     /// </summary>
     internal static class TableNames
     {
+        /// <summary>
+        /// Represents the table name for <see cref="LegalDocument"/> entities in the database.
+        /// </summary>
+        internal const string LegalDocuments = nameof(LegalDocuments);
+
+        /// <summary>
+        /// Represents the table name for <see cref="EurLexSumDocument"/> entities in the database.
+        /// </summary>
+        internal const string EurLexSumDocuments = nameof(EurLexSumDocuments);
     }
 }
 

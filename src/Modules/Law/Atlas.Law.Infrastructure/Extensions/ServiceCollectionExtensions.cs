@@ -18,6 +18,9 @@ using Atlas.Law.Infrastructure.Options;
 using Atlas.Law.Application.Services;
 using Atlas.Law.Infrastructure.Services.PineconeService;
 using Atlas.Law.Infrastructure.Services.LargeLanguageModelService;
+using Atlas.Law.Domain.Entities.LegalDocumentEntity;
+using Atlas.Law.Infrastructure.Persistance.Repositories;
+using Atlas.Law.Domain.Entities.EurLexSumDocumentEntity;
 
 namespace Atlas.Law.Infrastructure.Extensions;
 
@@ -70,6 +73,9 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddLawDatabaseServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<IUnitOfWork, LawUnitOfWork>();
+
+        services.AddScoped<ILegalDocumentRepository, LegalDocumentRepository>();
+        services.AddScoped<IEurLexSumDocumentRepository, EurLexSumDocumentRepository>();
 
         services.AddDbContext<LawDatabaseContext>((provider, options) =>
         {
