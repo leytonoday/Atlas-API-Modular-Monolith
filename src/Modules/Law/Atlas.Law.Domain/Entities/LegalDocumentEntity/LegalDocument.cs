@@ -1,10 +1,5 @@
 ﻿using Atlas.Law.Domain.Enums;
 using Atlas.Shared.Domain.AggregateRoot;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Atlas.Law.Domain.Entities.LegalDocumentEntity;
 
