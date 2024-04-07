@@ -45,8 +45,8 @@ public class StripeController(IExecutionContextAccessor executionContext, IPlans
     [HttpGet("has-card-payment-method-been-used-before/{paymentMethodId}")]
     public async Task<IActionResult> HasCardPaymentBeenUsedBefore([FromRoute] string paymentMethodId, CancellationToken cancellationToken)
     {
-        await plansModule.SendQuery(new GetHasPaymentMethodBeenUsedBeforeQuery(paymentMethodId), cancellationToken);
-        return Ok(Result.Success());
+        var result = await plansModule.SendQuery(new GetHasPaymentMethodBeenUsedBeforeQuery(paymentMethodId), cancellationToken);
+        return Ok(Result.Success(result));
     }
 
     [HttpPost("payment-methods/attach")]
