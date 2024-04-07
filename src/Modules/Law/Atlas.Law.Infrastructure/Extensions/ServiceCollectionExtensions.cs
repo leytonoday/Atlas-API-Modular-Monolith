@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using Atlas.Infrastructure.Persistance.Interceptors;
 using Atlas.Shared.Infrastructure.Persistance.Interceptors;
 using Atlas.Law.Application;
+using Atlas.Law.Infrastructure.Options;
 
 namespace Atlas.Law.Infrastructure.Extensions;
 
@@ -25,6 +26,8 @@ public static class ServiceCollectionExtensions
         var infrastructureAssembly = typeof(LawInfrastructureAssemblyReference).Assembly;
         var sharedApplicationAssembly = typeof(SharedApplicationAssemblyReference).Assembly;
         var sharedInfrastructureAssembly = typeof(SharedInfrastructureAssemblyReference).Assembly;
+
+        services.AddOptions();
 
         // Commands Executor
         services.AddSingleton<ICommandsExecutor, CommandsExecutor<LawCompositionRoot>>();
@@ -46,6 +49,12 @@ public static class ServiceCollectionExtensions
         // Auto-mapper
         services.AddAutoMapper(infrastructureAssembly);
 
+        return services;
+    }
+
+    public static IServiceCollection AddOptions(this IServiceCollection services, IConfiguration configuration) 
+    {
+        services.ConfigureOptions<PineconeOptionsSetup>();
         return services;
     }
 
