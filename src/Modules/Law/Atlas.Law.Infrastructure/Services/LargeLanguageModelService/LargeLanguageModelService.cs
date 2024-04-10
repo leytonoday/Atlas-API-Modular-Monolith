@@ -56,7 +56,7 @@ internal class LargeLanguageModelService : BaseApiService, ILargeLanguageModelSe
     {
         var messageRequest = new MessageRequest()
         {
-            Model = _anthropicOptions.LargeLanguageModelModel,
+            Model = _anthropicOptions.CheapLargeLanguageModelModel,
             MaxTokens = 1024,
             System = @$"
                 You must extract 20 keywords from the following legal document that perfectly summarises the document, in JSON list format. The language of the keywords be in {targetLanguage ?? "English"}
@@ -120,7 +120,7 @@ internal class LargeLanguageModelService : BaseApiService, ILargeLanguageModelSe
         return response.Data.First().Embedding;
     }
 
-    public async Task<(string, IEnumerable<string>)> SummariseDocumentAsync(string toSumarise, string targetLanguage, IEnumerable<EurLexSumDocument> similarDocuments, CancellationToken cancellationToken)
+    public async Task<SummariseDocumentResult> SummariseDocumentAsync(string toSumarise, string targetLanguage, IEnumerable<EurLexSumDocument> similarDocuments, CancellationToken cancellationToken)
     {
         IEnumerable<string> jsonSimilarDocuments = similarDocuments.Select(x =>
         {
@@ -136,7 +136,7 @@ internal class LargeLanguageModelService : BaseApiService, ILargeLanguageModelSe
 
         var messageRequest = new MessageRequest()
         {
-            Model = _anthropicOptions.LargeLanguageModelModel,
+            Model = _anthropicOptions.ExpensiveLargeLanguageModelModel,
             MaxTokens = 4096,
             System = @$"
                 You must summarise any legal document given to you. The summary MUST maintain the legal integrity and truth of the original document. Make your summaries in {targetLanguage ?? "English"}.
@@ -148,11 +148,10 @@ internal class LargeLanguageModelService : BaseApiService, ILargeLanguageModelSe
                 YOU MUST REPLY IN THE FOLLOWING SCHEMA:
                 {{
                   ""Summary"": """",
-                  ""Keywords"": """",
+                  ""Keywords"": [],
                   ""SummarizedTitle"": """"
                 }}
-                ONLY REPLY WITH JSON. YOUR FULL REPLY MUST BE VALID JSON. DO NOT INCLUDE THE FULLTEXT IN YOUR RESPONSE.
-                ",
+                ONLY REPLY WITH JSON. YOUR FULL REPLY MUST BE VALID JSON. DO NOT INCLUDE THE FULLTEXT IN YOUR RESPONSE. IT MUST BE VALID JSON OR BAD THINGS WILL HAPPEN!!",
             Messages = [new Message { Role = "user", Content = toSumarise }]
         };
 
@@ -162,15 +161,19 @@ internal class LargeLanguageModelService : BaseApiService, ILargeLanguageModelSe
         string responseString = response.Content.FirstOrDefault()?.Text
             ?? throw new Exception("Anthropic returned 0 results");
 
+        // Escape all newlines and carridge returns
+
         var deserialisedResponse = JsonSerializer.Deserialize<SummariseDocumentResponse>(responseString);
 
-        return (deserialisedResponse.Summary, deserialisedResponse.Keywords);
+        return new SummariseDocumentResult(deserialisedResponse?.Summary ?? "", deserialisedResponse?.SummarizedTitle ?? "", deserialisedResponse?.Keywords ?? Enumerable.Empty<string>());
     }
 }
 
 internal class SummariseDocumentResponse
 {
     public string Summary { get; set; }
+
+    public string SummarizedTitle { get; set; }
 
     public IEnumerable<string> Keywords { get; set; }
 }

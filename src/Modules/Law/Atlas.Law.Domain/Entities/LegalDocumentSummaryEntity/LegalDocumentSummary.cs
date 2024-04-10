@@ -29,10 +29,11 @@ public class LegalDocumentSummary : Entity<Guid>
         };
     }
 
-    public static void SetSummary(LegalDocumentSummary legalDocumentSummary, string summarisedText, string summarisedKeywords)
+    public static void SetSummary(LegalDocumentSummary legalDocumentSummary, string summarisedText, string summarisedTitle, string summarisedKeywords)
     {
         legalDocumentSummary.SummarisedText = summarisedText;
         legalDocumentSummary.Keywords = summarisedKeywords;
+        legalDocumentSummary.SummarizedTitle = summarisedTitle;
         legalDocumentSummary.ProcessingStatus = LegalDocumentProcessingStatus.COMPLETE;
     }
 

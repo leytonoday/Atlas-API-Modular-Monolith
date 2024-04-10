@@ -61,8 +61,16 @@ internal sealed class ProcessLegalDocumentSummaryQueuedCommandHandler(
         }
 
         // Summarise the document into the provided language, using the similar documents as a reference
-        (string summary, IEnumerable<string> summaryKeywords) = await largeLanguageModelService.SummariseDocumentAsync(legalDocument.FullText, legalDocument.Language, similarDocuments, cancellationToken);
+        SummariseDocumentResult result = await largeLanguageModelService.SummariseDocumentAsync(legalDocument.FullText, legalDocument.Language, similarDocuments, cancellationToken);
 
-        LegalDocumentSummary.SetSummary(legalDocumentSummary, summary, string.Join(',', keywords));
+        LegalDocumentSummary.SetSummary(legalDocumentSummary, result.SummarisedText, result.SummarisedTitle, string.Join(',', keywords));
+
+        // There may be some entities created from previous failed summary attempts. Delete them
+        var failedSummaries = await legalDocumentSummaryRepository.GetByConditionAsync(x => x.LegalDocumentId == request.LegalDocumentId && x.Id != legalDocumentSummary.Id, true, cancellationToken);
+    
+        foreach(var failedSummary in failedSummaries)
+        {
+            await legalDocumentSummaryRepository.RemoveAsync(failedSummary, cancellationToken);
+        }
     }
 }

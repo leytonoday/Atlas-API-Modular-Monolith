@@ -11,5 +11,7 @@ public interface ILargeLanguageModelService
 
     public Task<IEnumerable<float>> CreateEmbeddingsAsync(string text, CancellationToken cancellationToken);
 
-    public Task<(string, IEnumerable<string>)> SummariseDocumentAsync(string toSumarise, string targetLanguage, IEnumerable<EurLexSumDocument> similarDocuments, CancellationToken cancellationToken);
+    public Task<SummariseDocumentResult> SummariseDocumentAsync(string toSumarise, string targetLanguage, IEnumerable<EurLexSumDocument> similarDocuments, CancellationToken cancellationToken);
 }
+
+public record SummariseDocumentResult (string SummarisedText, string SummarisedTitle, IEnumerable<string> Keywords);
