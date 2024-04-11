@@ -1,8 +1,11 @@
 ﻿using Atlas.Law.Application.CQRS.LegalDocuments.Commands.CreateLegalDocuments;
+using Atlas.Law.Application.Services;
 using Atlas.Law.Domain.Entities.LegalDocumentEntity;
+using Atlas.Law.Domain.Errors;
 using Atlas.Shared.Application.Abstractions;
 using Atlas.Shared.Application.Abstractions.Messaging.Command;
 using Atlas.Shared.Application.Queue;
+using Atlas.Shared.Domain.Exceptions;
 using DocumentFormat.OpenXml.Packaging;
 using System.Text;
 using UglyToad.PdfPig;
@@ -10,7 +13,7 @@ using UglyToad.PdfPig.Content;
 
 namespace Atlas.Law.Application.CQRS.LegalDocuments.Commands.PrepareLegalDocumentSummary;
 
-internal sealed class CreateLegalDocumentsCommandHandler(ILegalDocumentRepository legalDocumentRepository, IExecutionContextAccessor executionContext) : ICommandHandler<CreateLegalDocumentsCommand, IEnumerable<string>>
+internal sealed class CreateLegalDocumentsCommandHandler(ILegalDocumentRepository legalDocumentRepository, IExecutionContextAccessor executionContext, ILanguageDetector languageDetector) : ICommandHandler<CreateLegalDocumentsCommand, IEnumerable<string>>
 {
     public async Task<IEnumerable<string>> Handle(CreateLegalDocumentsCommand request, CancellationToken cancellationToken)
     {
@@ -43,7 +46,15 @@ internal sealed class CreateLegalDocumentsCommandHandler(ILegalDocumentRepositor
                 continue;
             }
 
-            var legalDocument = await LegalDocument.CreateAsync(document.FileName, text, "en-GB", document.MimeType, executionContext.UserId, legalDocumentRepository);
+            // Get the original language
+            string? language = await languageDetector.DetectLanguageAsync(text, cancellationToken);
+            if (string.IsNullOrEmpty(language))
+            {
+                failedFiles.Add(document.FileName);
+                continue;
+            }
+
+            var legalDocument = await LegalDocument.CreateAsync(document.FileName, text, language, document.MimeType, executionContext.UserId, legalDocumentRepository);
             await legalDocumentRepository.AddAsync(legalDocument, cancellationToken);
         }
 

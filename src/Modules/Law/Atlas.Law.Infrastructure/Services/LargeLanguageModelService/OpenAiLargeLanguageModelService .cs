@@ -3,33 +3,27 @@ using Atlas.Law.Domain.Entities.EurLexSumDocumentEntity;
 using Atlas.Law.Infrastructure.Options;
 using Atlas.Law.Infrastructure.Services.LargeLanguageModelService.Requests;
 using Atlas.Law.Infrastructure.Services.LargeLanguageModelService.Response;
-using Claudia;
+using Atlas.Law.Infrastructure.Services.LargeLanguageModelService.Shared;
+using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 using Microsoft.Extensions.Options;
 using System.Text.Json;
 
 namespace Atlas.Law.Infrastructure.Services.LargeLanguageModelService;
 
-internal class LargeLanguageModelService : BaseApiService, ILargeLanguageModelService
+internal class OpenAiLargeLanguageModelService : BaseApiService, ILargeLanguageModelService
 {
     private readonly OpenAiOptions _openAiOptions;
-    private readonly AnthropicOptions _anthropicOptions;
-    private readonly Anthropic _anthropic;
 
     private readonly JsonSerializerOptions _jsonSerialisationOtions = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower
     };
 
-    public LargeLanguageModelService(IOptions<OpenAiOptions> openAiOptions, IOptions<AnthropicOptions> anthropicOptions) : base(openAiOptions.Value.ApiUrl)
+    public OpenAiLargeLanguageModelService(IOptions<OpenAiOptions> openAiOptions) : base(openAiOptions.Value.ApiUrl)
     {
         HttpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {openAiOptions.Value.ApiKey}");
         HttpClient.Timeout = TimeSpan.FromMinutes(3);
         _openAiOptions = openAiOptions.Value;
-        _anthropicOptions = anthropicOptions.Value;
-        _anthropic = new Anthropic
-        {
-            ApiKey = anthropicOptions.Value.ApiKey
-        };
     }
 
     protected override string SerializeToJson<TBody>(TBody body)
@@ -54,54 +48,57 @@ internal class LargeLanguageModelService : BaseApiService, ILargeLanguageModelSe
 
     public async Task<IEnumerable<string>> ConvertToKeywordsAsync(string text, string? targetLanguage, CancellationToken cancellationToken)
     {
-        var messageRequest = new MessageRequest()
+        string prompt = @$"
+You must extract 20 keywords from the following legal document that perfectly summarises the document, in JSON list format. The language of the keywords be in {targetLanguage}
+Here's an example of the format:
+[
+    ""Prospectus"",
+    ""Registration document"",
+    ""Securities note"",
+    ""Equity securities"",
+    ""Non-equity securities"",
+    ""Underlying asset"",
+    ""Guarantees"",
+    ""Scrutiny"",
+    ""Approval"",
+    ""Format"",
+    ""Content"",
+    ""EU Growth prospectus"",
+    ""Summary"",
+    ""Risk factors"",
+    ""Annexes"",
+    ""Issuers"",
+    ""Offerors"",
+    ""Admission to trading"",
+    ""Regulated market"",
+    ""Delegated regulation""
+]
+ONLY RESPOND WITH THE JSON
+";
+
+        GptCompletionResponse response = await ChatCompleteAsync(new()
         {
-            Model = _anthropicOptions.CheapLargeLanguageModelModel,
-            MaxTokens = 1024,
-            System = @$"
-                You must extract 20 keywords from the following legal document that perfectly summarises the document, in JSON list format. The language of the keywords be in {targetLanguage ?? "English"}
-                Here's an example of the format:
-                [
-                    ""Prospectus"",
-                    ""Registration document"",
-                    ""Securities note"",
-                    ""Equity securities"",
-                    ""Non-equity securities"",
-                    ""Underlying asset"",
-                    ""Guarantees"",
-                    ""Scrutiny"",
-                    ""Approval"",
-                    ""Format"",
-                    ""Content"",
-                    ""EU Growth prospectus"",
-                    ""Summary"",
-                    ""Risk factors"",
-                    ""Annexes"",
-                    ""Issuers"",
-                    ""Offerors"",
-                    ""Admission to trading"",
-                    ""Regulated market"",
-                    ""Delegated regulation""
-                ]
-                ONLY RESPOND WITH THE JSON
-                ",
-            Messages = [new Message { Role = "user", Content = text }]
-        };
+            new ()
+            {
+                Role = "system",
+                Content = prompt
+            },
+            new ()
+            {
+                Role = "user",
+                Content = text
+            }
+        },
+        _openAiOptions.Gpt3Model
+        );
 
-        // Get the keywords using the LLM
-        MessageResponse response = await _anthropic.Messages.CreateAsync(messageRequest, null, cancellationToken);
+        string responseString = response.Choices.First().Message.Content;
 
-        string responseString = response.Content.FirstOrDefault()?.Text
-            ?? throw new Exception("Anthropic returned 0 results");
+        int startOfArray = responseString.IndexOf('[');
+        int endOfArray = responseString.LastIndexOf(']') + 1;
 
-        int startIndex = responseString.IndexOf('[');
-        int endIndex = responseString.LastIndexOf(']');
-        if (startIndex == -1 || endIndex == -1)
-        {
-            throw new FormatException("Invalid JSON format received from AI model.");
-        }
+        string jsonArray = responseString.Substring(startOfArray, endOfArray - startOfArray);
 
-        string jsonArray = responseString.Substring(startIndex, endIndex - startIndex + 1);
         var keywordsArray = JsonSerializer.Deserialize<IEnumerable<string>>(jsonArray);
 
         return keywordsArray ?? throw new InvalidOperationException("Deserialization resulted in null.");
@@ -134,11 +131,7 @@ internal class LargeLanguageModelService : BaseApiService, ILargeLanguageModelSe
             .Select(x => JsonSerializer.Serialize(x))
             .ToList();
 
-        var messageRequest = new MessageRequest()
-        {
-            Model = _anthropicOptions.ExpensiveLargeLanguageModelModel,
-            MaxTokens = 4096,
-            System = @$"
+        string prompt = @$"
                 You must summarise any legal document given to you. The summary MUST maintain the legal integrity and truth of the original document. Make your summaries in {targetLanguage ?? "English"}.
                 Here's an example of some similar summarised documents.
                 {
@@ -151,21 +144,57 @@ internal class LargeLanguageModelService : BaseApiService, ILargeLanguageModelSe
                   ""Keywords"": [],
                   ""SummarizedTitle"": """"
                 }}
-                ONLY REPLY WITH JSON. YOUR FULL REPLY MUST BE VALID JSON. DO NOT INCLUDE THE FULLTEXT IN YOUR RESPONSE. IT MUST BE VALID JSON OR BAD THINGS WILL HAPPEN!!",
-            Messages = [new Message { Role = "user", Content = toSumarise }]
-        };
+                ONLY REPLY WITH JSON. YOUR FULL REPLY MUST BE VALID JSON. DO NOT INCLUDE THE FULLTEXT IN YOUR RESPONSE. IT MUST BE VALID JSON OR BAD THINGS WILL HAPPEN!!";
 
-        // Get the keywords using the LLM
-        MessageResponse response = await _anthropic.Messages.CreateAsync(messageRequest, null, cancellationToken);
+        GptCompletionResponse response = await ChatCompleteAsync(new()
+        {
+            new ()
+            {
+                Role = "system",
+                Content = prompt
+            },
+            new ()
+            {
+                Role = "user",
+                Content = toSumarise
+            }
+        },
+            _openAiOptions.Gpt4Model,
+            true
+        );
 
-        string responseString = response.Content.FirstOrDefault()?.Text
-            ?? throw new Exception("Anthropic returned 0 results");
+        string responseString = response.Choices.First().Message.Content;
 
-        // Escape all newlines and carridge returns
+        int startIndex = responseString.IndexOf('{');
+        int endIndex = responseString.LastIndexOf('}');
+        if (startIndex == -1 || endIndex == -1)
+        {
+            throw new FormatException("Invalid JSON format received from AI model.");
+        }
 
-        var deserialisedResponse = JsonSerializer.Deserialize<SummariseDocumentResponse>(responseString);
+        string jsonObject = responseString.Substring(startIndex, endIndex - startIndex + 1);
+
+        var deserialisedResponse = JsonSerializer.Deserialize<SummariseDocumentResponse>(jsonObject);
 
         return new SummariseDocumentResult(deserialisedResponse?.Summary ?? "", deserialisedResponse?.SummarizedTitle ?? "", deserialisedResponse?.Keywords ?? Enumerable.Empty<string>());
+    }
+
+    private async Task<GptCompletionResponse> ChatCompleteAsync(List<GptCompletionMessage> messages, string model, bool jsonMode = false)
+    {
+        var request = new GptCompletionRequest
+        {
+            Model = model,
+            Temperature = 0.1,
+            Messages = messages,
+            ResponseFormat = jsonMode ? new GptCompletionRequestResponseFormat
+            {
+                Type = "json_object"
+            } : null
+        };
+
+        GptCompletionResponse response = await PostAsync<GptCompletionResponse, GptCompletionRequest>($"/chat/completions", request, default);
+
+        return response;
     }
 }
 

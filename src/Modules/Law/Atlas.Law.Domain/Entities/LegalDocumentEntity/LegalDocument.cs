@@ -1,4 +1,5 @@
 ﻿using Atlas.Law.Domain.Entities.LegalDocumentEntity.BusinessRules;
+using Atlas.Law.Domain.Entities.LegalDocumentSummaryEntity;
 using Atlas.Law.Domain.Enums;
 using Atlas.Shared.Domain.AggregateRoot;
 
@@ -35,5 +36,16 @@ public sealed class LegalDocument : AggregateRoot<Guid>
         await CheckAsyncBusinessRule(new LegalDocumentNameMustBeUniqueBusinessRule(name, userId, legalDocumentRepository));
 
         return legalDocument;
+    }
+
+    public static async Task DeleteAsync(
+        LegalDocument legalDocument, 
+        ILegalDocumentRepository legalDocumentRepository,
+        ILegalDocumentSummaryRepository legalDocumentSummaryRepository,
+        CancellationToken cancellationToken)
+    {
+        await CheckAsyncBusinessRule(new LegalDocumentCannotBeDeletedWhilstSummaryIncomplete(legalDocument.Id, legalDocumentSummaryRepository), cancellationToken);
+
+        await legalDocumentRepository.RemoveAsync(legalDocument, cancellationToken);
     }
 }

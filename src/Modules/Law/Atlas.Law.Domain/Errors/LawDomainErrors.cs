@@ -19,5 +19,8 @@ public static class LawDomainErrors
     public static class Law
     {
         public static readonly Error LegalDocumentNotFound = new(CreateErrorCode(typeof(LegalDocument)), "The LegalDocument was not found.");
+
+        public static readonly Error CanOnlyDeleteOwnLegalDocuments = new(CreateErrorCode(typeof(LegalDocument)), "You can only delete your own LegalDocuments.");
+
     }
 }

@@ -22,6 +22,7 @@ using Atlas.Law.Domain.Entities.LegalDocumentEntity;
 using Atlas.Law.Infrastructure.Persistance.Repositories;
 using Atlas.Law.Domain.Entities.EurLexSumDocumentEntity;
 using Atlas.Law.Domain.Entities.LegalDocumentSummaryEntity;
+using Atlas.Law.Infrastructure.Services.LanguageDetector;
 
 namespace Atlas.Law.Infrastructure.Extensions;
 
@@ -58,7 +59,8 @@ public static class ServiceCollectionExtensions
 
         // Services
         services.AddScoped<IVectorDatabaseService, PineconeService>();
-        services.AddScoped<ILargeLanguageModelService, LargeLanguageModelService>();
+        services.AddScoped<ILargeLanguageModelService, OpenAiLargeLanguageModelService>();
+        services.AddScoped<ILanguageDetector, GoogleTranslateLanguageDetector>();
 
         return services;
     }
@@ -67,7 +69,7 @@ public static class ServiceCollectionExtensions
     {
         services.ConfigureOptions<PineconeOptionsSetup>();
         services.ConfigureOptions<OpenAiOptionsSetup>();
-        services.ConfigureOptions<AnthropicOptionsSetup>();
+        services.ConfigureOptions<GoogleTranslateOptionsSetup>();
         return services;
     }
 

@@ -1,5 +1,6 @@
 ﻿using Atlas.Law.Application.CQRS.LegalDocuments.Commands.CreateLegalDocuments;
 using Atlas.Law.Application.CQRS.LegalDocuments.Commands.CreateLegalDocumentSummary;
+using Atlas.Law.Application.CQRS.LegalDocuments.Commands.DeleteLegalDocument;
 using Atlas.Law.Application.CQRS.LegalDocuments.Query.GetLegalDocumentSummary;
 using Atlas.Law.Application.CQRS.LegalDocuments.Query.GetUserLegalDocuments;
 using Atlas.Law.Infrastructure.Module;
@@ -39,6 +40,13 @@ public class LegalDocumentController(IExecutionContextAccessor executionContext,
     public async Task<IActionResult> CreateLegalDocumentSummary(Guid legalDocumentId, CancellationToken cancellationToken)
     {
         await lawModule.SendCommand(new CreateLegalDocumentSummaryCommand(legalDocumentId), cancellationToken);
+        return Ok(Result.Success());
+    }
+
+    [HttpDelete("{legalDocumentId}")]
+    public async Task<IActionResult> DeleteLegalDocument(Guid legalDocumentId, CancellationToken cancellationToken)
+    {
+        await lawModule.SendCommand(new DeleteLegalDocumentCommand(legalDocumentId), cancellationToken);
         return Ok(Result.Success());
     }
 }
