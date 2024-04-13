@@ -8,7 +8,7 @@ using Atlas.Users.Application.CQRS.Authentication.Queries.Shared;
 
 namespace Atlas.Users.Application.CQRS.Authentication.Queries.CanSignIn;
 
-internal sealed class CanSignInQueryHandler(UserManager<User> userManager, SignInManager<User> signInManager) : IQueryHandler<CanSignInQuery, CanSignInResponse>
+internal sealed class CanSignInQueryHandler(UserManager<User> userManager) : IQueryHandler<CanSignInQuery, CanSignInResponse>
 {
     public async Task<CanSignInResponse> Handle(CanSignInQuery request, CancellationToken cancellationToken)
     {
