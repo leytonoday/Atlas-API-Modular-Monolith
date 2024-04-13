@@ -1,4 +1,5 @@
-﻿using Atlas.Shared.Domain.Persistance;
+﻿using Atlas.Plans.Domain.Entities.PlanFeatureEntity;
+using Atlas.Shared.Domain.Persistance;
 
 namespace Atlas.Plans.Domain.Entities.PlanEntity;
 
@@ -26,4 +27,12 @@ public interface IPlanRepository : IRepository<Plan, Guid>
     /// <param name="cancellationToken">Propagates notification that operations should be cancelled.</param>
     /// <returns>A <see cref="Task"/> that returns when operations are complete, returning a <see cref="Plan"/> entity.</returns>
     public Task<Plan?> GetByNameAsync(string name, bool trackChanges, CancellationToken cancellationToken);
+
+    public Task AddPlanFeatureAsync(PlanFeature planFeature, CancellationToken cancellationToken);
+
+    public Task RemovePlanFeatureAsync(PlanFeature planFeature, CancellationToken cancellationToken);
+
+    public Task UpdatePlanFeatureAsync(PlanFeature planFeature, CancellationToken cancellationToken);
+
+    public Task<PlanFeature?> GetPlanFeatureAsync(Guid planId, Guid featureId, bool trackChanges, CancellationToken cancellationToken);
 }

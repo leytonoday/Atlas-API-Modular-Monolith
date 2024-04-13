@@ -9,7 +9,6 @@ namespace Atlas.Law.Application.CQRS.LegalDocuments.Commands.DeleteLegalDocument
 
 internal sealed class DeleteLegalDocumentCommandHandler(
     ILegalDocumentRepository legalDocumentRepository,
-    ILegalDocumentSummaryRepository legalDocumentSummaryRepository,
     IExecutionContextAccessor executionContextAccessor) : ICommandHandler<DeleteLegalDocumentCommand>
 {
     public async Task Handle(DeleteLegalDocumentCommand request, CancellationToken cancellationToken)
@@ -22,6 +21,6 @@ internal sealed class DeleteLegalDocumentCommandHandler(
             throw new ErrorException(LawDomainErrors.Law.CanOnlyDeleteOwnLegalDocuments);
         }
 
-        await LegalDocument.DeleteAsync(toDelete, legalDocumentRepository, legalDocumentSummaryRepository, cancellationToken);
+        await LegalDocument.DeleteAsync(toDelete, legalDocumentRepository, cancellationToken);
     }
 }

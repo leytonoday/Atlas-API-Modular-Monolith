@@ -1,8 +1,8 @@
 ﻿using Atlas.Law.Application.CQRS.LegalDocuments.Commands.CreateLegalDocuments;
 using Atlas.Law.Application.CQRS.LegalDocuments.Commands.CreateLegalDocumentSummary;
 using Atlas.Law.Application.CQRS.LegalDocuments.Commands.DeleteLegalDocument;
-using Atlas.Law.Application.CQRS.LegalDocuments.Query.GetLegalDocumentSummary;
-using Atlas.Law.Application.CQRS.LegalDocuments.Query.GetUserLegalDocuments;
+using Atlas.Law.Application.CQRS.LegalDocuments.Queries.GetLegalDocumentSummary;
+using Atlas.Law.Application.CQRS.LegalDocuments.Queries.GetUserLegalDocuments;
 using Atlas.Law.Infrastructure.Module;
 using Atlas.Shared.Application.Abstractions;
 using Atlas.Shared.Domain.Results;

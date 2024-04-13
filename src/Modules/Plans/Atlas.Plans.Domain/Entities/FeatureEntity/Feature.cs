@@ -2,10 +2,11 @@
 using Atlas.Plans.Domain.Entities.FeatureEntity.DomainEvents;
 using Atlas.Plans.Domain.Entities.PlanEntity;
 using Atlas.Shared.Domain.AggregateRoot;
+using Atlas.Shared.Domain.Entities;
 
 namespace Atlas.Plans.Domain.Entities.FeatureEntity;
 
-public class Feature : AggregateRoot<Guid>
+public class Feature : Entity<Guid>, IAggregateRoot
 {
     private Feature() { }
 

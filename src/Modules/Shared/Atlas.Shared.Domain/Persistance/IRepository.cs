@@ -1,4 +1,5 @@
-﻿using Atlas.Shared.Domain.Entities;
+﻿using Atlas.Shared.Domain.AggregateRoot;
+using Atlas.Shared.Domain.Entities;
 using System.Linq.Expressions;
 
 namespace Atlas.Shared.Domain.Persistance;
@@ -7,7 +8,7 @@ namespace Atlas.Shared.Domain.Persistance;
 /// Represents a repository for working with entities of type <typeparamref name="TEntity"/> that don't have a single primary key.
 /// </summary>
 /// <typeparam name="TEntity">The type of the entity.</typeparam>
-public interface IRepository<TEntity> where TEntity : class
+public interface IRepository<TEntity> where TEntity : class, IAggregateRoot
 {
     /// <summary>
     /// Gets all entities of type <typeparamref name="TEntity"/> from the database.
@@ -57,6 +58,16 @@ public interface IRepository<TEntity> where TEntity : class
     /// <returns>The <see cref="IQueryable{TEntity}"/> for the <see cref="DbSet{TEntity}"/> of type <typeparamref name="TEntity"/>.</returns>
     /// <remarks>This can be used to query from the entire database table of type <see cref="TEntity"/>.</remarks>
     public IQueryable<TEntity> GetDbSet(bool trackChanges);
+
+    /// <summary>
+    /// Gets the <see cref="IQueryable{T}"/> for the <see cref="DbSet{T}"/> of type <typeparamref name="T"/>
+    /// </summary>
+    /// <typeparam name="T">The type of entity to read from the database.</typeparam>
+    /// <param name="trackChanges">Determines whether to track changes for the retrieved entities.</param>
+    /// <returns>The <see cref="IQueryable{TEntity}"/> for the <see cref="DbSet{TEntity}"/> of type <typeparamref name="TEntity"/>.</returns>
+    /// <remarks>This is different from <see cref="GetDbSet(bool)"/> because you can specify an entity other than the <typeparamref name="TEntity"/>.
+    /// This may be used in cases where the <typeparamref name="TEntity"/> is an aggregate root and needs to load other dependant entities.</remarks>
+    public IQueryable<T> GetDbSet<T>(bool trackChanges) where T : class, IEntity;
 }
 
 /// <summary>
@@ -64,7 +75,7 @@ public interface IRepository<TEntity> where TEntity : class
 /// </summary>
 /// <typeparam name="TEntity">The type of the entity.</typeparam>
 /// <typeparam name="TId">The type of the entity's primary key.</typeparam>
-public interface IRepository<TEntity, in TId> : IRepository<TEntity> where TEntity : class, IEntity<TId>
+public interface IRepository<TEntity, in TId> : IRepository<TEntity> where TEntity : class, IAggregateRoot, IEntity<TId> 
 {
     /// <summary>
     /// Gets an entity of type <typeparamref name="TEntity"/> from the database by its primary key.

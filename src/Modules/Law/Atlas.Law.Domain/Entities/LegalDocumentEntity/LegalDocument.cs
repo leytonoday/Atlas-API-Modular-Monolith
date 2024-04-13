@@ -1,11 +1,11 @@
 ﻿using Atlas.Law.Domain.Entities.LegalDocumentEntity.BusinessRules;
 using Atlas.Law.Domain.Entities.LegalDocumentSummaryEntity;
-using Atlas.Law.Domain.Enums;
 using Atlas.Shared.Domain.AggregateRoot;
+using Atlas.Shared.Domain.Entities;
 
 namespace Atlas.Law.Domain.Entities.LegalDocumentEntity;
 
-public sealed class LegalDocument : AggregateRoot<Guid>
+public sealed class LegalDocument : Entity<Guid>, IAggregateRoot
 {
     private LegalDocument() { }
 
@@ -18,6 +18,8 @@ public sealed class LegalDocument : AggregateRoot<Guid>
     public string MimeType { get; private set; } = null!;
 
     public Guid UserId { get; private set; }
+
+    public LegalDocumentSummary? Summary { get; private set; }
 
     public static async Task<LegalDocument> CreateAsync(string name, string fullText, string language, string mimeType, Guid userId, ILegalDocumentRepository legalDocumentRepository)
     {
@@ -41,11 +43,37 @@ public sealed class LegalDocument : AggregateRoot<Guid>
     public static async Task DeleteAsync(
         LegalDocument legalDocument, 
         ILegalDocumentRepository legalDocumentRepository,
-        ILegalDocumentSummaryRepository legalDocumentSummaryRepository,
         CancellationToken cancellationToken)
     {
-        await CheckAsyncBusinessRule(new LegalDocumentCannotBeDeletedWhilstSummaryIncomplete(legalDocument.Id, legalDocumentSummaryRepository), cancellationToken);
+        CheckBusinessRule(new LegalDocumentCannotBeDeletedWhilstSummaryIncomplete(legalDocument));
 
         await legalDocumentRepository.RemoveAsync(legalDocument, cancellationToken);
+    }
+
+    public static async Task<LegalDocumentSummary> CreateSummaryAsync(
+        LegalDocument legalDocument,
+        ILegalDocumentRepository legalDocumentRepository,
+        CancellationToken cancellationToken)
+    {
+        var summary = LegalDocumentSummary.Create(legalDocument.Id);
+        await legalDocumentRepository.AddSummaryAsync(summary, cancellationToken);
+
+        // Mark it as processing by default, so that if the generation of the summary takes a long time, and the user queries for the status of the job, they can see it's in the works.
+        LegalDocumentSummary.SetAsProcessing(summary);
+
+        return summary;
+    }
+
+    public static async Task RemoveSummaryAsync(
+        LegalDocument legalDocument,
+        ILegalDocumentRepository legalDocumentRepository,
+        CancellationToken cancellationToken)
+    {
+        if (legalDocument.Summary is null)
+        {
+            return;
+        }
+
+        await legalDocumentRepository.RemoveSummaryAsync(legalDocument.Summary, cancellationToken);
     }
 }

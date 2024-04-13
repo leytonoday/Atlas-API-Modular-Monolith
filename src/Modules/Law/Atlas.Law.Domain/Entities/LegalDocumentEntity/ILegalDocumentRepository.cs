@@ -1,4 +1,5 @@
-﻿using Atlas.Shared.Domain.Persistance;
+﻿using Atlas.Law.Domain.Entities.LegalDocumentSummaryEntity;
+using Atlas.Shared.Domain.Persistance;
 
 namespace Atlas.Law.Domain.Entities.LegalDocumentEntity;
 
@@ -10,4 +11,8 @@ public interface ILegalDocumentRepository : IRepository<LegalDocument, Guid>
     public Task<LegalDocument?> GetByNameAndUserAsync(string name, Guid userId, bool trackChanges, CancellationToken cancellationToken);
 
     public Task<IEnumerable<LegalDocument>> GetByUserIdAsync(Guid userId, bool trackChanges, CancellationToken cancellationToken);
+
+    public Task AddSummaryAsync(LegalDocumentSummary legalDocumentSummary, CancellationToken cancellationToken);
+
+    public Task RemoveSummaryAsync(LegalDocumentSummary legalDocumentSummary, CancellationToken cancellationToken);
 }

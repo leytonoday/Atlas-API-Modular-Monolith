@@ -5,7 +5,7 @@ using Atlas.Shared.Application.Abstractions.Messaging;
 
 namespace Atlas.Plans.Application.CQRS.Features.DomainEventHandlers;
 
-internal class RemoveFromPlansIfHasIsInheritableChangedOnFeatureUpdated(IPlanFeatureRepository planFeatureRepository, IPlanRepository planRepository) : IDomainEventHandler<FeatureUpdatedDomainEvent>
+internal class RemoveFromPlansIfHasIsInheritableChangedOnFeatureUpdated(IPlanRepository planRepository) : IDomainEventHandler<FeatureUpdatedDomainEvent>
 {
     public async Task Handle(FeatureUpdatedDomainEvent notification, CancellationToken cancellationToken)
     {
@@ -17,12 +17,13 @@ internal class RemoveFromPlansIfHasIsInheritableChangedOnFeatureUpdated(IPlanFea
             foreach (Plan plan in allPlans)
             {
                 // Is there a plan feature on this plan, with the given feature Id?
-                PlanFeature? planFeature = (await planFeatureRepository.GetByConditionAsync(x =>
-                    x.PlanId == plan.Id && x.FeatureId == notification.FeatureId, true, cancellationToken)).FirstOrDefault();
+                PlanFeature? planFeature = await planRepository.GetPlanFeatureAsync(plan.Id, notification.FeatureId, true, cancellationToken);
 
                 // If this feature exists on this plan, remove it
                 if (planFeature is not null)
-                    await planFeatureRepository.RemoveAsync(planFeature, cancellationToken);
+                {
+                    await planRepository.RemovePlanFeatureAsync(planFeature, cancellationToken);
+                }
             }
         }
     }

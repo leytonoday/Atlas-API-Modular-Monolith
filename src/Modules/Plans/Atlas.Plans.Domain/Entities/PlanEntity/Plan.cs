@@ -3,10 +3,13 @@ using Atlas.Plans.Domain.Entities.PlanEntity.BusinessRules;
 using Atlas.Plans.Domain.Entities.PlanFeatureEntity;
 using Atlas.Plans.Domain.Services;
 using Atlas.Shared.Domain.AggregateRoot;
+using Atlas.Shared.Domain.Entities;
+using MediatR;
+using Newtonsoft.Json.Linq;
 
 namespace Atlas.Plans.Domain.Entities.PlanEntity;
 
-public class Plan : AggregateRoot<Guid>
+public class Plan : Entity<Guid>, IAggregateRoot
 {
     private Plan() { }
 
@@ -203,5 +206,12 @@ public class Plan : AggregateRoot<Guid>
         plan.StripeProductId = strpeProductId;
 
         await stripeService.CreatePricesForPlanAsync(plan, cancellationToken);
+    }
+
+    public static async Task AddPlanFeatureAsync(Plan plan, Feature feature, string? value, IPlanRepository planRepository, CancellationToken cancellationToken)
+    {
+        var planFeature = PlanFeature.Create(plan, feature, value: value);
+
+        await planRepository.AddPlanFeatureAsync(planFeature, cancellationToken);
     }
 }

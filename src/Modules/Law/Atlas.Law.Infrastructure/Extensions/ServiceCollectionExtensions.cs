@@ -78,7 +78,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUnitOfWork, LawUnitOfWork>();
 
         services.AddScoped<ILegalDocumentRepository, LegalDocumentRepository>();
-        services.AddScoped<ILegalDocumentSummaryRepository, LegalDocumentSummaryRepository>();
         services.AddScoped<IEurLexSumDocumentRepository, EurLexSumDocumentRepository>();
 
         services.AddDbContext<LawDatabaseContext>((provider, options) =>

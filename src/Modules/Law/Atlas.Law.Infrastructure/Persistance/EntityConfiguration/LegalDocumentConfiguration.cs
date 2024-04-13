@@ -1,6 +1,7 @@
 ﻿using Atlas.Law.Domain.Entities.LegalDocumentEntity;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
+using Atlas.Law.Domain.Entities.LegalDocumentSummaryEntity;
 
 namespace Atlas.Law.Infrastructure.Persistance.EntityConfiguration;
 
@@ -20,5 +21,8 @@ internal sealed class LegalDocumentConfiguration : IEntityTypeConfiguration<Lega
 
         // Set the primary key
         builder.HasKey(x => x.Id);
+
+        // Has an optional one to one relationship with LegalDocumentSummary
+        builder.HasOne(x => x.Summary).WithOne(x => x.LegalDocument).HasForeignKey<LegalDocumentSummary>(x => x.LegalDocumentId).IsRequired(false).OnDelete(DeleteBehavior.Cascade);
     }
 }

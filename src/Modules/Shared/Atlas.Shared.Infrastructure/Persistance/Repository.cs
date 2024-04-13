@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using Atlas.Shared.Domain.AggregateRoot;
 using Atlas.Shared.Domain.Entities;
 using Atlas.Shared.Domain.Persistance;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +9,7 @@ namespace Atlas.Infrastructure.Persistance;
 /// <inheritdoc cref="IRepository{TEntity}"/>
 public abstract class Repository<TEntity, TDatabaseContext>
     : IRepository<TEntity>
-        where TEntity : class, IEntity
+        where TEntity : class, IEntity, IAggregateRoot
         where TDatabaseContext : DbContext
 {
     protected readonly TDatabaseContext Context;
@@ -77,11 +78,18 @@ public abstract class Repository<TEntity, TDatabaseContext>
     {
         return trackChanges ? DbSet : DbSet.AsNoTracking();
     }
+
+    /// <inheritdoc/>
+    public virtual IQueryable<T> GetDbSet<T>(bool trackChanges) where T : class, IEntity
+    {
+        var dbSet = Context.Set<T>();
+        return trackChanges ? dbSet : dbSet.AsNoTracking();
+    }
 }
 
 /// <inheritdoc cref="IRepository{TEntity, TId}"/>
 public abstract class Repository<TEntity, TDatabaseContext, TId> : Repository<TEntity, TDatabaseContext>, IRepository<TEntity, TId>
-    where TEntity : class, IEntity<TId>
+    where TEntity : class, IAggregateRoot, IEntity<TId>
     where TDatabaseContext : DbContext
 {
     /// <summary>

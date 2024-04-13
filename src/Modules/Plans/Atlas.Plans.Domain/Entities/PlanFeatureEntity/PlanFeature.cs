@@ -4,6 +4,7 @@ using Atlas.Plans.Domain.Entities.PlanFeatureEntity.BusinessRules;
 using Atlas.Plans.Domain.Errors;
 using Atlas.Shared.Domain.Entities;
 using Atlas.Shared.Domain.Exceptions;
+using MediatR;
 
 namespace Atlas.Plans.Domain.Entities.PlanFeatureEntity;
 
@@ -28,57 +29,36 @@ public class PlanFeature : Entity
     /// </summary>
     public string? Value { get; private set; }
 
-    public static async Task<PlanFeature> CreateAsync(
-        Guid planId,
-        Guid featureId,
-        string? value,
-        IPlanRepository planRepository,
-        IFeatureRepository featureRepository,
-        CancellationToken cancellationToken)
+    public static PlanFeature Create(
+        Plan plan,
+        Feature feature,
+        string? value)
     {
-        Plan plan = await planRepository.GetByIdAsync(planId, true, cancellationToken)
-            ?? throw new ErrorException(PlansDomainErrors.Plan.PlanNotFound);
-
-        Feature feature = await featureRepository.GetByIdAsync(featureId, false, cancellationToken)
-            ?? throw new ErrorException(PlansDomainErrors.Feature.FeatureNotFound);
-
         // Ensure this feature is not already on the plan
-        CheckBusinessRule(new FeatureMustNotAlreadyBeOnPlanBusinessRule(plan, featureId));
+        CheckBusinessRule(new FeatureMustNotAlreadyBeOnPlanBusinessRule(plan, feature.Id));
 
         return new PlanFeature()
         {
-            PlanId = planId,
-            FeatureId = featureId,
+            PlanId = plan.Id,
+            FeatureId = feature.Id,
             Value = value,
         };
-    }
-
-    public static async Task DeleteAsync(
-        Guid planId,
-        Guid featureId,
-        IPlanFeatureRepository planFeatureRepository,
-        CancellationToken cancellationToken)
-    {
-        PlanFeature planFeature = (await planFeatureRepository.GetByConditionAsync(x => x.PlanId == planId && x.FeatureId == featureId, true, cancellationToken)).FirstOrDefault()
-            ?? throw new ErrorException(PlansDomainErrors.PlanFeature.PlanFeatureNotFound);
-
-        await planFeatureRepository.RemoveAsync(planFeature, cancellationToken);
     }
 
     public static async Task UpdateAsync(
         Guid planId,
         Guid featureId,
         string? value,
-        IPlanFeatureRepository planFeatureRepository,
+        IPlanRepository planRepository,
         CancellationToken cancellationToken)
     {
-        PlanFeature planFeature = (await planFeatureRepository.GetByConditionAsync(x => x.PlanId == planId && x.FeatureId == featureId, true, cancellationToken)).FirstOrDefault()
+        PlanFeature planFeature = await planRepository.GetPlanFeatureAsync(planId, featureId, true, cancellationToken)
             ?? throw new ErrorException(PlansDomainErrors.PlanFeature.PlanFeatureNotFound);
 
         planFeature.PlanId = planId;
         planFeature.FeatureId = featureId;
         planFeature.Value = value;
 
-        await planFeatureRepository.UpdateAsync(planFeature, cancellationToken);
+        await planRepository.UpdatePlanFeatureAsync(planFeature, cancellationToken);
     }
 }

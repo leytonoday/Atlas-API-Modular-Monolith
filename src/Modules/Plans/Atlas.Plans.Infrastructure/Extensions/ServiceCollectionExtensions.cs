@@ -75,7 +75,6 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<IPlanRepository, PlanRepository>();
         services.AddScoped<IFeatureRepository, FeatureRepository>();
-        services.AddScoped<IPlanFeatureRepository, PlanFeatureRepository>();
         services.AddScoped<IStripeCustomerRepository, StripeCustomerRepository>();
         services.AddScoped<IStripeCardFingerprintRepository, StripeCardFingerprintRepository>();
 

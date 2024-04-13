@@ -1,8 +1,9 @@
 ﻿using Atlas.Shared.Domain.AggregateRoot;
+using Atlas.Shared.Domain.Entities;
 
 namespace Atlas.Law.Domain.Entities.EurLexSumDocumentEntity;
 
-public sealed class EurLexSumDocument : AggregateRoot<Guid>
+public sealed class EurLexSumDocument : Entity<Guid>, IAggregateRoot
 {
     private EurLexSumDocument() { }
 

@@ -1,5 +1,4 @@
 ﻿using Atlas.Law.Domain.Entities.LegalDocumentEntity;
-using Atlas.Shared.Application.Queue;
 using Atlas.Law.Application.Services;
 using Atlas.Law.Domain.Entities.EurLexSumDocumentEntity;
 using Atlas.Shared.Domain.Exceptions;
@@ -14,7 +13,6 @@ namespace Atlas.Law.Application.CQRS.LegalDocuments.Queue.ProcessLegalDocumentSu
 internal sealed class ProcessLegalDocumentSummaryQueuedCommandHandler(
     IUnitOfWork unitOfWork, 
     ILegalDocumentRepository legalDocumentRepository, 
-    ILegalDocumentSummaryRepository legalDocumentSummaryRepository,
     IEurLexSumDocumentRepository eurLexSumDocumentRepository,
     IVectorDatabaseService vectorDatabaseService, 
     ILargeLanguageModelService largeLanguageModelService
@@ -25,13 +23,14 @@ internal sealed class ProcessLegalDocumentSummaryQueuedCommandHandler(
         LegalDocument legalDocument = await legalDocumentRepository.GetByIdAsync(request.LegalDocumentId, false, cancellationToken)
             ?? throw new ErrorException(LawDomainErrors.Law.LegalDocumentNotFound);
 
-        var legalDocumentSummary = LegalDocumentSummary.Create(legalDocument.Id);
+        // There may be a summary created from previous failed summary attempt. Delete it
+        if (legalDocument.Summary is not null)
+        {
+            await LegalDocument.RemoveSummaryAsync(legalDocument, legalDocumentRepository, cancellationToken);
+        }
 
-        // Mark it as processing, so that if the generation of the summary takes a long time, and the user queries for the status of the job, they can see it's in the works.
-        LegalDocumentSummary.SetAsProcessing(legalDocumentSummary);
-        
-        await legalDocumentSummaryRepository.AddAsync(legalDocumentSummary, cancellationToken);
-        await unitOfWork.CommitAsync(cancellationToken); // Commit here immediately.
+        var summary = await LegalDocument.CreateSummaryAsync(legalDocument, legalDocumentRepository, cancellationToken);
+        await unitOfWork.CommitAsync(cancellationToken); // Commit here immediately so the user can query the LegalDocument whilst it's processing and see that it is indeed processing
 
         // Converts the supplied document text to a series of keywords
         IEnumerable<string> keywords = await largeLanguageModelService.ConvertToKeywordsAsync(legalDocument.FullText, legalDocument.Language, cancellationToken);
@@ -63,14 +62,6 @@ internal sealed class ProcessLegalDocumentSummaryQueuedCommandHandler(
         // Summarise the document into the provided language, using the similar documents as a reference
         SummariseDocumentResult result = await largeLanguageModelService.SummariseDocumentAsync(legalDocument.FullText, legalDocument.Language, similarDocuments, cancellationToken);
 
-        LegalDocumentSummary.SetSummary(legalDocumentSummary, result.SummarisedText, result.SummarisedTitle, string.Join(',', keywords));
-
-        // There may be some entities created from previous failed summary attempts. Delete them
-        var failedSummaries = await legalDocumentSummaryRepository.GetByConditionAsync(x => x.LegalDocumentId == request.LegalDocumentId && x.Id != legalDocumentSummary.Id, true, cancellationToken);
-    
-        foreach(var failedSummary in failedSummaries)
-        {
-            await legalDocumentSummaryRepository.RemoveAsync(failedSummary, cancellationToken);
-        }
+        LegalDocumentSummary.SetSummary(summary, result.SummarisedText, result.SummarisedTitle, string.Join(',', ""));
     }
 }

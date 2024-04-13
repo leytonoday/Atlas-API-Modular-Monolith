@@ -1,4 +1,5 @@
-﻿using Atlas.Shared.Domain.Entities;
+﻿using Atlas.Shared.Domain.AggregateRoot;
+using Atlas.Shared.Domain.Entities;
 
 namespace Atlas.Plans.Domain.Entities.StripeCardFingerprintEntity;
 
@@ -7,7 +8,7 @@ namespace Atlas.Plans.Domain.Entities.StripeCardFingerprintEntity;
 /// </summary>
 /// <remarks>Used to track which cards have been used to make payments on Atlas, to prevent users from exploiting the free 
 /// trial. When the user provides a card, if it's fingerprint is in the database, then the user cannot claim a free trial with that card.</remarks>
-public class StripeCardFingerprint : Entity
+public class StripeCardFingerprint : Entity, IAggregateRoot
 {
     private StripeCardFingerprint() { }
 

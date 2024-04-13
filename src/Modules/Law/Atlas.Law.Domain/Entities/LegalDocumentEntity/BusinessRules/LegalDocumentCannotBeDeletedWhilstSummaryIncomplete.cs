@@ -3,18 +3,16 @@ using Atlas.Shared.Domain.BusinessRules;
 
 namespace Atlas.Law.Domain.Entities.LegalDocumentEntity.BusinessRules;
 
-internal class LegalDocumentCannotBeDeletedWhilstSummaryIncomplete(Guid legalDocumentId, ILegalDocumentSummaryRepository legalDocumentSummaryRepository) : IAsyncBusinessRule
+internal class LegalDocumentCannotBeDeletedWhilstSummaryIncomplete(LegalDocument legalDocument) : IBusinessRule
 {
     public string Message => "A LegalDocument cannot be deleted if it has a summary that is not complete.";
 
     public string Code => $"LegalDocument.{nameof(LegalDocumentCannotBeDeletedWhilstSummaryIncomplete)}";
 
 
-    public async Task<bool> IsBrokenAsync(CancellationToken cancellationToken = default)
+    public bool IsBroken()
     {
-        LegalDocumentSummary? summary = (await legalDocumentSummaryRepository.GetByConditionAsync(x => x.LegalDocumentId == legalDocumentId, false, cancellationToken)).FirstOrDefault();
-
-        if (summary is not null && summary.ProcessingStatus != Enums.LegalDocumentProcessingStatus.COMPLETE)
+        if (legalDocument.Summary is not null && legalDocument.Summary.ProcessingStatus != Enums.LegalDocumentProcessingStatus.COMPLETE)
         {
             return true;
         }

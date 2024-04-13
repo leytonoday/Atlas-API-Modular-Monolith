@@ -1,11 +1,12 @@
-﻿using Atlas.Shared.Domain.Entities;
+﻿using Atlas.Shared.Domain.AggregateRoot;
+using Atlas.Shared.Domain.Entities;
 
 namespace Atlas.Plans.Domain.Entities.StripeCustomerEntity;
 
 /// <summary>
 /// Represents the link the <see cref="User"/> entity and it's corresponding Stripe Customer.
 /// </summary>
-public sealed class StripeCustomer : Entity
+public sealed class StripeCustomer : Entity, IAggregateRoot
 {
     private StripeCustomer() { }
 
