@@ -22,5 +22,6 @@ public static class LawDomainErrors
 
         public static readonly Error CanOnlyDeleteOwnLegalDocuments = new(CreateErrorCode(typeof(LegalDocument)), "You can only delete your own LegalDocuments.");
 
+        public static readonly Error NotEnoughCredits = new(CreateErrorCode(typeof(LegalDocument)), "You do not have enough credits to complete this operation.");
     }
 }

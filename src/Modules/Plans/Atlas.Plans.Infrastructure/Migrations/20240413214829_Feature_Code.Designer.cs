@@ -4,6 +4,7 @@ using Atlas.Plans.Infrastructure.Persistance;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Atlas.Plans.Infrastructure.Migrations
 {
     [DbContext(typeof(PlansDatabaseContext))]
-    partial class PlansDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20240413214829_Feature_Code")]
+    partial class Feature_Code
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,29 +25,6 @@ namespace Atlas.Plans.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("Atlas.Plans.Domain.Entities.CreditTrackerEntity.CreditTracker", b =>
-                {
-                    b.Property<Guid>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedOnUtc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("CurrentCreditCount")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MaxCreditCount")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedOnUtc")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("UserId");
-
-                    b.ToTable("CreditTrackers", "Plans");
-                });
 
             modelBuilder.Entity("Atlas.Plans.Domain.Entities.FeatureEntity.Feature", b =>
                 {

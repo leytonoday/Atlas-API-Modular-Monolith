@@ -16,6 +16,11 @@ public class Feature : Entity<Guid>, IAggregateRoot
     public string Name { get; private set; } = null!;
 
     /// <summary>
+    /// A unique string used to identify this feature.
+    /// </summary>
+    public string Code { get; private set; } = null!;
+
+    /// <summary>
     /// Gets or sets whether the <see cref="Feature"/> is inheritable. If true, it means that when a <see cref="PlanFeatureEntity"/> has this as a feature, 
     /// other <see cref="PlanFeatureEntity"/> entities can inherit the feature.
     /// </summary>
@@ -48,7 +53,7 @@ public class Feature : Entity<Guid>, IAggregateRoot
         // Ensure the name is unique
         await CheckAsyncBusinessRule(new FeatureNameMustBeUniqueBusinessRule(name, featureRepository), cancellationToken);
 
-        return new Feature { Name = name, Description = description, IsInheritable = isInheritable, IsHidden = isHidden };
+        return new Feature { Name = name, Description = description, IsInheritable = isInheritable, IsHidden = isHidden, Code = NormaliseFeatureName(name) };
     }
 
     public static async Task<Feature> UpdateAsync(
@@ -72,9 +77,15 @@ public class Feature : Entity<Guid>, IAggregateRoot
         feature.Description = description;
         feature.IsInheritable = isInheritable;
         feature.IsHidden = isHidden;
+        feature.Code = NormaliseFeatureName(name);
 
         feature.AddDomainEvent(new FeatureUpdatedDomainEvent(feature.Id, hasIsInheritableChanged));
 
         return feature;
+    }
+
+    private static string NormaliseFeatureName(string featureName)
+    {
+        return featureName.Replace(' ', '_').ToUpperInvariant();
     }
 }

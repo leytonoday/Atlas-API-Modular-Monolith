@@ -7,6 +7,10 @@ using Atlas.Shared.Application.Abstractions.Messaging.Queue;
 using Atlas.Law.Domain.Errors;
 using Atlas.Shared.Domain;
 using Atlas.Law.Domain.Entities.LegalDocumentSummaryEntity;
+using Atlas.Shared.Application.ModuleBridge;
+using Atlas.Shared.Application.Abstractions;
+using Atlas.Shared.Application.Queue;
+using Atlas.Law.Application.CQRS.LegalDocuments.Queue.DecreaseCredits;
 
 namespace Atlas.Law.Application.CQRS.LegalDocuments.Queue.ProcessLegalDocumentSummary;
 
@@ -15,13 +19,21 @@ internal sealed class ProcessLegalDocumentSummaryQueuedCommandHandler(
     ILegalDocumentRepository legalDocumentRepository, 
     IEurLexSumDocumentRepository eurLexSumDocumentRepository,
     IVectorDatabaseService vectorDatabaseService, 
-    ILargeLanguageModelService largeLanguageModelService
+    ILargeLanguageModelService largeLanguageModelService,
+    IModuleBridge moduleBridge,
+    IQueueWriter queueWriter
     ) : IQueuedCommandHandler<ProcessLegalDocumentSummaryQueuedCommand>
 {
     public async Task Handle(ProcessLegalDocumentSummaryQueuedCommand request, CancellationToken cancellationToken)
     {
         LegalDocument legalDocument = await legalDocumentRepository.GetByIdAsync(request.LegalDocumentId, false, cancellationToken)
             ?? throw new ErrorException(LawDomainErrors.Law.LegalDocumentNotFound);
+
+        bool hasCredits = await moduleBridge.DoesUserHaveCredits(legalDocument.UserId, cancellationToken);
+        if (!hasCredits)
+        {
+            return; // If there's no credits, just return
+        }
 
         // There may be a summary created from previous failed summary attempt. Delete it
         if (legalDocument.Summary is not null)
@@ -63,5 +75,7 @@ internal sealed class ProcessLegalDocumentSummaryQueuedCommandHandler(
         SummariseDocumentResult result = await largeLanguageModelService.SummariseDocumentAsync(legalDocument.FullText, legalDocument.Language, similarDocuments, cancellationToken);
 
         LegalDocumentSummary.SetSummary(summary, result.SummarisedText, result.SummarisedTitle, string.Join(',', ""));
+
+        await queueWriter.WriteAsync(new DecreaseCreditsQueuedCommand(legalDocument.UserId), cancellationToken);
     }
 }

@@ -23,6 +23,7 @@ using Atlas.Shared.Infrastructure;
 using Atlas.Shared.Infrastructure.Persistance.Interceptors;
 using Atlas.Shared.Infrastructure.Module;
 using Atlas.Plans.Infrastructure.Module;
+using Atlas.Plans.Domain.Entities.CreditTrackerEntity;
 
 namespace Atlas.Plans.Infrastructure.Extensions;
 
@@ -76,6 +77,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IPlanRepository, PlanRepository>();
         services.AddScoped<IFeatureRepository, FeatureRepository>();
         services.AddScoped<IStripeCustomerRepository, StripeCustomerRepository>();
+        services.AddScoped<ICreditTrackerRepository, CreditTrackerRepository>();
         services.AddScoped<IStripeCardFingerprintRepository, StripeCardFingerprintRepository>();
 
         services.AddDbContext<PlansDatabaseContext>((provider, options) =>

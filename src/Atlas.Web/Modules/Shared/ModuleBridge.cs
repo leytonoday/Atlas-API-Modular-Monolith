@@ -1,12 +1,14 @@
-﻿using Atlas.Shared.Application.ModuleBridge;
-using Atlas.Users.Application.CQRS.Users.Commands.SetUserPlanId;
+﻿using Atlas.Plans.Application.CQRS.CreditTrackers.Commands.DecreaseUserCredits;
+using Atlas.Plans.Application.CQRS.CreditTrackers.Queries.GetDoesUserHaveCredits;
+using Atlas.Plans.Infrastructure.Module;
+using Atlas.Shared.Application.ModuleBridge;
 using Atlas.Users.Application.CQRS.Users.Queries.GetUserById;
 using Atlas.Users.Application.CQRS.Users.Shared;
 using Atlas.Users.Infrastructure.Module;
 
 namespace Atlas.Web.Modules.Shared;
 
-public class ModuleBridge(IUsersModule usersModule) : IModuleBridge
+public class ModuleBridge(IUsersModule usersModule, IPlansModule plansModule) : IModuleBridge
 {
     public async Task<Guid?> GetUserPlanId(Guid userId, CancellationToken cancellationToken)
     {
@@ -14,8 +16,13 @@ public class ModuleBridge(IUsersModule usersModule) : IModuleBridge
         return userDto.PlanId;
     }
 
-    public async Task SetUserPlanId(Guid userId, Guid? planId, CancellationToken cancellationToken)
+    public async Task<bool> DoesUserHaveCredits(Guid userId, CancellationToken cancellationToken)
     {
-        await usersModule.SendCommand(new SetUserPlanIdCommand(userId, planId), cancellationToken);
+        return await plansModule.SendQuery(new GetDoesUserHaveCreditsQuery(userId), cancellationToken);
+    }
+
+    public async Task DecreaseUserCredits(Guid userId, CancellationToken cancellationToken)
+    {
+        await plansModule.SendCommand(new DecreaseUserCreditsCommand(userId), cancellationToken);
     }
 }

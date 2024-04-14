@@ -5,7 +5,9 @@
 /// </summary>
 public interface IModuleBridge
 {
-    public Task SetUserPlanId(Guid userId, Guid? planId, CancellationToken cancellationToken);
-
     public Task<Guid?> GetUserPlanId(Guid userId, CancellationToken cancellationToken);
+
+    public Task<bool> DoesUserHaveCredits(Guid userId, CancellationToken cancellationToken);
+
+    public Task DecreaseUserCredits(Guid userId, CancellationToken cancellationToken);
 }

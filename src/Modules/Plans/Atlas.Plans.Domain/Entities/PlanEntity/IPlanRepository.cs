@@ -35,4 +35,6 @@ public interface IPlanRepository : IRepository<Plan, Guid>
     public Task UpdatePlanFeatureAsync(PlanFeature planFeature, CancellationToken cancellationToken);
 
     public Task<PlanFeature?> GetPlanFeatureAsync(Guid planId, Guid featureId, bool trackChanges, CancellationToken cancellationToken);
+
+
 }

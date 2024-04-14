@@ -1,4 +1,5 @@
-﻿using Atlas.Shared.Infrastructure.Integration.Bus;
+﻿using Atlas.Plans.IntegrationEvents;
+using Atlas.Shared.Infrastructure.Integration.Bus;
 using Atlas.Shared.Infrastructure.Module;
 using Atlas.Shared.IntegrationEvents;
 using Microsoft.Extensions.Logging;
@@ -14,7 +15,8 @@ internal class UsersEventBusStartup : IEventBusStartup
 
     public static void SubscribeToIntegrationEvents(ILogger logger, IEventBus eventBus)
     {
-
+        SubscribeToIntegrationEvent<PaymentSuccessIntegrationEvent>(logger, eventBus);
+        SubscribeToIntegrationEvent<PaymentFailedIntegrationEvent>(logger, eventBus);
     }
 
     private static void SubscribeToIntegrationEvent<TIntegrationEvent>(ILogger logger, IEventBus eventBus)

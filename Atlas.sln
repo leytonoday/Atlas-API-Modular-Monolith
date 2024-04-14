@@ -43,21 +43,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Atlas.Plans.IntegrationEven
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Atlas.Users.IntegrationEvents", "src\Modules\Users\Atlas.Users.IntegrationEvents\Atlas.Users.IntegrationEvents.csproj", "{64944EF5-37F5-4CEA-A35F-692D660968CC}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{7BDAD5F5-24CD-4770-A8FF-4175056C2185}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{206F1F62-B548-409F-B970-E3E3778AE50F}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Atlas.Tests.Shared", "src\Tests\Atlas.Tests.Shared\Atlas.Tests.Shared.csproj", "{3BD2F650-CF7E-4F5B-86D2-254680A51E18}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Atlas.ArchTests", "src\Tests\Atlas.ArchTests\Atlas.ArchTests.csproj", "{E3BD5C99-D49F-4CB2-84B8-910C41AF3811}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Law", "Law", "{BF88895C-4456-4FCE-A8AE-D47A9930963B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atlas.Law.Domain", "src\Modules\Law\Atlas.Law.Domain\Atlas.Law.Domain.csproj", "{0B9EB605-21A4-4870-8F22-C235D1A3F890}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Atlas.Law.Domain", "src\Modules\Law\Atlas.Law.Domain\Atlas.Law.Domain.csproj", "{0B9EB605-21A4-4870-8F22-C235D1A3F890}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atlas.Law.Application", "src\Modules\Law\Atlas.Law.Application\Atlas.Law.Application.csproj", "{F7E72106-CFA8-4C48-9BC7-3AABA540E1ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Atlas.Law.Application", "src\Modules\Law\Atlas.Law.Application\Atlas.Law.Application.csproj", "{F7E72106-CFA8-4C48-9BC7-3AABA540E1ED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atlas.Law.Infrastructure", "src\Modules\Law\Atlas.Law.Infrastructure\Atlas.Law.Infrastructure.csproj", "{C039FE11-60A5-48D7-B97B-F8E5F8628B11}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Atlas.Law.Infrastructure", "src\Modules\Law\Atlas.Law.Infrastructure\Atlas.Law.Infrastructure.csproj", "{C039FE11-60A5-48D7-B97B-F8E5F8628B11}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -166,8 +162,6 @@ Global
 		{BF032A0A-CD4E-4F83-AF7E-5588838FB468} = {DC95E870-FC45-4C49-AEFC-8CB224E77C35}
 		{DA97CB17-074F-43C1-88D6-87D95E4327C0} = {E68FD7F0-3DDD-46F6-B6DD-9AEBCC11A303}
 		{64944EF5-37F5-4CEA-A35F-692D660968CC} = {67DD32D8-C7AC-4ECE-BD91-6DCCECB0991C}
-		{7BDAD5F5-24CD-4770-A8FF-4175056C2185} = {E68FD7F0-3DDD-46F6-B6DD-9AEBCC11A303}
-		{206F1F62-B548-409F-B970-E3E3778AE50F} = {67DD32D8-C7AC-4ECE-BD91-6DCCECB0991C}
 		{3BD2F650-CF7E-4F5B-86D2-254680A51E18} = {CA2E7E6F-9743-483A-95F0-D0ECF99AC852}
 		{E3BD5C99-D49F-4CB2-84B8-910C41AF3811} = {CA2E7E6F-9743-483A-95F0-D0ECF99AC852}
 		{BF88895C-4456-4FCE-A8AE-D47A9930963B} = {1C032716-C75E-47A0-B6AA-D743BBA8413B}

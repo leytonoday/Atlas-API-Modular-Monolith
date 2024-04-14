@@ -1,4 +1,6 @@
-﻿namespace Atlas.Plans.Infrastructure;
+﻿using Atlas.Plans.Domain.Entities.CreditTrackerEntity;
+
+namespace Atlas.Plans.Infrastructure;
 
 internal static class PlansConstants
 {
@@ -16,6 +18,11 @@ internal static class PlansConstants
         /// Represents the table name for <see cref="Feature"/> entities in the database.
         /// </summary>
         internal const string Features = nameof(Features);
+
+        /// <summary>
+        /// Represents the table name for <see cref="CreditTracker"/> entities in the database.
+        /// </summary>
+        internal const string CreditTrackers = nameof(CreditTrackers);
 
         /// <summary>
         /// Represents the table name for <see cref="Plan"/> entities in the database.

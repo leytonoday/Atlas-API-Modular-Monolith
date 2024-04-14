@@ -1,10 +1,16 @@
-﻿using Atlas.Plans.Domain.Entities.StripeCardFingerprintEntity;
+﻿using Atlas.Plans.Domain.Entities.CreditTrackerEntity;
+using Atlas.Plans.Domain.Entities.FeatureEntity;
+using Atlas.Plans.Domain.Entities.PlanEntity;
+using Atlas.Plans.Domain.Entities.StripeCardFingerprintEntity;
 using Atlas.Plans.Domain.Entities.StripeCustomerEntity;
 using Atlas.Plans.Domain.Errors;
 using Atlas.Plans.Domain.Services;
+using Atlas.Plans.IntegrationEvents;
+using Atlas.Shared.Application.Abstractions.Integration.Outbox;
 using Atlas.Shared.Application.Abstractions.Messaging.Command;
 using Atlas.Shared.Application.Abstractions.Services;
 using Atlas.Shared.Application.ModuleBridge;
+using Atlas.Shared.Application.Queue;
 using Atlas.Shared.Domain.Exceptions;
 using Stripe;
 
@@ -13,8 +19,12 @@ namespace Atlas.Plans.Application.CQRS.Webhooks.Commands.HandleStripeWebhook;
 internal sealed class HandleStripeWebhookCommandHandler(
     IStripeService stripeService,
     IStripeCustomerRepository stripeCustomerRepository,
-    IModuleBridge moduleBridge,
+    IQueueWriter queueWriter,
+    IOutboxWriter outboxWriter,
     ISupportNotifierService supportNotifierService,
+    IPlanRepository planRepository, 
+    IFeatureRepository featureRepository,
+    ICreditTrackerRepository creditTrackerRepository,
     IStripeCardFingerprintRepository stripeCardFingerprintRepository) : ICommandHandler<HandleStripeWebhookCommand>
 {
     public async Task Handle(HandleStripeWebhookCommand request, CancellationToken cancellationToken)
@@ -68,9 +78,18 @@ internal sealed class HandleStripeWebhookCommandHandler(
 
         await AddCardFingerprintIfNewAsync(invoice, subscription, cancellationToken);
 
+        string interval = subscription.Items.First().Price.Recurring.Interval;
+        int creditMultiplier = interval == "month" ? 1 : 12; // If the user has an annual subscription, then they get 12 months worth of monthly credits all in one
+
+        CreditTracker? creditTracker = await creditTrackerRepository.GetByUserIdAsync(stripeCustomer.UserId, true, cancellationToken);
+        
+        await CreditTracker.SetCreditCountAsync(creditTracker, new Guid(planId), planRepository, cancellationToken, creditMultiplier);
+
+        await creditTrackerRepository.UpdateAsync(creditTracker, cancellationToken);
+
         // Set the user's planId to the planId that was specified in the subscription's metadata.
         // The result of this is that this user should have access to all of this Plan's features
-        await moduleBridge.SetUserPlanId(stripeCustomer.UserId, new Guid(planId), cancellationToken);
+        await outboxWriter.WriteAsync(new PaymentSuccessIntegrationEvent(stripeCustomer.UserId, new Guid(planId)), cancellationToken);
     }
 
     /// <summary>
@@ -133,10 +152,17 @@ internal sealed class HandleStripeWebhookCommandHandler(
         StripeCustomer? stripeCustomer = await stripeCustomerRepository.GetByStripeCustomerId(customer.Id, false, cancellationToken)
             ?? throw new ErrorException(PlansDomainErrors.StripeCustomer.StripeCustomerNotFound);
 
+        CreditTracker? creditTracker = await creditTrackerRepository.GetByUserIdAsync(stripeCustomer.UserId, true, cancellationToken);
+
+        CreditTracker.ClearCreditCount(creditTracker!);
+
+        await creditTrackerRepository.UpdateAsync(creditTracker!, cancellationToken);
+
         // TODO - Send email to user, AND specify the reason for the failure.
 
         // Clear the user's planId. The result of clearing this planId means the user cannot access any of that Plan's features anymore
-        await moduleBridge.SetUserPlanId(stripeCustomer.UserId, null, cancellationToken);
+        await outboxWriter.WriteAsync(new PaymentFailedIntegrationEvent(stripeCustomer.UserId), cancellationToken);
+
     }
 
     /// <summary>
@@ -155,7 +181,7 @@ internal sealed class HandleStripeWebhookCommandHandler(
             ?? throw new ErrorException(PlansDomainErrors.StripeCustomer.StripeCustomerNotFound);
 
         // Clear the user's planId
-        await moduleBridge.SetUserPlanId(stripeCustomer.UserId, null, cancellationToken);
+        await outboxWriter.WriteAsync(new PaymentFailedIntegrationEvent(stripeCustomer.UserId), cancellationToken);
 
         // If the user's subscription is cancelled automatically as a result of multiple failed payments, then we need to void all open invoices.
         await stripeService.VoidAllOpenInvoicesAsync(stripeCustomer.StripeCustomerId, cancellationToken);

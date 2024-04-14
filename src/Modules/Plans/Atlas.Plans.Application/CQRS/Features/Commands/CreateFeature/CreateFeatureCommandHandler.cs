@@ -1,7 +1,5 @@
-﻿using Atlas.Plans.Domain;
-using Atlas.Plans.Domain.Entities.FeatureEntity;
+﻿using Atlas.Plans.Domain.Entities.FeatureEntity;
 using Atlas.Shared.Application.Abstractions.Messaging.Command;
-using MediatR;
 
 namespace Atlas.Plans.Application.CQRS.Features.Commands.CreateFeature;
 
@@ -13,7 +11,7 @@ internal sealed class CreateFeatureCommandHandler(IFeatureRepository featureRepo
             request.Name, 
             request.Description, 
             request.IsInheritable, 
-            request.IsHidden,
+            request.IsHidden, 
             featureRepository, 
             cancellationToken);
 

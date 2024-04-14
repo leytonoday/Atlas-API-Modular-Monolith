@@ -8,4 +8,6 @@ namespace Atlas.Plans.Domain.Entities.FeatureEntity;
 public interface IFeatureRepository : IRepository<Feature, Guid>
 {
     public Task<Feature?> GetByNameAsync(string name, bool trackChanges, CancellationToken cancellationToken);
+
+    public Task<Feature?> GetByCodeAsync(string code, bool trackChanges, CancellationToken cancellationToken);
 }
