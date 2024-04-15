@@ -1,10 +1,17 @@
-﻿using Atlas.Shared.Infrastructure.Queue;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Atlas.Shared.Infrastructure.Integration.Inbox;
 
+/// <summary>
+/// Provides extension methods for adding inbox-related entities to a DbContext model.
+/// </summary>
 public static class InboxExtensions
 {
+    /// <summary>
+    /// Adds the <see cref="InboxMessage"/> entity to the DbContext model, specifying the table name and schema.
+    /// </summary>
+    /// <param name="modelBuilder">The DbContext model builder.</param>
+    /// <param name="schema">The schema name for the inbox tables.</param>
     public static void AddInbox(this ModelBuilder modelBuilder, string schema)
     {
         modelBuilder.Entity<InboxMessage>(entity =>

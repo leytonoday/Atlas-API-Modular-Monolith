@@ -29,6 +29,14 @@ namespace Atlas.Shared.Infrastructure.Extensions;
 
 public static class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Registers dependencies that are common between all modules.
+    /// </summary>
+    /// <typeparam name="TDatabaseContext">The type of DbContext used for database access.</typeparam>
+    /// <typeparam name="TCompositionRoot">The type implementing the ICompositionRoot dependency resolution.</typeparam>
+    /// <param name="services">The IServiceCollection instance to add services to.</param>
+    /// <param name="configuration">An instance of IConfiguration for accessing application settings.</param>
+    /// <returns>The updated IServiceCollection</returns>
     public static IServiceCollection AddCommon<TDatabaseContext, TCompositionRoot>(this IServiceCollection services, IConfiguration configuration)
         where TDatabaseContext : DbContext
         where TCompositionRoot : ICompositionRoot
@@ -42,7 +50,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationPipelineBehavior<,>));
 
         // External communications
-        services.AddEmailServices<TCompositionRoot>();
+        services.AddEmailServices();
         services.AddScoped<ISupportNotifierService, SupportNotifierService>();
 
         // Background task queue
@@ -66,6 +74,11 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
+    /// <summary>
+    /// Configures various application options using dedicated setup classes.
+    /// </summary>
+    /// <param name="services">The IServiceCollection instance to configure options.</param>
+    /// <returns>The updated IServiceCollection</returns>
     public static IServiceCollection AddOptions(this IServiceCollection services)
     {
         return services
@@ -74,34 +87,56 @@ public static class ServiceCollectionExtensions
             .ConfigureOptions<SupportNotificationOptionsSetup>();
     }
 
-    public static IServiceCollection AddEmailServices<TCompositionRoot>(this IServiceCollection services) where TCompositionRoot : ICompositionRoot
+    /// <summary>
+    /// Registers email-related services.
+    /// </summary>
+    /// <param name="services">The IServiceCollection instance to add services to.</param>
+    /// <returns>The updated IServiceCollection</returns>
+    public static IServiceCollection AddEmailServices(this IServiceCollection services)
     {
-        services.AddMvcCore().AddRazorViewEngine();
-        services.AddScoped<IEmailService, EmailService>();
-        services.AddScoped<EmailContentBuilder>();
-
+        services.AddMvcCore().AddRazorViewEngine(); // Enables MVC for potentially rendering email templates
+        services.AddScoped<IEmailService, EmailService>(); // Registers the concrete implementation for sending emails
+        services.AddScoped<EmailContentBuilder>(); // Registers a service for building email content
         return services;
     }
 
+    /// <summary>
+    /// Registers a singleton background task queue with a fixed concurrency limit.
+    /// </summary>
+    /// <param name="services">The IServiceCollection instance to add services to.</param>
+    /// <returns>The updated IServiceCollection</returns>
     public static IServiceCollection AddBackgroundTaskQueue(this IServiceCollection services)
     {
         services.AddSingleton<IBackgroundTaskQueue, BackgroundTaskQueue>(_ =>
-            new BackgroundTaskQueue(100)
-        );
-
+        {
+            // Configure concurrency limit (100 in this case)
+            return new BackgroundTaskQueue(100);
+        });
         return services;
     }
 
+    /// <summary>
+    /// Registers database interceptors.
+    /// </summary>
+    /// <param name="services">The IServiceCollection instance to add services to.</param>
+    /// <returns>The updated IServiceCollection</returns>
     public static IServiceCollection AddDatabaseInterceptors(this IServiceCollection services)
     {
-        services.AddSingleton<UpdateAuditableEntitiesInterceptor>();
-        services.AddSingleton<DomainEventPublisherInterceptor>();
+        services.AddSingleton<UpdateAuditableEntitiesInterceptor>(); // Intercepts to update auditable entity properties
+        services.AddSingleton<DomainEventPublisherInterceptor>(); // Intercepts to publish domain events after saving changes
         return services;
     }
 
+    /// <summary>
+    /// Registers validators from the provided assembly using FluentValidation.
+    /// </summary>
+    /// <param name="services">The IServiceCollection instance to add services to.</param>
+    /// <param name="assembly">The assembly containing the validator classes.</param>
+    /// <returns>The updated IServiceCollection</returns>
     public static IServiceCollection AddValidation(this IServiceCollection services, Assembly assembly)
     {
-        services.AddValidatorsFromAssembly(assembly);
+        services.AddValidatorsFromAssembly(assembly); // Registers validators using FluentValidation
         return services;
     }
+
 }

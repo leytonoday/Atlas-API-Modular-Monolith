@@ -3,6 +3,10 @@ using Newtonsoft.Json;
 
 namespace Atlas.Shared.Application.Queue;
 
+/// <summary>
+/// Represents a message stored in a queue system. 
+/// This message contains information about an event and the data associated with it.
+/// </summary>
 public class QueueMessage
 {
     /// <summary>

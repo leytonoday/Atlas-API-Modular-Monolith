@@ -4,6 +4,9 @@ using Newtonsoft.Json;
 
 namespace Atlas.Shared.Infrastructure.Integration.Outbox;
 
+/// <summary>
+/// Represents an inbox message that stores an integration event for later processing.
+/// </summary>
 public class OutboxMessage
 {
     /// <summary>

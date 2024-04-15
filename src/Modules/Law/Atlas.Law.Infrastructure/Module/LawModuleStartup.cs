@@ -23,16 +23,13 @@ public class LawModuleStartup : IModuleStartup
 {
     private static IScheduler? _scheduler;
 
-    public static async Task Start(IModuleBridge moduleBridge, IExecutionContextAccessor executionContextAccessor, IConfiguration configuration, IEventBus eventBus, ILoggerFactory loggerFactory, bool enableScheduler = true)
+    public static async Task Start(IModuleBridge moduleBridge, IExecutionContextAccessor executionContextAccessor, IConfiguration configuration, IEventBus eventBus, ILoggerFactory loggerFactory)
     {
         SetupCompositionRoot(moduleBridge, executionContextAccessor, configuration, eventBus, loggerFactory);
 
         LawEventBusStartup.Initialize(loggerFactory.CreateLogger<LawEventBusStartup>(), eventBus);
 
-        if (enableScheduler)
-        {
-            _scheduler = await SetupScheduledJobs();
-        }
+        _scheduler = await SetupScheduledJobs();
     }
 
     /// <inheritdoc />
@@ -44,6 +41,7 @@ public class LawModuleStartup : IModuleStartup
         }
     }
 
+    /// <inheritdoc />
     public static void SetupCompositionRoot(IModuleBridge moduleBridge, IExecutionContextAccessor executionContextAccessor, IConfiguration configuration, IEventBus eventBus, ILoggerFactory loggerFactory)
     {
         var serviceProvider = new ServiceCollection()

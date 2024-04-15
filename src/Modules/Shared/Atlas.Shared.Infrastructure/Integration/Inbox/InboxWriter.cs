@@ -4,10 +4,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Atlas.Shared.Infrastructure.Integration.Inbox;
 
+/// <inheritdoc cref="IInboxWriter"/>
 internal class InboxWriter<TDatabaseContext>(TDatabaseContext databaseContext) : IInboxWriter where TDatabaseContext : DbContext
 {
     private DbSet<InboxMessage> GetDbSet() => databaseContext.Set<InboxMessage>();
 
+    /// <inheritdoc/>
     public Task WriteAsync(IIntegrationEvent integrationEvent, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
@@ -18,6 +20,7 @@ internal class InboxWriter<TDatabaseContext>(TDatabaseContext databaseContext) :
         return Task.CompletedTask;
     }
 
+    /// <inheritdoc/>
     public async Task<bool> IsInboxItemAlreadyHandledAsync(Guid id, string handlerName, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
@@ -27,6 +30,7 @@ internal class InboxWriter<TDatabaseContext>(TDatabaseContext databaseContext) :
             .AnyAsync(x => x.InboxMessageId == id && x.HandlerName == handlerName, cancellationToken);
     }
 
+    /// <inheritdoc/>
     public void MarkInboxItemAsHandled(Guid id, string handerName, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();

@@ -1,16 +1,17 @@
-﻿using Atlas.Shared.Application.Abstractions.Messaging.Query;
-
-namespace Atlas.Shared.Infrastructure.Decorators;
+﻿namespace Atlas.Shared.Infrastructure.Decorators;
 
 /// <summary>
-/// Marker interface used to denote if some request or notification handler is actually a decorator.
+/// Internal marker interface used to identify request or notification handler decorators.
 /// </summary>
 internal interface IIsDecorator
 {
+    /// <summary>
+    /// Static method to check if a given type implements the <see cref="IIsDecorator"/> interface.
+    /// </summary>
+    /// <param name="type">The type to be checked.</param>
+    /// <returns>True if the type implements <see cref="IIsDecorator"/>, false otherwise.</returns>
     public static bool IsDecorator(Type type)
     {
-        Type iIsDecorator = typeof(IIsDecorator);
-
-        return iIsDecorator.IsAssignableFrom(type);
+        return typeof(IIsDecorator).IsAssignableFrom(type);
     }
 }

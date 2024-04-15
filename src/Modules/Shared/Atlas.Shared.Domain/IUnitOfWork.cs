@@ -1,5 +1,8 @@
 ﻿namespace Atlas.Shared.Domain;
 
+/// <summary>
+/// Represents a unit of work for managing database transactions.
+/// </summary>
 public interface IUnitOfWork
 {
     /// <summary>

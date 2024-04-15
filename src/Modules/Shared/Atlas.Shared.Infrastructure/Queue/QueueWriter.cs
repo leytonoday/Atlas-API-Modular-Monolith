@@ -5,10 +5,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Atlas.Shared.Infrastructure.CommandQueue;
 
+/// <inheritdoc cref="IQueueWriter"/>
 public class QueueWriter<TDatabaseContext>(TDatabaseContext databaseContext) : IQueueWriter where TDatabaseContext : DbContext
 {
     private DbSet<QueueMessage> GetDbSet() => databaseContext.Set<QueueMessage>();
 
+    /// <inheritdoc/>
     public Task WriteAsync(QueuedCommand queuedCommand, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
@@ -19,6 +21,7 @@ public class QueueWriter<TDatabaseContext>(TDatabaseContext databaseContext) : I
         return Task.CompletedTask;
     }
 
+    /// <inheritdoc/>
     public async Task<bool> IsQueueItemAlreadyHandledAsync(Guid id, string handlerName, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
@@ -28,6 +31,7 @@ public class QueueWriter<TDatabaseContext>(TDatabaseContext databaseContext) : I
             .AnyAsync(x => x.QueuedCommandId == id && x.HandlerName == handlerName, cancellationToken);
     }
 
+    /// <inheritdoc/>
     public void MarkQueueItemAsHandled(Guid id, string handerName, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();

@@ -1,9 +1,11 @@
 ﻿using Atlas.Shared.IntegrationEvents;
 using Newtonsoft.Json;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Atlas.Shared.Infrastructure.Integration.Inbox;
 
+/// <summary>
+/// Represents an inbox message that stores an integration event for later processing.
+/// </summary>
 public class InboxMessage
 {
     /// <summary>

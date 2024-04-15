@@ -10,7 +10,6 @@ using Atlas.Shared.Infrastructure.Module;
 using Atlas.Shared.Infrastructure.BackgroundJobs;
 using Atlas.Shared.Infrastructure.Integration;
 using Atlas.Users.Infrastructure.Persistance;
-using Microsoft.AspNetCore.Hosting;
 using Atlas.Shared.Application.Abstractions;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
@@ -25,16 +24,13 @@ public class UsersModuleStartup : IModuleStartup
     private static IScheduler? _scheduler;
 
     /// <inheritdoc />
-    public static async Task Start(IModuleBridge moduleBridge, IExecutionContextAccessor executionContextAccessor, IConfiguration configuration, IEventBus eventBus, ILoggerFactory loggerFactory, bool enableScheduler = true)
+    public static async Task Start(IModuleBridge moduleBridge, IExecutionContextAccessor executionContextAccessor, IConfiguration configuration, IEventBus eventBus, ILoggerFactory loggerFactory)
     {
         SetupCompositionRoot(moduleBridge, executionContextAccessor, configuration, eventBus, loggerFactory);
 
         UsersEventBusStartup.Initialize(loggerFactory.CreateLogger<UsersEventBusStartup>(), eventBus);
-
-        if (enableScheduler)
-        {
-            _scheduler = await SetupScheduledJobs();
-        }
+        
+        _scheduler = await SetupScheduledJobs();
     }
 
     /// <inheritdoc />
@@ -65,6 +61,7 @@ public class UsersModuleStartup : IModuleStartup
         return scheduler;
     }
 
+    /// <inheritdoc />
     public static void SetupCompositionRoot(IModuleBridge moduleBridge, IExecutionContextAccessor executionContextAccessor, IConfiguration configuration, IEventBus eventBus, ILoggerFactory loggerFactory)
     {
         var serviceProvider = new ServiceCollection()

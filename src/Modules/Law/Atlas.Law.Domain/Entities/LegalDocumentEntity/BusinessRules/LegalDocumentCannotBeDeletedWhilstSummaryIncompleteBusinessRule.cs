@@ -3,11 +3,11 @@ using Atlas.Shared.Domain.BusinessRules;
 
 namespace Atlas.Law.Domain.Entities.LegalDocumentEntity.BusinessRules;
 
-internal class LegalDocumentCannotBeDeletedWhilstSummaryIncomplete(LegalDocument legalDocument) : IBusinessRule
+internal class LegalDocumentCannotBeDeletedWhilstSummaryIncompleteBusinessRule(LegalDocument legalDocument) : IBusinessRule
 {
     public string Message => "A LegalDocument cannot be deleted if it has a summary that is not complete.";
 
-    public string Code => $"LegalDocument.{nameof(LegalDocumentCannotBeDeletedWhilstSummaryIncomplete)}";
+    public string Code => $"LegalDocument.{nameof(LegalDocumentCannotBeDeletedWhilstSummaryIncompleteBusinessRule)}";
 
 
     public bool IsBroken()

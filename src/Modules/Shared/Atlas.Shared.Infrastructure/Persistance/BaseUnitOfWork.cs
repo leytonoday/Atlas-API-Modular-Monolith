@@ -4,10 +4,12 @@ using Microsoft.Extensions.Logging;
 
 namespace Atlas.Shared.Infrastructure.Persistance;
 
+/// <inheritdoc cref="IUnitOfWork"/>
 public abstract class BaseUnitOfWork<TDatabaseContext, IUnitOfWorkLogger>(TDatabaseContext databaseContext, IUnitOfWorkLogger logger) : IUnitOfWork 
     where TDatabaseContext : DbContext
     where IUnitOfWorkLogger : ILogger
 { 
+    /// <inheritdoc/>
     public async Task CommitAsync(CancellationToken cancellationToken = default)
     {
         using var dbContextTransaction = databaseContext.Database.BeginTransaction();
@@ -29,6 +31,7 @@ public abstract class BaseUnitOfWork<TDatabaseContext, IUnitOfWorkLogger>(TDatab
         }
     }
 
+    /// <inheritdoc/>
     public bool HasUnsavedChanges()
     {
         return databaseContext.ChangeTracker.Entries().Any(e => e.State == EntityState.Added || e.State == EntityState.Modified || e.State == EntityState.Deleted);

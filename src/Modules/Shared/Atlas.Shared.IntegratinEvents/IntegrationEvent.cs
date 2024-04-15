@@ -1,9 +1,6 @@
 ﻿namespace Atlas.Shared.IntegrationEvents;
 
-/// <summary>
-/// Represents an integration event, which communicates something that has happened within the system to other systems or services. 
-/// In the context of a domain-driven-design monolith, it's an event that indicates something should happen that concerns other sub-domains.
-/// </summary>
+/// <inheritdoc cref="IIntegrationEvent"/>
 public abstract record IntegrationEvent(Guid Id, DateTime OccuredOnUtc) : IIntegrationEvent
 {
     /// <summary>

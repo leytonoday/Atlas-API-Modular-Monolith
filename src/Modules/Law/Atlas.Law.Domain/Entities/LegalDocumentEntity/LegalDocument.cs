@@ -45,7 +45,7 @@ public sealed class LegalDocument : Entity<Guid>, IAggregateRoot
         ILegalDocumentRepository legalDocumentRepository,
         CancellationToken cancellationToken)
     {
-        CheckBusinessRule(new LegalDocumentCannotBeDeletedWhilstSummaryIncomplete(legalDocument));
+        CheckBusinessRule(new LegalDocumentCannotBeDeletedWhilstSummaryIncompleteBusinessRule(legalDocument));
 
         await legalDocumentRepository.RemoveAsync(legalDocument, cancellationToken);
     }

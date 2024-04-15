@@ -3,10 +3,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Atlas.Shared.Infrastructure.Queue;
 
+/// <summary>
+/// Implements the <see cref="IOutboxReader"/> interface for reading outbox messages from a DbContext of type <see cref="TDatabaseContext"/>.
+/// </summary>
 public class OutboxReader<TDatabaseContext>(TDatabaseContext databaseContext) : IOutboxReader where TDatabaseContext : DbContext
 {
     private DbSet<OutboxMessage> GetDbSet() => databaseContext.Set<OutboxMessage>();
 
+    /// <inheritdoc/>
     public async Task<List<OutboxMessage>> ListPendingAsync(CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
@@ -19,6 +23,7 @@ public class OutboxReader<TDatabaseContext>(TDatabaseContext databaseContext) : 
             .ToListAsync(cancellationToken);
     }
 
+    /// <inheritdoc/>
     public Task MarkProcessedAsync(OutboxMessage outboxMessage, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();

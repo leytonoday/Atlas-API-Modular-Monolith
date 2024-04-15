@@ -6,6 +6,12 @@ using MediatR;
 
 namespace Atlas.Shared.Infrastructure.Decorators;
 
+/// <summary>
+/// Decorator for request handlers that should be idempotent.
+/// </summary>
+/// <typeparam name="TRequest">The type of request being handled.</typeparam>
+/// <param name="decoratedHandler">The inner request handler to be decorated.</param>
+/// <param name="context">The decorator context used to resolve dependencies.</param>
 class RequestIdempotenceDecorator<TRequest>(IRequestHandler<TRequest> decoratedHandler, IDecoratorContext context) : IIsDecorator, IRequestHandler<TRequest> where TRequest : class, IRequest
 {
     private readonly IQueueWriter _queueWriter = context.Resolve<IQueueWriter>();
@@ -24,6 +30,13 @@ class RequestIdempotenceDecorator<TRequest>(IRequestHandler<TRequest> decoratedH
         }
     }
 
+    /// <summary>
+    /// Handles idempotence for queued commands by checking if the command has already been processed by this handler.
+    /// </summary>
+    /// <param name="requestHandlerName">The name of the request handler (decorated handler).</param>
+    /// <param name="queuedCommand">The queued command to be processed.</param>
+    /// <param name="cancellationToken">Propogates notification that operations should be cancelled.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     private async Task HandleQueuedCommandIdempotence(string requestHandlerName, QueuedCommand queuedCommand, CancellationToken cancellationToken) 
     {
         // Check if this command has been handled by this command handler previously

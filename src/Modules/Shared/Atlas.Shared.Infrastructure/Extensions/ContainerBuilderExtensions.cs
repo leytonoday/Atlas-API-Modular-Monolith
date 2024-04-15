@@ -1,6 +1,5 @@
 ﻿using Atlas.Shared.Infrastructure.Decorators;
 using Autofac;
-using Autofac.Features.Decorators;
 using MediatR;
 
 namespace Atlas.Shared.Infrastructure.Extensions;

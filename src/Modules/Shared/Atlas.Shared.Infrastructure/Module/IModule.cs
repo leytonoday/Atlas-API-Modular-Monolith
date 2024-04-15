@@ -5,7 +5,7 @@ using MediatR;
 namespace Atlas.Shared.Infrastructure.Module;
 
 /// <summary>
-/// Represends a module in a modular monolith architecture.
+/// Represends a module in a modular monolith architecture. Acts as a facade between the API and the module.
 /// </summary>
 public interface IModule
 {

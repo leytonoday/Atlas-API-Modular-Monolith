@@ -4,13 +4,18 @@ using MediatR;
 
 namespace Atlas.Shared.Infrastructure.Behaviors;
 
+/// <summary>
+/// Implements a pipeline behavior that automatically manages UnitOfWork for commands within a MediatR pipeline.
+/// </summary>
+/// <typeparam name="TRequest">The type of request being processed.</typeparam>
+/// <typeparam name="TResponse">The type of response returned by the request handler.</typeparam>
 public class UnitOfWorkBehavior<TRequest, TResponse>(IUnitOfWork unitOfWork) : IPipelineBehavior<TRequest, TResponse> 
     where TRequest : notnull
 {
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {
         // If the request is a query or if it's called a query (sanity check. Maybe the programmer has directly implemented IRequest rather than IQuery<TResult>), then continue
-        if (IsQueryRequest(request) || HasQueryInName())
+        if (UnitOfWorkBehavior<TRequest, TResponse>.IsQueryRequest(request) || UnitOfWorkBehavior<TRequest, TResponse>.HasQueryInName())
         {
             return await next();
         }
@@ -36,7 +41,7 @@ public class UnitOfWorkBehavior<TRequest, TResponse>(IUnitOfWork unitOfWork) : I
     /// </summary>
     /// <param name="request">The request to check.</param>
     /// <returns>True of the <see cref="IQuery{TResult}"/> interface is implemented, false otherwise.</returns>
-    private bool IsQueryRequest(TRequest request)
+    private static bool IsQueryRequest(TRequest request)
     {
         Type requestType = request.GetType();
 
@@ -62,7 +67,7 @@ public class UnitOfWorkBehavior<TRequest, TResponse>(IUnitOfWork unitOfWork) : I
     /// erroneously directly implemented <see cref="IRequest{TResult}"/> on the query. Therefore, we also check the name of the request as a sanity check.
     /// </remarks>
     /// <returns>True if the type name has "query" in it, false otherwise.</returns>
-    private bool HasQueryInName()
+    private static bool HasQueryInName()
     {
         string? name = typeof(TRequest).FullName?.Split(".").Last();
         return name is not null && name.Contains("query", StringComparison.InvariantCultureIgnoreCase);

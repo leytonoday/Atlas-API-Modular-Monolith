@@ -3,9 +3,14 @@
 namespace Atlas.Shared.Application.Abstractions.Integration;
 
 /// <summary>
-/// Represents a handler for <see cref="IIntegrationEvent"/>s that come straight from the <see cref="IEventBus"/>.
+/// Defines a contract for event handlers that process integration events published through an event bus.
 /// </summary>
 public interface IEventBusIntegrationEventHandler
 {
-    public Task Handle(IIntegrationEvent @event);
+    /// <summary>
+    /// Asynchronously handles an integration event received from the event bus.
+    /// </summary>
+    /// <param name="event">The integration event object to be processed.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    Task Handle(IIntegrationEvent @event);
 }
