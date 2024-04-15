@@ -12,9 +12,10 @@ public interface ILargeLanguageModelService
     /// </summary>
     /// <param name="text">The text to convert into keywords.</param>
     /// <param name="targetLanguage">The target language for keyword extraction (optional).</param>
+    /// <param name="metadata">Arbitrary data that you want to be passed to the LLM during the generation of the keywords.</param>
     /// <param name="cancellationToken">Propagates notification that operations should be cancelled.</param>
     /// <returns>A task representing the asynchronous operation that yields a collection of keywords.</returns>
-    public Task<IEnumerable<string>> ConvertToKeywordsAsync(string text, string? targetLanguage, CancellationToken cancellationToken);
+    public Task<IEnumerable<string>> ConvertToKeywordsAsync(string text, string? targetLanguage, IDictionary<string, string>? metadata, CancellationToken cancellationToken);
 
     /// <summary>
     /// Creates embeddings for the provided text.

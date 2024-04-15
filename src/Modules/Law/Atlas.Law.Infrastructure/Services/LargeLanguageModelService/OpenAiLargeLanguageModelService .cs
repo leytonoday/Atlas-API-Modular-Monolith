@@ -46,10 +46,10 @@ internal class OpenAiLargeLanguageModelService : BaseApiService, ILargeLanguageM
         return response;
     }
 
-    public async Task<IEnumerable<string>> ConvertToKeywordsAsync(string text, string? targetLanguage, CancellationToken cancellationToken)
+    public async Task<IEnumerable<string>> ConvertToKeywordsAsync(string text, string? targetLanguage, IDictionary<string, string>? metadata, CancellationToken cancellationToken)
     {
         string prompt = @$"
-You must extract 20 keywords from the following legal document that perfectly summarises the document, in JSON list format. The language of the keywords be in {targetLanguage}
+You must extract 20 keywords from the following document that perfectly summarises, or that can be used to categorise the document, in JSON list format. The language of the keywords be in {targetLanguage}
 Here's an example of the format:
 [
     ""Prospectus"",
@@ -73,7 +73,13 @@ Here's an example of the format:
     ""Regulated market"",
     ""Delegated regulation""
 ]
-ONLY RESPOND WITH THE JSON
+DO NOT REPLY WITH AN EMPTY ARRAY. YOU MUST THINK OF SOME KEYWORDS.
+Here is some data about the document:
+{
+    string.Join(",\n", metadata.Select(x => $"{x.Key}: {x.Value}").ToList())
+}
+ONLY RESPOND WITH THE JSON.
+[
 ";
 
         GptCompletionResponse response = await ChatCompleteAsync(new()

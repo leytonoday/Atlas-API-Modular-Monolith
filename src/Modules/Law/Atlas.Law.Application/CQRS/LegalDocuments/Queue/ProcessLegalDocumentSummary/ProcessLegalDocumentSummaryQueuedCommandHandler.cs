@@ -45,7 +45,10 @@ internal sealed class ProcessLegalDocumentSummaryQueuedCommandHandler(
         await unitOfWork.CommitAsync(cancellationToken); // Commit here immediately so the user can query the LegalDocument whilst it's processing and see that it is indeed processing
 
         // Converts the supplied document text to a series of keywords
-        IEnumerable<string> keywords = await largeLanguageModelService.ConvertToKeywordsAsync(legalDocument.FullText, legalDocument.Language, cancellationToken);
+        IEnumerable<string> keywords = await largeLanguageModelService.ConvertToKeywordsAsync(legalDocument.FullText, legalDocument.Language, new Dictionary<string, string>() 
+        {
+            { "Name of document file", legalDocument.Name }
+        },cancellationToken);
         string concatenatedKeywords = string.Join(", ", keywords);
 
         // Convert those keywords to embeddings (a list of floats, also known as a vector)
@@ -74,7 +77,7 @@ internal sealed class ProcessLegalDocumentSummaryQueuedCommandHandler(
         // Summarise the document into the provided language, using the similar documents as a reference
         SummariseDocumentResult result = await largeLanguageModelService.SummariseDocumentAsync(legalDocument.FullText, legalDocument.Language, similarDocuments, cancellationToken);
 
-        LegalDocumentSummary.SetSummary(summary, result.SummarisedText, result.SummarisedTitle, string.Join(',', ""));
+        LegalDocumentSummary.SetSummary(summary, result.SummarisedText, result.SummarisedTitle, concatenatedKeywords);
 
         await queueWriter.WriteAsync(new DecreaseCreditsQueuedCommand(legalDocument.UserId), cancellationToken);
     }
