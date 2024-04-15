@@ -177,8 +177,13 @@ internal sealed class HandleStripeWebhookCommandHandler(
         if (webhookEvent.Data.Object is not Subscription subscription)
             return;
 
-        StripeCustomer? stripeCustomer = await stripeCustomerRepository.GetByStripeCustomerId(subscription.CustomerId, false, cancellationToken)
-            ?? throw new ErrorException(PlansDomainErrors.StripeCustomer.StripeCustomerNotFound);
+        // This event can either fire if a Stripe admin manually deletes a subscription, OR if the person's account is deleted. If an account is deleted, 
+        // then their subscription is also deleted. This should return null in the latter case. In that case, do nothing
+        StripeCustomer? stripeCustomer = await stripeCustomerRepository.GetByStripeCustomerId(subscription.CustomerId, false, cancellationToken);
+        if (stripeCustomer is null)
+        {
+            return;
+        }
 
         // Clear the user's planId
         await outboxWriter.WriteAsync(new PaymentFailedIntegrationEvent(stripeCustomer.UserId), cancellationToken);
