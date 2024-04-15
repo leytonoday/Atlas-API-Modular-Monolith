@@ -7,9 +7,11 @@ using System.Linq;
 
 namespace Atlas.Law.Infrastructure.Persistance.Repositories;
 
+/// <inheritdoc cref="ILegalDocumentRepository"/>
 public sealed class LegalDocumentRepository(LawDatabaseContext context)
     : Repository<LegalDocument, LawDatabaseContext, Guid>(context), ILegalDocumentRepository
 {
+    /// <inheritdoc/>
     public override async Task<LegalDocument?> GetByIdAsync(Guid id, bool trackChanges, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
@@ -21,6 +23,7 @@ public sealed class LegalDocumentRepository(LawDatabaseContext context)
             .FirstOrDefaultAsync(x => x.Id.Equals(id), cancellationToken);
     }
 
+    /// <inheritdoc/>
     public override async Task<IEnumerable<LegalDocument>> GetByConditionAsync(Expression<Func<LegalDocument, bool>>? condition, bool trackChanges, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
@@ -34,6 +37,7 @@ public sealed class LegalDocumentRepository(LawDatabaseContext context)
             .ToListAsync(cancellationToken);
     }
 
+    /// <inheritdoc/>
     public async Task<LegalDocument?> GetByNameAndUserAsync(string name, Guid userId, bool trackChanges, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
@@ -45,6 +49,7 @@ public sealed class LegalDocumentRepository(LawDatabaseContext context)
             .FirstOrDefaultAsync(x => x.UserId == userId && x.Name == name, cancellationToken);
     }
 
+    /// <inheritdoc/>
     public async Task<IEnumerable<LegalDocument>> GetByUserIdAsync(Guid userId, bool trackChanges, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
@@ -57,6 +62,7 @@ public sealed class LegalDocumentRepository(LawDatabaseContext context)
             .ToListAsync(cancellationToken);
     }
 
+    /// <inheritdoc/>
     public Task AddSummaryAsync(LegalDocumentSummary legalDocumentSummary, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
@@ -64,6 +70,7 @@ public sealed class LegalDocumentRepository(LawDatabaseContext context)
         return Task.CompletedTask;
     }
 
+    /// <inheritdoc/>
     public Task RemoveSummaryAsync(LegalDocumentSummary legalDocumentSummary, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();

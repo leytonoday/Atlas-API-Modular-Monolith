@@ -3,6 +3,9 @@ using Atlas.Shared.Domain.Entities;
 
 namespace Atlas.Law.Domain.Entities.EurLexSumDocumentEntity;
 
+/// <summary>
+/// Represents a legal document taken from the EUR-Lex-Sum dataset (https://arxiv.org/abs/2210.13448)
+/// </summary>
 public sealed class EurLexSumDocument : Entity<Guid>, IAggregateRoot
 {
     private EurLexSumDocument() { }

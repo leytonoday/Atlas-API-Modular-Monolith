@@ -7,6 +7,9 @@ using System.Text.Json;
 
 namespace Atlas.Law.Infrastructure.Services.PineconeService;
 
+/// <summary>
+/// Service class for interacting with the Pinecone API and implementing the IVectorDatabaseService interface.
+/// </summary>
 internal class PineconeService : BaseApiService, IVectorDatabaseService
 {
     private readonly PineconeOptions _pineconeOptions;
@@ -22,11 +25,13 @@ internal class PineconeService : BaseApiService, IVectorDatabaseService
         _pineconeOptions = options.Value;
     }
 
+    /// <inheritdoc/>
     public Task InsertVectorAsync(IEnumerable<float> vector, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }
 
+    /// <inheritdoc/>
     public async Task<IEnumerable<string>> GetSimilarVectorIdsAsync(IEnumerable<float> vector, CancellationToken cancellationToken)
     {
         QueryVectorsResponse result = await PostAsync<QueryVectorsResponse, QueryVectorsRequest>("/query", new QueryVectorsRequest

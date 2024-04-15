@@ -10,10 +10,13 @@ namespace Atlas.Law.Domain.Entities.LegalDocumentEntity.BusinessRules;
 /// <param name="legalDocumentRepository">The repository to check for hte existance of other legal documents.</param>
 internal sealed class LegalDocumentNameMustBeUniqueBusinessRule(string name, Guid userId, ILegalDocumentRepository legalDocumentRepository) : IAsyncBusinessRule
 {
+    /// <inheritdoc/>
     public string Message => "Legal documents must have have unique names.";
 
+    /// <inheritdoc/>
     public string Code => $"LegalDocument.{nameof(LegalDocumentNameMustBeUniqueBusinessRule)}";
 
+    /// <inheritdoc/>
     public async Task<bool> IsBrokenAsync(CancellationToken cancellationToken = default)
     {
         LegalDocument? existing = await legalDocumentRepository.GetByNameAndUserAsync(name, userId, false, cancellationToken);
