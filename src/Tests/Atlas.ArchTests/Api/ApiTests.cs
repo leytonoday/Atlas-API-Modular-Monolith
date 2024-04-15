@@ -18,7 +18,7 @@ public class ApiTests
     public void UsersApi_DoesNotHaveDependency_ToOtherModules()
     {
         // Arrange
-        List<string> otherModules = [Namespaces.PlansNamespace];
+        List<string> otherModules = [Namespaces.PlansNamespace, Namespaces.LawNamespace];
 
         // Act
         var result = Types.InAssembly(ApiAssembly)
@@ -40,12 +40,34 @@ public class ApiTests
     public void PlansApi_DoesNotHaveDependency_ToOtherModules()
     {
         // Arrange
-        List<string> otherModules = [Namespaces.UsersNamespace];
+        List<string> otherModules = [Namespaces.UsersNamespace, Namespaces.LawNamespace];
 
         // Act
         var result = Types.InAssembly(ApiAssembly)
             .That()
                 .ResideInNamespace("Atlas.Web.Modules.Plans")
+            .Should()
+                .NotHaveDependencyOnAny(otherModules.ToArray())
+            .GetResult();
+
+        // Assert
+        TestUtils.AssertSuccess(result);
+    }
+
+    /// <summary>
+    /// This unit test verifies that the classes within the namespace "Atlas.Web.Modules.Law" 
+    /// in the specified assembly do not have dependencies on other modules.
+    /// </summary>
+    [Fact]
+    public void LawApi_DoesNotHaveDependency_ToOtherModules()
+    {
+        // Arrange
+        List<string> otherModules = [Namespaces.UsersNamespace, Namespaces.PlansNamespace];
+
+        // Act
+        var result = Types.InAssembly(ApiAssembly)
+            .That()
+                .ResideInNamespace("Atlas.Web.Modules.Law")
             .Should()
                 .NotHaveDependencyOnAny(otherModules.ToArray())
             .GetResult();

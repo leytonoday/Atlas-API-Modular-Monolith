@@ -13,15 +13,18 @@ namespace Atlas.ArchTests.Shared;
 public abstract class BaseDomainTests(Assembly domainAssembly)
 {
     /// <summary>
-    /// Ensures that all <see cref="IEntity"/> have a parameterless private constructor, which is required in Domain-Driven-Design, to prevent uncontrolled external instantiation.
+    /// Ensures that all <see cref="Entity"/> have a parameterless private constructor, which is required in Domain-Driven-Design, to prevent uncontrolled external instantiation.
     /// </summary>
     [Fact]
     public void Entity_Should_Have_Parameterless_Private_Constructor()
     {
+
+        var test = Types.InAssembly(domainAssembly).GetTypes().ToList();
+
         var entityTypes = Types.InAssembly(domainAssembly)
             .That()
-            .ImplementInterface(typeof(IEntity))
-            .GetTypes();
+            .Inherit(typeof(Entity))
+            .GetTypes().ToList();
 
         List<Type> failingTypes = [];
         foreach (var entityType in entityTypes)

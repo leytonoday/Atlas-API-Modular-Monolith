@@ -105,8 +105,10 @@ public abstract class BaseApplicationTests(Assembly applicationAssembly)
     public void MediatR_RequestHandler_Should_NotBe_Used_Directly()
     {
         var requestHandlerTypes = Types.InAssembly(applicationAssembly)
-            .That().DoNotHaveName("ICommandHandler`1")
-            .Should().ImplementInterface(typeof(IRequestHandler<>))
+            .That()
+                .ImplementInterface(typeof(IRequestHandler<>))
+             .Or()
+                .ImplementInterface(typeof(IRequestHandler<,>))
             .GetTypes();
 
         List<Type> failingTypes = [];

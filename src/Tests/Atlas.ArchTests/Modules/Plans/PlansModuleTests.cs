@@ -16,7 +16,7 @@ public class PlansModuleTests : BaseModuleTests
     public void PlansModule_DoesNotHave_Dependency_On_Other_Modules()
     {
         // Arrange
-        List<string> otherModules = [Namespaces.UsersNamespace];
+        List<string> otherModules = [Namespaces.UsersNamespace, Namespaces.LawNamespace];
         List<Assembly> plansAssemblies = [
             typeof(PlansInfrastructureAssemblyReference).Assembly,
             typeof(PlansApplicationAssemblyReference).Assembly,
