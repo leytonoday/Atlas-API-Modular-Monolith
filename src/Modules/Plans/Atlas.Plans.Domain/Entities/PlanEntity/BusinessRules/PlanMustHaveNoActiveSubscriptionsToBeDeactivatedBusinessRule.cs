@@ -11,10 +11,13 @@ namespace Atlas.Plans.Domain.Entities.PlanEntity.BusinessRules;
 /// <param name="plan">The <see cref="Plan"/> to delete.</param>
 internal class PlanMustHaveNoActiveSubscriptionsToBeDeactivatedBusinessRule(bool hasBeenDeactivated, IStripeService stripeService, Plan plan) : IAsyncBusinessRule
 {
+    /// <inheritdoc/>
     public string Message => "A Plan cannot be deactivated when it has active Subscribers.";
 
+    /// <inheritdoc/>
     public string Code => $"Plan.{nameof(PlanMustHaveNoActiveSubscriptionsToBeDeactivatedBusinessRule)}";
 
+    /// <inheritdoc/>
     public async Task<bool> IsBrokenAsync(CancellationToken cancellationToken = default)
     {
         if (!hasBeenDeactivated)

@@ -9,10 +9,13 @@ namespace Atlas.Users.Domain.Entities.UserEntity.BusinessRules;
 /// <param name="isCurrentUserAdmin">Is the user making the request an Admin?</param>
 internal class NonAdminCanOnlyDeleteOwnAccountBusinessRule(bool isDeletingSelf, bool isCurrentUserAdmin) : IBusinessRule
 {
+    /// <inheritdoc/>
     public string Message => "Non-Administrators can only delete their own accounts.";
 
+    /// <inheritdoc/>
     public string Code => $"User.{nameof(NonAdminCanOnlyDeleteOwnAccountBusinessRule)}";
 
+    /// <inheritdoc/>
     public bool IsBroken()
     {
         return !isCurrentUserAdmin && !isDeletingSelf;
