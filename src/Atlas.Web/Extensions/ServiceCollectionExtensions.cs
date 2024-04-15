@@ -6,116 +6,148 @@ using Microsoft.AspNetCore.ResponseCompression;
 using System.IO.Compression;
 using Atlas.Plans.Infrastructure.Options.OptionSetup;
 
-namespace Atlas.Web.Extensions;
-
-public static class ServiceCollectionExtensions
+namespace Atlas.Web.Extensions
 {
     /// <summary>
-    /// Configures response compression. Using Gzip.
+    /// Extension methods for IServiceCollection to configure various services.
     /// </summary>
-    /// <param name="services">The IServiceCollection.</param>
-    /// <returns>The updated IServiceCollection.</returns>
-    public static IServiceCollection ConfigureResponseCompression(this IServiceCollection services)
+    public static class ServiceCollectionExtensions
     {
-        services.Configure<GzipCompressionProviderOptions>(options =>
+        /// <summary>
+        /// Configures response compression using Gzip.
+        /// </summary>
+        /// <param name="services">The IServiceCollection to configure.</param>
+        /// <returns>The updated IServiceCollection.</returns>
+        public static IServiceCollection ConfigureResponseCompression(this IServiceCollection services)
         {
-            options.Level = CompressionLevel.Fastest;
-        });
-        services.AddResponseCompression(options =>
-        {
-            options.Providers.Add<GzipCompressionProvider>();
-            options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "application/json" });
-            options.EnableForHttps = true;
-        });
-        return services;
-    }
-
-    public static IServiceCollection ConfigureCookieAuthentication(this IServiceCollection services)
-    {
-        services.AddAuthentication(options =>
-        {
-            options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            options.DefaultSignOutScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-        })
-        .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
-        {
-            options.Cookie.HttpOnly = true;
-            options.Cookie.SecurePolicy = Utils.IsDevelopment() ? CookieSecurePolicy.None : CookieSecurePolicy.Always;
-            options.Cookie.Name = Constants.CookieName;
-
-            options.Events.OnRedirectToAccessDenied = context =>
+            // Configure Gzip compression provider options
+            services.Configure<GzipCompressionProviderOptions>(options =>
             {
-                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                return Task.CompletedTask;
-            };
-            options.Events.OnRedirectToLogin = context =>
+                options.Level = CompressionLevel.Fastest;
+            });
+            // Add response compression services
+            services.AddResponseCompression(options =>
             {
-                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                return Task.CompletedTask;
-            };
-        });
+                options.Providers.Add<GzipCompressionProvider>();
+                options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "application/json" });
+                options.EnableForHttps = true;
+            });
+            return services;
+        }
 
-        services.Configure<CookiePolicyOptions>(options =>
+        /// <summary>
+        /// Configures cookie-based authentication.
+        /// </summary>
+        /// <param name="services">The IServiceCollection to configure.</param>
+        /// <returns>The updated IServiceCollection.</returns>
+        public static IServiceCollection ConfigureCookieAuthentication(this IServiceCollection services)
         {
-            options.CheckConsentNeeded = context => true;
-            options.MinimumSameSitePolicy = SameSiteMode.Strict;
-        });
+            // Add cookie authentication services
+            services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultSignOutScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            })
+            .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+            {
+                options.Cookie.HttpOnly = true;
+                options.Cookie.SecurePolicy = Utils.IsDevelopment() ? CookieSecurePolicy.None : CookieSecurePolicy.Always;
+                options.Cookie.Name = Constants.CookieName;
 
-        return services;
-    }
+                options.Events.OnRedirectToAccessDenied = context =>
+                {
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    return Task.CompletedTask;
+                };
+                options.Events.OnRedirectToLogin = context =>
+                {
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    return Task.CompletedTask;
+                };
+            });
 
-    /// <summary>
-    /// Configures the behaviour for API versioning.
-    /// </summary>
-    public static IServiceCollection AddVersioning(this IServiceCollection services)
-    {
-        services.AddApiVersioning(opt =>
+            // Configure cookie policy options
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.Strict;
+            });
+
+            return services;
+        }
+
+        /// <summary>
+        /// Configures API versioning behavior.
+        /// </summary>
+        /// <param name="services">The IServiceCollection to configure.</param>
+        /// <returns>The updated IServiceCollection.</returns>
+        public static IServiceCollection AddVersioning(this IServiceCollection services)
         {
-            opt.ReportApiVersions = true;
-            opt.AssumeDefaultVersionWhenUnspecified = true;
-            opt.DefaultApiVersion = new ApiVersion(1, 0);
-            opt.ApiVersionReader = ApiVersionReader.Combine(
-                new UrlSegmentApiVersionReader() // this method allow us to get the version number from the URL, eg: https://domain.com/api/v1/metod
-            );
-        });
+            // Add API versioning services
+            services.AddApiVersioning(opt =>
+            {
+                opt.ReportApiVersions = true;
+                opt.AssumeDefaultVersionWhenUnspecified = true;
+                opt.DefaultApiVersion = new ApiVersion(1, 0);
+                opt.ApiVersionReader = ApiVersionReader.Combine(
+                    new UrlSegmentApiVersionReader() // This method allows us to get the version number from the URL, e.g., https://domain.com/api/v1/method
+                );
+            });
 
-        return services;
-    }
+            return services;
+        }
 
-    public static IServiceCollection ConfigureCors(this IServiceCollection services)
-    {
-        return services.AddCors(options =>
+        /// <summary>
+        /// Configures Cross-Origin Resource Sharing (CORS) policy.
+        /// </summary>
+        /// <param name="services">The IServiceCollection to configure.</param>
+        /// <returns>The updated IServiceCollection.</returns>
+        public static IServiceCollection ConfigureCors(this IServiceCollection services)
         {
-            options.AddPolicy(Constants.CorsPolicyName, builder => builder
-            .AllowAnyMethod()
-            .AllowAnyHeader()
-            .AllowAnyOrigin()
-            );
-        });
-    }
+            return services.AddCors(options =>
+            {
+                options.AddPolicy(Constants.CorsPolicyName, builder => builder
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowAnyOrigin()
+                );
+            });
+        }
 
-    public static IServiceCollection AddPresentation(this IServiceCollection services)
-    {
-        services.AddControllers(config =>
+        /// <summary>
+        /// Adds presentation-related services.
+        /// </summary>
+        /// <param name="services">The IServiceCollection to configure.</param>
+        /// <returns>The updated IServiceCollection.</returns>
+        public static IServiceCollection AddPresentation(this IServiceCollection services)
         {
-            config.RespectBrowserAcceptHeader = true;
-            config.ReturnHttpNotAcceptable = true;
-        });
+            // Add controllers with configuration
+            services.AddControllers(config =>
+            {
+                config.RespectBrowserAcceptHeader = true;
+                config.ReturnHttpNotAcceptable = true;
+            });
 
-        services.AddVersioning();
-        services.ConfigureResponseCompression();
+            services.AddVersioning(); // Configure API versioning
+            services.ConfigureResponseCompression(); // Configure response compression
 
-        return services;
-    }
+            return services;
+        }
 
-    public static IServiceCollection AddConfigurations(this IServiceCollection services)
-    {
-        services.ConfigureOptions<StripeOptionsSetup>();
+        /// <summary>
+        /// Adds configurations for various services.
+        /// </summary>
+        /// <param name="services">The IServiceCollection to configure.</param>
+        /// <returns>The updated IServiceCollection.</returns>
+        public static IServiceCollection AddConfigurations(this IServiceCollection services)
+        {
+            services.ConfigureOptions<StripeOptionsSetup>(); // Configure options for Stripe
 
-        return services
-            .AddPresentation()
-            .ConfigureCookieAuthentication()
-            .ConfigureCors();
+            return services
+                .AddPresentation() // Add presentation-related services
+                .ConfigureCookieAuthentication() // Configure cookie-based authentication
+                .ConfigureCors(); // Configure CORS policy
+        }
     }
 }

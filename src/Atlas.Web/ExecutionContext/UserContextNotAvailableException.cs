@@ -1,7 +1,7 @@
 ﻿namespace Atlas.Web.ExecutionContext;
 
 /// <summary>
-/// An exception that indicates that the user conntext 
+/// An exception that indicates that the user conntext cannot be accessed.
 /// </summary>
 public sealed class UserContextNotAvailableException: ApplicationException
 {
