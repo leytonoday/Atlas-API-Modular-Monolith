@@ -1,8 +1,12 @@
 using Atlas.Law.Infrastructure.Module;
 using Atlas.Plans.Infrastructure.Module;
 using Atlas.Shared.Application.Abstractions;
+using Atlas.Shared.Application.Abstractions.Services.EmailService;
 using Atlas.Shared.Application.ModuleBridge;
+using Atlas.Shared.Infrastructure.Builders;
 using Atlas.Shared.Infrastructure.Integration.Bus;
+using Atlas.Shared.Infrastructure.Options.OptonsSetup;
+using Atlas.Shared.Infrastructure.Services;
 using Atlas.Users.Infrastructure.Module;
 using Atlas.Web.ExecutionContext;
 using Atlas.Web.Extensions;
@@ -29,6 +33,12 @@ void ConfigureServices(IServiceCollection services, ConfigureHostBuilder hostBui
 
     // Module Bridge (for synchronous communication between modules)
     services.AddSingleton<IModuleBridge, ModuleBridge>();
+
+    // Contact email endpoint isn't specific to any one module, so we need to regitster those dependencies here.
+    services.ConfigureOptions<EmailOptionsSetup>();
+    services.AddMvcCore().AddRazorViewEngine(); // Enables MVC for potentially rendering email templates
+    services.AddScoped<IEmailService, EmailService>(); // Registers the concrete implementation for sending emails
+    services.AddScoped<EmailContentBuilder>(); // Registers a service for building email content
 }
 
 async Task InitialiseModules(IServiceProvider serviceProvider, IConfiguration config)

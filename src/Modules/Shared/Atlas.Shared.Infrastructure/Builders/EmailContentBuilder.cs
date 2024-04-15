@@ -1,6 +1,7 @@
 ﻿using Atlas.Shared.Application.Abstractions.Services.EmailService;
 using Atlas.Shared.Application.EmailContent;
 using Atlas.Shared.Infrastructure.Razor.Views.Emails.ConfirmUserEmail;
+using Atlas.Shared.Infrastructure.Razor.Views.Emails.ContactFormSubmittedEmail;
 using Atlas.Shared.Infrastructure.Razor.Views.Emails.ResetPasswordEmail;
 using Atlas.Shared.Infrastructure.Razor.Views.Emails.SupportNotificationEmail;
 using Razor.Templating.Core;
@@ -26,6 +27,7 @@ public class EmailContentBuilder()
             ConfirmUserEmailEmailContent confirmUserEmailEmailContent => await BuildEmailContentAsync(confirmUserEmailEmailContent),
             SupportNotificationEmailContent supportNotificationEmailContent => await BuildEmailContentAsync(supportNotificationEmailContent),
             ResetPasswordEmailContent forgotPasswordEmailContent => await BuildEmailContentAsync(forgotPasswordEmailContent),
+            ContactFormSubmittedEmailContent contactFormSubmittedEmailContent => await BuildEmailContentAsync(contactFormSubmittedEmailContent),
             _ => throw new InvalidOperationException("Invalid type of IEmail Content. Did you forget to register it inside the EmailContentBuilder?"),
         };
     }
@@ -52,6 +54,14 @@ public class EmailContentBuilder()
         string body = await RazorTemplateEngine.RenderAsync("/Views/Emails/SupportNotificationEmail/SupportNotificationEmail.cshtml", confirmUserModel);
 
         return new BuiltEmailContent("Support Notification", body);
+    }
+
+    private async Task<BuiltEmailContent> BuildEmailContentAsync(ContactFormSubmittedEmailContent data)
+    {
+        var confirmUserModel = new ContactFormSubmittedEmailViewModel(data.OccuredOnUtc, data.Name, data.Email, data.Message, data.Type);
+        string body = await RazorTemplateEngine.RenderAsync("/Views/Emails/ContactFormSubmittedEmail/ContactFormSubmittedEmail.cshtml", confirmUserModel);
+
+        return new BuiltEmailContent("Contact Form Submitted - " + data.Type, body);
     }
 }
 

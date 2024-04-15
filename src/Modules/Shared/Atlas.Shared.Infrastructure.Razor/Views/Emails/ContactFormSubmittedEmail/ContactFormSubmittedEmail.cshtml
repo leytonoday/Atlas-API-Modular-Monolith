@@ -1,0 +1,15 @@
+@using Atlas.Shared.Infrastructure.Razor.Views.Emails.ContactFormSubmittedEmail;
+@model ContactFormSubmittedEmailViewModel;
+
+@{
+    ViewData["EmailTitle"] = "User Contact Form Submitted";
+}
+
+<p>
+    Hi Support, a user has submitted a contact form:
+</p>
+
+<b>Date UTC:</b> @Model.OccuredOnUtc <br/><br/>
+<b>Name:</b> @Model.Name <br/><br/>
+<b>Email:</b> @Model.Email <br/><br/>
+<b>Message:</b> @Model.Message <br /><br />
