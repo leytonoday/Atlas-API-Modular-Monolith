@@ -1,8 +1,4 @@
 ﻿using ArchTests.Shared;
-using Atlas.Law.Application;
-using Atlas.Law.Domain;
-using Atlas.Law.Infrastructure;
-using System.Reflection;
 using Atlas.ArchTests.Shared;
 
 namespace Atlas.ArchTests.Modules.Law;
