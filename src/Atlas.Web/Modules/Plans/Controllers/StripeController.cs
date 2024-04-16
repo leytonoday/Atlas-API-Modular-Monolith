@@ -7,6 +7,7 @@ using Atlas.Plans.Application.CQRS.Stripe.Commands.UpdateSubscription;
 using Atlas.Plans.Application.CQRS.Stripe.Queries.GetCustomerPortalLink;
 using Atlas.Plans.Application.CQRS.Stripe.Queries.GetHasPaymentMethodBeenUsedBefore;
 using Atlas.Plans.Application.CQRS.Stripe.Queries.GetInvoiceHistory;
+using Atlas.Plans.Application.CQRS.Stripe.Queries.GetIsPromotionCodeValid;
 using Atlas.Plans.Application.CQRS.Stripe.Queries.GetIsUserEligibleForTrial;
 using Atlas.Plans.Application.CQRS.Stripe.Queries.GetPublishableKey;
 using Atlas.Plans.Application.CQRS.Stripe.Queries.GetSubscriptionQuoteInvoice;
@@ -138,6 +139,13 @@ public class StripeController(IExecutionContextAccessor executionContext, IPlans
     public async Task<IActionResult> GetAmIEligableForTrial(CancellationToken cancellationToken)
     {
         var result = await plansModule.SendQuery(new GetIsUserEligibleForTrialQuery(executionContext.UserId), cancellationToken);
+        return Ok(Result.Success(result));
+    }
+
+    [HttpGet("is-promotion-code-valid/{promotionCode}")]
+    public async Task<IActionResult> IsPromotionCodeValid([FromRoute] string promotionCode, CancellationToken cancellationToken)
+    {
+        var result = await plansModule.SendQuery(new GetIsPromotionCodeValidQuery(promotionCode), cancellationToken);
         return Ok(Result.Success(result));
     }
 }
