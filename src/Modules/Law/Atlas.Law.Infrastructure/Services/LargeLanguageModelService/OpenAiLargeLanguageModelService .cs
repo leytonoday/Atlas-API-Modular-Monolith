@@ -138,19 +138,23 @@ ONLY RESPOND WITH THE JSON.
             .ToList();
 
         string prompt = @$"
-                You must summarise any legal document given to you. The summary MUST maintain the legal integrity and truth of the original document. Make your summaries in {targetLanguage ?? "English"}.
-                Here's an example of some similar summarised documents.
-                {
-                    // Map over the similarDocuments and show a Full: and Summarised: version of each, making sure the end prompt is clear
-                    string.Join("\n\n", jsonSimilarDocuments)}
+You must summarise any legal document given to you. The summary MUST maintain the legal integrity and truth of the original document. 
+The goal is to create an insightful and detailed summary that captures the key points and important nuances of the document.
 
-                YOU MUST REPLY IN THE FOLLOWING SCHEMA:
-                {{
-                  ""Summary"": """",
-                  ""Keywords"": [],
-                  ""SummarizedTitle"": """"
-                }}
-                ONLY REPLY WITH JSON. YOUR FULL REPLY MUST BE VALID JSON. DO NOT INCLUDE THE FULLTEXT IN YOUR RESPONSE. IT MUST BE VALID JSON OR BAD THINGS WILL HAPPEN!!";
+Make your summaries in {targetLanguage ?? "English"}.
+Here's an example of some similar summarised documents.
+{
+    // Map over the similarDocuments and show a Full: and Summarised: version of each, making sure the end prompt is clear
+    string.Join("\n\n", jsonSimilarDocuments)
+}
+
+YOU MUST REPLY IN THE FOLLOWING SCHEMA:
+{{
+    ""Summary"": """",
+    ""Keywords"": [],
+    ""SummarizedTitle"": """"
+}}
+ONLY REPLY WITH JSON. YOUR FULL REPLY MUST BE VALID JSON. DO NOT INCLUDE THE FULLTEXT IN YOUR RESPONSE. IT MUST BE VALID JSON OR BAD THINGS WILL HAPPEN!!";
 
         GptCompletionResponse response = await ChatCompleteAsync(new()
         {

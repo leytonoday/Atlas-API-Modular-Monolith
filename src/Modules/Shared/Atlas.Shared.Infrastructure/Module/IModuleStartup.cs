@@ -20,7 +20,6 @@ public interface IModuleStartup
     /// <param name="configuration">The configuration settings.</param>
     /// <param name="eventBus">The event bus for publishing events.</param>
     /// <param name="loggerFactory">The logger factory used to create concrete instances of <see cref="ILogger"/>.</param>
-    /// <param name="enableScheduler">Flag indicating whether to enable the scheduler.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
     public static abstract Task Start(IModuleBridge moduleBridge, IExecutionContextAccessor executionContextAccessor, IConfiguration configuration, IEventBus eventBus, ILoggerFactory loggerFactory);
 

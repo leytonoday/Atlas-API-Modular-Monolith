@@ -9,7 +9,7 @@ using Atlas.Shared.Domain.Results;
 using Atlas.Web.Modules.Shared;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Atlas.Web.Modules.Law.LegalDocuments;
+namespace Atlas.Web.Modules.Law.Controllers;
 
 [Route("/api/{version:apiVersion}/legal-document")]
 [ApiVersion("1.0")]

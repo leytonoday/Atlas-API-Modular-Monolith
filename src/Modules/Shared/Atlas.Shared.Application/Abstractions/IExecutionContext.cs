@@ -1,7 +1,7 @@
 ﻿namespace Atlas.Shared.Application.Abstractions;
 
 /// <summary>
-/// Provides access to execution context information such as user ID, correlation ID, and availability.
+/// Provides access to execution context information such as user ID, correlation ID, availability, etc.
 /// </summary>
 public interface IExecutionContextAccessor
 {
