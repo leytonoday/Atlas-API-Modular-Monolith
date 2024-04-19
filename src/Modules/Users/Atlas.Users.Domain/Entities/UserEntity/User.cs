@@ -119,6 +119,19 @@ public sealed class User : IdentityUser<Guid>, IEntity<Guid>, IAuditableEntity, 
         user.SecurityStamp = userManager.GenerateNewAuthenticatorKey();
     }
 
+    public static void ResetPassword(User user, string newPassword, UserManager<User> userManager)
+    {
+        // Validation
+        CheckBusinessRule(new PasswordMustHaveDigitsBusinessRule(newPassword));
+        CheckBusinessRule(new PasswordMustHaveLowerCaseBusinessRule(newPassword));
+        CheckBusinessRule(new PasswordMustHaveUpperCaseBusinessRule(newPassword));
+        CheckBusinessRule(new PasswordMustHaveNonAlphanumericLettersBusinessRule(newPassword));
+        CheckBusinessRule(new PasswordMustBeMinimumLengthBusinessRule(newPassword));
+
+        user.PasswordHash = userManager.PasswordHasher.HashPassword(user, newPassword);
+        user.SecurityStamp = userManager.GenerateNewAuthenticatorKey();
+    }
+
     public static async Task ConfirmEmailAsync(User user, string token, UserManager<User> userManager)
     {
         CheckBusinessRule(new EmailMustNotBeAlreadyVerifiedBusinessRule(user));

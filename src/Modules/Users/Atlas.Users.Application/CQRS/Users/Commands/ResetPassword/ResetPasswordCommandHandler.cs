@@ -15,12 +15,7 @@ internal sealed class ResetPasswordCommandHandler(UserManager<User> userManager)
         User user = await userManager.FindByNameAsync(request.UserName)
             ?? throw new ErrorException(UsersDomainErrors.User.UserNotFound);
 
-        IdentityResult result = await userManager.ResetPasswordAsync(user, request.Token, request.NewPassword);
-        if (!result.Succeeded)
-        {
-            throw new ErrorException(result.GetErrors
-                ());
-        }
+        User.ResetPassword(user, request.NewPassword, userManager);
 
         await userManager.RemoveAuthenticationTokenAsync(user, "Default", UserToken.ResetPassword);
     }
