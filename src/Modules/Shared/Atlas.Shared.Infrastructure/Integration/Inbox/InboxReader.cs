@@ -18,7 +18,7 @@ public class InboxReader<TDatabaseContext>(TDatabaseContext databaseContext) : I
 
         return await query
             .AsQueryable<InboxMessage>()
-            .Where(x => x.ProcessedOnUtc == null)
+            .Where(x => x.ProcessedOnUtc == null && x.PublishError == null)
             .OrderBy(x => x.OccurredOnUtc)
             .ToListAsync(cancellationToken);
     }

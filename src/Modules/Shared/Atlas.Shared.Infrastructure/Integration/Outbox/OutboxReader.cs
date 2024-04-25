@@ -18,7 +18,7 @@ public class OutboxReader<TDatabaseContext>(TDatabaseContext databaseContext) : 
 
         return await query
             .AsQueryable<OutboxMessage>()
-            .Where(x => x.ProcessedOnUtc == null)
+            .Where(x => x.ProcessedOnUtc == null && x.PublishError == null)
             .OrderBy(x => x.OccurredOnUtc)
             .ToListAsync(cancellationToken);
     }

@@ -16,7 +16,7 @@ public class QueueReader<TDatabaseContext>(TDatabaseContext databaseContext) : I
 
         return await query
             .AsQueryable<QueueMessage>()
-            .Where(x => x.ProcessedOnUtc == null)
+            .Where(x => x.ProcessedOnUtc == null && x.Error == null)
             .OrderBy(x => x.OccurredOnUtc)
             .ToListAsync(cancellationToken);
     }
