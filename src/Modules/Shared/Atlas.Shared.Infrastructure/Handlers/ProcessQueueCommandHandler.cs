@@ -55,11 +55,13 @@ public sealed class ProcessQueueCommandHandler(ICommandsExecutor commandsExecuto
             {
                 // Log the exception, mark message with error, and potentially notify
                 logger.LogError(result.FinalException, "Cannot send the command for QueuedMessage with Id {messageId}", message.Id);
-                message.SetError(result.FinalException?.ToString() ?? "Unknwon error");
+
+                await queueReader.MarkFailedAsync(message, result.FinalException?.ToString() ?? "Unknwon error", cancellationToken);
+
                 await supportNotifierService.AttemptNotifyAsync($"Cannot send the command for QueuedMessage with Id {message.Id}", cancellationToken);
+                continue;
             }
 
-            message.MarkProcessed();
             await queueReader.MarkProcessedAsync(message, cancellationToken);
         }
     }

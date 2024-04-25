@@ -32,4 +32,16 @@ public class QueueReader<TDatabaseContext>(TDatabaseContext databaseContext) : I
 
         return Task.CompletedTask;
     }
+
+    /// <inheritdoc/>
+    public Task MarkFailedAsync(QueueMessage commandQueueMessage, string errorMessage, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        var query = GetDbSet();
+
+        commandQueueMessage.SetError(errorMessage);
+        query.Update(commandQueueMessage);
+
+        return Task.CompletedTask;
+    }
 }

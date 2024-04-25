@@ -21,4 +21,13 @@ public interface IQueueReader
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
     public Task MarkProcessedAsync(QueueMessage commandQueueMessage, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Marks a specified queue message as failed asynchronously.
+    /// </summary>
+    /// <param name="commandQueueMessage">The queue message to mark as failed.</param>
+    /// <param name="errorMessage">The error that caused the queue message to fail processing.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
+    public Task MarkFailedAsync(QueueMessage commandQueueMessage, string errorMessage, CancellationToken cancellationToken);
 }

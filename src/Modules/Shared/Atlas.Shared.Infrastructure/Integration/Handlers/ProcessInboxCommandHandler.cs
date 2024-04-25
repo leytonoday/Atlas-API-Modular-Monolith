@@ -54,11 +54,14 @@ public class ProcessInboxCommandHandler(IInboxReader inboxReader, IPublisher pub
             {
                 // Log the exception, mark message with error, and potentially notify
                 logger.LogError(result.FinalException, "Cannot publish message for InboxMessage with Id {messageId}", message.Id);
-                message.SetPublishError(result.FinalException?.ToString() ?? "Unknown error");
+                
+                await inboxReader.MarkFailedAsync(message, result.FinalException?.ToString() ?? "Unknown error", cancellationToken);
+
                 await supportNotifierService.AttemptNotifyAsync($"Cannot publish message for InboxMessage with Id {message.Id}", cancellationToken);
+
+                continue;
             }
 
-            message.MarkProcessed();
             await inboxReader.MarkProcessedAsync(message, cancellationToken);
         }
     }

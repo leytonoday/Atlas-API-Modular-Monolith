@@ -19,4 +19,13 @@ public interface IInboxReader
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>An awaitable task.</returns>
     Task MarkProcessedAsync(InboxMessage inboxMessage, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Marks a specified inbox message as failed asynchronously.
+    /// </summary>
+    /// <param name="inboxMessage">The inbox message to mark as failed.</param>
+    /// <param name="errorMessage">The error that caused the inbox message to fail publishing.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
+    Task MarkFailedAsync(InboxMessage inboxMessage, string errorMessage, CancellationToken cancellationToken);
 }

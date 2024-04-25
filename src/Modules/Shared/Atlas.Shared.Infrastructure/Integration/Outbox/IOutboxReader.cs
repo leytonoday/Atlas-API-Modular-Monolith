@@ -19,4 +19,13 @@ public interface IOutboxReader
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
     Task MarkProcessedAsync(OutboxMessage ouboxMessage, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Marks a specified outbox message as failed asynchronously.
+    /// </summary>
+    /// <param name="ouboxMessage">The outbox message to mark as failed.</param>
+    /// <param name="errorMessage">The error that caused the outbox message to fail publishing.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
+    Task MarkFailedAsync(OutboxMessage ouboxMessage, string errorMessage, CancellationToken cancellationToken);
 }

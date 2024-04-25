@@ -34,4 +34,16 @@ public class OutboxReader<TDatabaseContext>(TDatabaseContext databaseContext) : 
 
         return Task.CompletedTask;
     }
+
+    /// <inheritdoc/>
+    public Task MarkFailedAsync(OutboxMessage ouboxMessage, string errorMessage, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        var query = GetDbSet();
+
+        ouboxMessage.SetPublishError(errorMessage);
+        query.Update(ouboxMessage);
+
+        return Task.CompletedTask;
+    }
 }

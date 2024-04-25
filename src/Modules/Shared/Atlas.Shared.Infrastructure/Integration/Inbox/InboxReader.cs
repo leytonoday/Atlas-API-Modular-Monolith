@@ -1,4 +1,5 @@
-﻿using Atlas.Shared.Infrastructure.Integration.Inbox;
+﻿using Atlas.Shared.Application.Queue;
+using Atlas.Shared.Infrastructure.Integration.Inbox;
 using Microsoft.EntityFrameworkCore;
 
 namespace Atlas.Shared.Infrastructure.Queue;
@@ -30,6 +31,18 @@ public class InboxReader<TDatabaseContext>(TDatabaseContext databaseContext) : I
         var query = GetDbSet();
 
         inboxMessage.MarkProcessed();
+        query.Update(inboxMessage);
+
+        return Task.CompletedTask;
+    }
+
+    /// <inheritdoc/>
+    public Task MarkFailedAsync(InboxMessage inboxMessage, string errorMessage, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        var query = GetDbSet();
+
+        inboxMessage.SetPublishError(errorMessage);
         query.Update(inboxMessage);
 
         return Task.CompletedTask;

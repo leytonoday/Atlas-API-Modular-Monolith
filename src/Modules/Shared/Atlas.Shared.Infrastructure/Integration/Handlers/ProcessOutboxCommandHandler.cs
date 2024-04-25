@@ -62,11 +62,14 @@ public class ProcessOutboxCommandHandler(IOutboxReader outboxReader, IEventBus e
             {
                 // Log the exception, mark message with error, and potentially notify
                 logger.LogError(result.FinalException, "Cannot publish the OutboxMessage with Id {messageId}", message.Id);
-                message.SetPublishError(result.FinalException?.ToString() ?? "Unknown error");
+                
+                await outboxReader.MarkFailedAsync(message, result.FinalException?.ToString() ?? "Unknown error", cancellationToken);
+
                 await supportNotifierService.AttemptNotifyAsync($"Cannot publish the OutboxMessage with Id {message.Id}", cancellationToken);
+                
+                continue;
             }
 
-            message.MarkProcessed();
             await outboxReader.MarkProcessedAsync(message, cancellationToken);
         }
     }
