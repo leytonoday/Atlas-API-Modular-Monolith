@@ -5,7 +5,7 @@
 /// </summary>
 public enum LegalDocumentProcessingStatus
 {
-    NOT_STARTED, 
-    PROCESSING,
-    COMPLETE,
+    NotStarted, 
+    Processing,
+    Complete,
 }

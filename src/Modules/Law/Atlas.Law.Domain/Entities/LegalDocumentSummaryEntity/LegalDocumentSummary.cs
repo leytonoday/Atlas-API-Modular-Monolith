@@ -52,7 +52,7 @@ public class LegalDocumentSummary : Entity<Guid>
         return new LegalDocumentSummary()
         {
             LegalDocumentId = legalDocumentId,
-            ProcessingStatus = LegalDocumentProcessingStatus.NOT_STARTED
+            ProcessingStatus = LegalDocumentProcessingStatus.NotStarted
         };
     }
 
@@ -68,7 +68,7 @@ public class LegalDocumentSummary : Entity<Guid>
         legalDocumentSummary.SummarisedText = summarisedText;
         legalDocumentSummary.Keywords = summarisedKeywords;
         legalDocumentSummary.SummarizedTitle = summarisedTitle;
-        legalDocumentSummary.ProcessingStatus = LegalDocumentProcessingStatus.COMPLETE;
+        legalDocumentSummary.ProcessingStatus = LegalDocumentProcessingStatus.Complete;
     }
 
     /// <summary>
@@ -77,6 +77,6 @@ public class LegalDocumentSummary : Entity<Guid>
     /// <param name="legalDocumentSummary">The legal document summary to update.</param>
     public static void SetAsProcessing(LegalDocumentSummary legalDocumentSummary)
     {
-        legalDocumentSummary.ProcessingStatus = LegalDocumentProcessingStatus.PROCESSING;
+        legalDocumentSummary.ProcessingStatus = LegalDocumentProcessingStatus.Processing;
     }
 }

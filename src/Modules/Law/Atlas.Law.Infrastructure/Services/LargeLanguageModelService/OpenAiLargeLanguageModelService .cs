@@ -139,7 +139,7 @@ ONLY RESPOND WITH THE JSON.
 
         string prompt = @$"
 You must summarise any legal document given to you. The summary MUST maintain the legal integrity and truth of the original document. 
-The goal is to create an insightful and detailed summary that captures the key points and important nuances of the document.
+The goal is to create a brief but insightful summary that captures the key points and important nuances of the document.
 
 Make your summaries in {targetLanguage ?? "English"}.
 Here's an example of some similar summarised documents.
@@ -156,8 +156,8 @@ YOU MUST REPLY IN THE FOLLOWING SCHEMA:
 }}
 ONLY REPLY WITH JSON. YOUR FULL REPLY MUST BE VALID JSON. DO NOT INCLUDE THE FULLTEXT IN YOUR RESPONSE. IT MUST BE VALID JSON OR BAD THINGS WILL HAPPEN!!";
 
-        GptCompletionResponse response = await ChatCompleteAsync(new()
-        {
+        GptCompletionResponse response = await ChatCompleteAsync(
+        [
             new ()
             {
                 Role = "system",
@@ -168,7 +168,7 @@ ONLY REPLY WITH JSON. YOUR FULL REPLY MUST BE VALID JSON. DO NOT INCLUDE THE FUL
                 Role = "user",
                 Content = toSumarise
             }
-        },
+        ],
             _openAiOptions.Gpt4Model,
             true
         );

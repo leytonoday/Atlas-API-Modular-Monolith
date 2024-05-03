@@ -16,7 +16,7 @@ internal class LegalDocumentCannotBeDeletedWhilstSummaryIncompleteBusinessRule(L
     /// <inheritdoc/>
     public bool IsBroken()
     {
-        if (legalDocument.Summary is not null && legalDocument.Summary.ProcessingStatus != Enums.LegalDocumentProcessingStatus.COMPLETE)
+        if (legalDocument.Summary is not null && legalDocument.Summary.ProcessingStatus != Enums.LegalDocumentProcessingStatus.Complete)
         {
             return true;
         }
