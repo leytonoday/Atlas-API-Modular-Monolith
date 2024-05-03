@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Atlas.Shared;
 using Atlas.Shared.Infrastructure.Options;
+using Microsoft.EntityFrameworkCore.SqlServer.Migrations.Internal;
 
 namespace Atlas.Plans.Infrastructure.Persistance;
 
@@ -28,6 +29,7 @@ public class PlansDatabaseContextFactory : IDesignTimeDbContextFactory<PlansData
         optionsBuilder.UseSqlServer(configuration.GetConnectionString("Atlas"), options =>
         {
             options.MigrationsAssembly(typeof(PlansDatabaseContext).Assembly.GetName().Name);
+            options.MigrationsHistoryTable(SqlServerHistoryRepository.DefaultTableName, PlansConstants.Database.SchemaName);
         });
 
         // Create and return the DbContext

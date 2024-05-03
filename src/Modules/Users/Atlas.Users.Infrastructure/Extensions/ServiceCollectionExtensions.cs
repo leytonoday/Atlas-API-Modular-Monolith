@@ -16,6 +16,7 @@ using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.SqlServer.Migrations.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -70,6 +71,7 @@ public static class ServiceCollectionExtensions
             {
                 optionsBuilder.MigrationsAssembly(typeof(ServiceCollectionExtensions).Assembly.GetName().Name);
                 optionsBuilder.CommandTimeout(databaseOptions.CommandTimeout);
+                optionsBuilder.MigrationsHistoryTable(SqlServerHistoryRepository.DefaultTableName, UsersConstants.Database.SchemaName);
             });
 
             options.EnableDetailedErrors(databaseOptions.EnableDetailedErrors);
@@ -80,7 +82,16 @@ public static class ServiceCollectionExtensions
             // Apply any migrations that have yet to be applied
             IEnumerable<string> migrationsToApply = usersDatabaseContext.Database.GetPendingMigrations();
             if (migrationsToApply.Any())
-                usersDatabaseContext.Database.Migrate();
+            {
+                try
+                {
+                    usersDatabaseContext.Database.Migrate();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+            }
 
             // Register database interceptors
             options.AddInterceptors(provider.GetRequiredService<UpdateAuditableEntitiesInterceptor>());

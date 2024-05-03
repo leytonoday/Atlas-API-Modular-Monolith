@@ -23,6 +23,7 @@ using Atlas.Law.Infrastructure.Persistance.Repositories;
 using Atlas.Law.Domain.Entities.EurLexSumDocumentEntity;
 using Atlas.Law.Domain.Entities.LegalDocumentSummaryEntity;
 using Atlas.Law.Infrastructure.Services.LanguageDetector;
+using Microsoft.EntityFrameworkCore.SqlServer.Migrations.Internal;
 
 namespace Atlas.Law.Infrastructure.Extensions;
 
@@ -89,6 +90,7 @@ public static class ServiceCollectionExtensions
             {
                 optionsBuilder.MigrationsAssembly(typeof(ServiceCollectionExtensions).Assembly.GetName().Name);
                 optionsBuilder.CommandTimeout(databaseOptions.CommandTimeout);
+                optionsBuilder.MigrationsHistoryTable(SqlServerHistoryRepository.DefaultTableName, LawConstants.Database.SchemaName);
             });
 
             options.EnableDetailedErrors(databaseOptions.EnableDetailedErrors);
@@ -99,7 +101,16 @@ public static class ServiceCollectionExtensions
             // Apply any migrations that have yet to be applied
             IEnumerable<string> migrationsToApply = lawDatabaseContext.Database.GetPendingMigrations();
             if (migrationsToApply.Any())
-                lawDatabaseContext.Database.Migrate();
+            {
+                try
+                {
+                    lawDatabaseContext.Database.Migrate();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+            }
 
             // Register database interceptors
             options.AddInterceptors(provider.GetRequiredService<UpdateAuditableEntitiesInterceptor>());

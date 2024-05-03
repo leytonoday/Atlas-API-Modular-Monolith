@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Atlas.Users.Infrastructure.Migrations
 {
     [DbContext(typeof(UsersDatabaseContext))]
-    [Migration("20240405011800_Users_InboxMessageHandlerAcknowledgement")]
-    partial class Users_InboxMessageHandlerAcknowledgement
+    [Migration("20240503155346_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -110,6 +110,9 @@ namespace Atlas.Users.Infrastructure.Migrations
 
                     b.Property<DateTime?>("ProcessedOnUtc")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("PublishError")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Type")
                         .IsRequired()

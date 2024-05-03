@@ -24,6 +24,7 @@ using Atlas.Shared.Infrastructure.Persistance.Interceptors;
 using Atlas.Shared.Infrastructure.Module;
 using Atlas.Plans.Infrastructure.Module;
 using Atlas.Plans.Domain.Entities.CreditTrackerEntity;
+using Microsoft.EntityFrameworkCore.SqlServer.Migrations.Internal;
 
 namespace Atlas.Plans.Infrastructure.Extensions;
 
@@ -89,6 +90,7 @@ public static class ServiceCollectionExtensions
             {
                 optionsBuilder.MigrationsAssembly(typeof(ServiceCollectionExtensions).Assembly.GetName().Name);
                 optionsBuilder.CommandTimeout(databaseOptions.CommandTimeout);
+                optionsBuilder.MigrationsHistoryTable(SqlServerHistoryRepository.DefaultTableName, PlansConstants.Database.SchemaName);
             });
 
             options.EnableDetailedErrors(databaseOptions.EnableDetailedErrors);
@@ -99,7 +101,16 @@ public static class ServiceCollectionExtensions
             // Apply any migrations that have yet to be applied
             IEnumerable<string> migrationsToApply = plansDatabaseContext.Database.GetPendingMigrations();
             if (migrationsToApply.Any())
-                plansDatabaseContext.Database.Migrate();
+            {
+                try
+                {
+                    plansDatabaseContext.Database.Migrate();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+            }
 
             // Register database interceptors
             options.AddInterceptors(provider.GetRequiredService<UpdateAuditableEntitiesInterceptor>());

@@ -21,4 +21,8 @@
 	  <ProjectReference Include="..\Atlas.Law.Domain\Atlas.Law.Domain.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Migrations\" />
+	</ItemGroup>
+
 </Project>

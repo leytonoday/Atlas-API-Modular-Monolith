@@ -15,12 +15,29 @@ namespace Atlas.Plans.Infrastructure.Migrations
                 name: "Plans");
 
             migrationBuilder.CreateTable(
+                name: "CreditTrackers",
+                schema: "Plans",
+                columns: table => new
+                {
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    MaxCreditCount = table.Column<int>(type: "int", nullable: false),
+                    CurrentCreditCount = table.Column<int>(type: "int", nullable: false),
+                    CreatedOnUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedOnUtc = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CreditTrackers", x => x.UserId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Features",
                 schema: "Plans",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsInheritable = table.Column<bool>(type: "bit", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsHidden = table.Column<bool>(type: "bit", nullable: false),
@@ -30,6 +47,19 @@ namespace Atlas.Plans.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Features", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "InboxMessageHandlerAcknowledgements",
+                schema: "Plans",
+                columns: table => new
+                {
+                    InboxMessageId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    HandlerName = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_InboxMessageHandlerAcknowledgements", x => new { x.HandlerName, x.InboxMessageId });
                 });
 
             migrationBuilder.CreateTable(
@@ -58,7 +88,8 @@ namespace Atlas.Plans.Infrastructure.Migrations
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Data = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     OccurredOnUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ProcessedOnUtc = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    ProcessedOnUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    PublishError = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -91,6 +122,19 @@ namespace Atlas.Plans.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Plans", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "QueueMessageHandlerAcknowledgements",
+                schema: "Plans",
+                columns: table => new
+                {
+                    QueuedCommandId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    HandlerName = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_QueueMessageHandlerAcknowledgements", x => new { x.HandlerName, x.QueuedCommandId });
                 });
 
             migrationBuilder.CreateTable(
@@ -194,6 +238,14 @@ namespace Atlas.Plans.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "CreditTrackers",
+                schema: "Plans");
+
+            migrationBuilder.DropTable(
+                name: "InboxMessageHandlerAcknowledgements",
+                schema: "Plans");
+
+            migrationBuilder.DropTable(
                 name: "InboxMessages",
                 schema: "Plans");
 
@@ -203,6 +255,10 @@ namespace Atlas.Plans.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "PlanFeatures",
+                schema: "Plans");
+
+            migrationBuilder.DropTable(
+                name: "QueueMessageHandlerAcknowledgements",
                 schema: "Plans");
 
             migrationBuilder.DropTable(

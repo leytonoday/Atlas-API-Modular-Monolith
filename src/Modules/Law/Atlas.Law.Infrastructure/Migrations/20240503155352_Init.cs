@@ -15,6 +15,25 @@ namespace Atlas.Law.Infrastructure.Migrations
                 name: "Law");
 
             migrationBuilder.CreateTable(
+                name: "EurLexSumDocuments",
+                schema: "Law",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CelexId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Reference = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Summary = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Language = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Keywords = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedOnUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedOnUtc = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EurLexSumDocuments", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "InboxMessageHandlerAcknowledgements",
                 schema: "Law",
                 columns: table => new
@@ -42,6 +61,25 @@ namespace Atlas.Law.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_InboxMessages", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LegalDocuments",
+                schema: "Law",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FullText = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Language = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MimeType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedOnUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedOnUtc = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LegalDocuments", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -90,17 +128,65 @@ namespace Atlas.Law.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_QueueMessages", x => x.Id);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "LegalDocumentSummaries",
+                schema: "Law",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    SummarisedText = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SummarizedTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Keywords = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LegalDocumentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ProcessingStatus = table.Column<int>(type: "int", nullable: false),
+                    CreatedOnUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedOnUtc = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LegalDocumentSummaries", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_LegalDocumentSummaries_LegalDocuments_LegalDocumentId",
+                        column: x => x.LegalDocumentId,
+                        principalSchema: "Law",
+                        principalTable: "LegalDocuments",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EurLexSumDocuments_CelexId_Language",
+                schema: "Law",
+                table: "EurLexSumDocuments",
+                columns: new[] { "CelexId", "Language" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LegalDocumentSummaries_LegalDocumentId",
+                schema: "Law",
+                table: "LegalDocumentSummaries",
+                column: "LegalDocumentId",
+                unique: true);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "EurLexSumDocuments",
+                schema: "Law");
+
+            migrationBuilder.DropTable(
                 name: "InboxMessageHandlerAcknowledgements",
                 schema: "Law");
 
             migrationBuilder.DropTable(
                 name: "InboxMessages",
+                schema: "Law");
+
+            migrationBuilder.DropTable(
+                name: "LegalDocumentSummaries",
                 schema: "Law");
 
             migrationBuilder.DropTable(
@@ -113,6 +199,10 @@ namespace Atlas.Law.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "QueueMessages",
+                schema: "Law");
+
+            migrationBuilder.DropTable(
+                name: "LegalDocuments",
                 schema: "Law");
         }
     }

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Atlas.Shared;
 using Atlas.Shared.Infrastructure.Options;
+using Microsoft.EntityFrameworkCore.SqlServer.Migrations.Internal;
 
 namespace Atlas.Law.Infrastructure.Persistance;
 
@@ -28,6 +29,7 @@ public class LawDatabaseContextFactory : IDesignTimeDbContextFactory<LawDatabase
         optionsBuilder.UseSqlServer(configuration.GetConnectionString("Atlas"), options =>
         {
             options.MigrationsAssembly(typeof(LawDatabaseContext).Assembly.GetName().Name);
+            options.MigrationsHistoryTable(SqlServerHistoryRepository.DefaultTableName, LawConstants.Database.SchemaName);
         });
 
         // Create and return the DbContext

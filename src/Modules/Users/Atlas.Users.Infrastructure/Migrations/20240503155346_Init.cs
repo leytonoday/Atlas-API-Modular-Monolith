@@ -15,6 +15,19 @@ namespace Atlas.Users.Infrastructure.Migrations
                 name: "Users");
 
             migrationBuilder.CreateTable(
+                name: "InboxMessageHandlerAcknowledgements",
+                schema: "Users",
+                columns: table => new
+                {
+                    InboxMessageId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    HandlerName = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_InboxMessageHandlerAcknowledgements", x => new { x.HandlerName, x.InboxMessageId });
+                });
+
+            migrationBuilder.CreateTable(
                 name: "InboxMessages",
                 schema: "Users",
                 columns: table => new
@@ -40,11 +53,25 @@ namespace Atlas.Users.Infrastructure.Migrations
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Data = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     OccurredOnUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ProcessedOnUtc = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    ProcessedOnUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    PublishError = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_OutboxMessages", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "QueueMessageHandlerAcknowledgements",
+                schema: "Users",
+                columns: table => new
+                {
+                    QueuedCommandId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    HandlerName = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_QueueMessageHandlerAcknowledgements", x => new { x.HandlerName, x.QueuedCommandId });
                 });
 
             migrationBuilder.CreateTable(
@@ -319,11 +346,19 @@ namespace Atlas.Users.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "InboxMessageHandlerAcknowledgements",
+                schema: "Users");
+
+            migrationBuilder.DropTable(
                 name: "InboxMessages",
                 schema: "Users");
 
             migrationBuilder.DropTable(
                 name: "OutboxMessages",
+                schema: "Users");
+
+            migrationBuilder.DropTable(
+                name: "QueueMessageHandlerAcknowledgements",
                 schema: "Users");
 
             migrationBuilder.DropTable(

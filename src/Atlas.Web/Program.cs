@@ -34,7 +34,7 @@ void ConfigureServices(IServiceCollection services, ConfigureHostBuilder hostBui
     // Module Bridge (for synchronous communication between modules)
     services.AddSingleton<IModuleBridge, ModuleBridge>();
 
-    // Contact email endpoint isn't specific to any one module, so we need to regitster those dependencies here.
+    // Contact email endpoint isn't specific to any one module, so we need to register those dependencies here.
     services.ConfigureOptions<EmailOptionsSetup>();
     services.AddMvcCore().AddRazorViewEngine(); // Enables MVC for potentially rendering email templates
     services.AddScoped<IEmailService, EmailService>(); // Registers the concrete implementation for sending emails
@@ -90,8 +90,12 @@ var builder = WebApplication.CreateBuilder(args);
 // Configure all global services
 ConfigureServices(builder.Services, builder.Host);
 
+builder.Services.AddHealthChecks();
+
 // Build app after services have been registered
 var app = builder.Build();
+
+app.MapHealthChecks("/health");
 
 // Startup the modules
 await InitialiseModules(app.Services, builder.Configuration);

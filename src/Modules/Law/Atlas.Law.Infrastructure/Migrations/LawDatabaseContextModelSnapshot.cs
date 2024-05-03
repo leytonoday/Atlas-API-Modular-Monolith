@@ -247,7 +247,8 @@ namespace Atlas.Law.Infrastructure.Migrations
                 {
                     b.HasOne("Atlas.Law.Domain.Entities.LegalDocumentEntity.LegalDocument", "LegalDocument")
                         .WithOne("Summary")
-                        .HasForeignKey("Atlas.Law.Domain.Entities.LegalDocumentSummaryEntity.LegalDocumentSummary", "LegalDocumentId");
+                        .HasForeignKey("Atlas.Law.Domain.Entities.LegalDocumentSummaryEntity.LegalDocumentSummary", "LegalDocumentId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("LegalDocument");
                 });
