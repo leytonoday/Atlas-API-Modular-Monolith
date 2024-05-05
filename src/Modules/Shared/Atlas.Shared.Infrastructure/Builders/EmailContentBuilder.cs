@@ -58,7 +58,7 @@ public class EmailContentBuilder()
 
     private async Task<BuiltEmailContent> BuildEmailContentAsync(ContactFormSubmittedEmailContent data)
     {
-        var confirmUserModel = new ContactFormSubmittedEmailViewModel(data.OccuredOnUtc, data.Name, data.Email, data.Message, data.Type);
+        var confirmUserModel = new ContactFormSubmittedEmailViewModel(data.OccuredOnUtc, data.Name, data.Email, data.Message, data.Type, data.Company);
         string body = await RazorTemplateEngine.RenderAsync("/Views/Emails/ContactFormSubmittedEmail/ContactFormSubmittedEmail.cshtml", confirmUserModel);
 
         return new BuiltEmailContent("Contact Form Submitted - " + data.Type, body);

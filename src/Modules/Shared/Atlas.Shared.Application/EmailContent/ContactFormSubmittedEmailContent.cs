@@ -3,4 +3,4 @@
 
 namespace Atlas.Shared.Application.EmailContent;
 
-public record ContactFormSubmittedEmailContent(DateTime OccuredOnUtc, string Name, string Email, string Message, string Type) : IEmailContent;
+public record ContactFormSubmittedEmailContent(DateTime OccuredOnUtc, string Name, string Email, string Message, string Type, string Company) : IEmailContent;

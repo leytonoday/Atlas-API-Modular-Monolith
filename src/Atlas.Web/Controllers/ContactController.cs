@@ -12,9 +12,16 @@ public class ContactController(IEmailService emailService) : ApiController
     [HttpPost]
     public async Task<IActionResult> SendContactEmail(ContactEmailDto contactEmailDto, CancellationToken cancellationToken)
     {
-        await emailService.SendEmailAsync("support@legallighthouse.xyz", new ContactFormSubmittedEmailContent(DateTime.UtcNow, contactEmailDto.Name, contactEmailDto.Email, contactEmailDto.Message, contactEmailDto.Type), cancellationToken);
+        await emailService.SendEmailAsync("support@legallighthouse.xyz", 
+            new ContactFormSubmittedEmailContent(
+                DateTime.UtcNow, 
+                contactEmailDto.Name, 
+                contactEmailDto.Email, 
+                contactEmailDto.Message, 
+                contactEmailDto.Type,
+                contactEmailDto.Company), cancellationToken);
         return Ok();
     }
 }
 
-public record ContactEmailDto(string Email, string Name, string Type, string Message);
+public record ContactEmailDto(string Email, string Name, string Type, string Message, string Company);
