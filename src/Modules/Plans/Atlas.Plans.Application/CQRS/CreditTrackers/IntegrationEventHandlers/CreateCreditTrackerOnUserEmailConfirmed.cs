@@ -1,6 +1,7 @@
 ﻿using Atlas.Plans.Domain.Entities.CreditTrackerEntity;
 using Atlas.Shared.Infrastructure.Integration;
 using Atlas.Users.IntegrationEvents;
+using Microsoft.Extensions.Logging;
 
 namespace Atlas.Plans.Application.CQRS.CreditTrackers.IntegrationEventHandlers;
 

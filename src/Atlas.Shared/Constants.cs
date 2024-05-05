@@ -13,5 +13,5 @@ public static class Constants
     /// <summary>
     /// The URL of the website in the production environment.
     /// </summary>
-    internal const string WebsiteUrlProd = "";
+    internal const string WebsiteUrlProd = "https://www.legallighthouse.xyz/";
 }

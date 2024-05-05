@@ -2,7 +2,6 @@
 using Atlas.Plans.Domain.Services;
 using Atlas.Shared.Infrastructure.Integration;
 using Atlas.Users.IntegrationEvents;
-using MediatR;
 
 namespace Atlas.Plans.Application.CQRS.Stripe.IntegrationEventHandlers;
 

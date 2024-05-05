@@ -5,9 +5,9 @@ using Microsoft.Extensions.Logging;
 namespace Atlas.Shared.Infrastructure.Persistance;
 
 /// <inheritdoc cref="IUnitOfWork"/>
-public abstract class BaseUnitOfWork<TDatabaseContext, IUnitOfWorkLogger>(TDatabaseContext databaseContext, IUnitOfWorkLogger logger) : IUnitOfWork 
+public abstract class BaseUnitOfWork<TDatabaseContext, TUnitOfWorkLogger>(TDatabaseContext databaseContext, TUnitOfWorkLogger logger) : IUnitOfWork 
     where TDatabaseContext : DbContext
-    where IUnitOfWorkLogger : ILogger
+    where TUnitOfWorkLogger : ILogger
 { 
     /// <inheritdoc/>
     public async Task CommitAsync(CancellationToken cancellationToken = default)

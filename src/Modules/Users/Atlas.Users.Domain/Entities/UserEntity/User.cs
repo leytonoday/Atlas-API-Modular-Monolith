@@ -119,8 +119,13 @@ public sealed class User : IdentityUser<Guid>, IEntity<Guid>, IAuditableEntity, 
         user.SecurityStamp = userManager.GenerateNewAuthenticatorKey();
     }
 
-    public static void ResetPassword(User user, string newPassword, UserManager<User> userManager)
+    public static async Task ResetPasswordAsync(User user, string newPassword, string token, UserManager<User> userManager)
     {
+        if (!await userManager.VerifyUserTokenAsync(user, TokenOptions.DefaultProvider, UserManager<User>.ResetPasswordTokenPurpose, token))
+        {
+            throw new ErrorException(UsersDomainErrors.User.InvalidToken);
+        }
+
         // Validation
         CheckBusinessRule(new PasswordMustHaveDigitsBusinessRule(newPassword));
         CheckBusinessRule(new PasswordMustHaveLowerCaseBusinessRule(newPassword));

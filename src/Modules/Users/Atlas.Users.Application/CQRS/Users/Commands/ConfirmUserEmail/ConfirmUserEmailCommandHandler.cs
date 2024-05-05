@@ -26,7 +26,7 @@ internal sealed class ConfirmUserEmailCommandHandler(UserManager<User> userManag
 
         // Alert external systems
         await outboxWriter.WriteAsync(new UserEmailConfirmedIntegrationEvent(user.Id, user.UserName, user.Email, user.PhoneNumber), cancellationToken);
-        
+
         return HttpUtility.UrlEncode(signInToken);
     }
 }

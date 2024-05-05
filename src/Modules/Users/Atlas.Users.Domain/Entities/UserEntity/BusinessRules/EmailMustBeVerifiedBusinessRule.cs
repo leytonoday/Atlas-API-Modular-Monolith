@@ -17,6 +17,6 @@ internal class EmailMustBeVerifiedBusinessRule(User user) : IBusinessRule
     /// <inheritdoc/>
     public bool IsBroken()
     {
-        return user.EmailConfirmed = false;
+        return user.EmailConfirmed == false;
     }
 }

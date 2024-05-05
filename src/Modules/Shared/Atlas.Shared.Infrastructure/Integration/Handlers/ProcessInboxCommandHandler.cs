@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Polly.Retry;
 using Polly;
 using Atlas.Shared.Application.Abstractions.Services;
+using Atlas.Shared.IntegrationEvents;
 
 namespace Atlas.Shared.Infrastructure.Integration.Handlers;
 
@@ -48,13 +49,19 @@ public class ProcessInboxCommandHandler(IInboxReader inboxReader, IPublisher pub
         {
             logger.LogInformation($"Processing inbox message: {message.Id} {message.Type} {message.Data}");
 
-            PolicyResult result = await _retryPolicy.ExecuteAndCaptureAsync(() => publisher.Publish(InboxMessage.ToIntegrationEvent(message), cancellationToken));
+            IIntegrationEvent? integrationEvent = InboxMessage.ToIntegrationEvent(message);
+            if (integrationEvent is null)
+            {
+                continue;
+            }
+
+            PolicyResult result = await _retryPolicy.ExecuteAndCaptureAsync(() => publisher.Publish(integrationEvent, cancellationToken));
 
             if (result.Outcome == OutcomeType.Failure)
             {
                 // Log the exception, mark message with error, and potentially notify
                 logger.LogError(result.FinalException, "Cannot publish message for InboxMessage with Id {messageId}", message.Id);
-                
+
                 await inboxReader.MarkFailedAsync(message, result.FinalException?.ToString() ?? "Unknown error", cancellationToken);
 
                 await supportNotifierService.AttemptNotifyAsync($"Cannot publish message for InboxMessage with Id {message.Id}", cancellationToken);
